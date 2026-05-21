@@ -228,36 +228,40 @@ export default function VaxonWidget() {
           </>
         )}
 
+        {/* Orb (pointer-events off so clicks pass to the button below) */}
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
+          <Suspense fallback={
+            <div style={{
+              width: 200, height: 200, borderRadius: '50%',
+              border: '1px solid #222', display: 'flex',
+              alignItems: 'center', justifyContent: 'center',
+              background: '#050505',
+            }}>
+              <div style={{ fontSize: '0.6rem', letterSpacing: '0.2em', color: '#333' }}>LOADING...</div>
+            </div>
+          }>
+            <VaxonOrb isActive={open} isSpeaking={isSpeaking} size={200} />
+          </Suspense>
+        </div>
+
+        {/* Clickable layer — on top of the canvas */}
         <button
           onClick={() => setOpen(o => !o)}
           style={{
             position: 'absolute', inset: 0, borderRadius: '50%',
             background: 'transparent', border: 'none',
-            cursor: 'pointer', padding: 0,
+            cursor: 'pointer', padding: 0, zIndex: 2,
           }}
           aria-label="Open Vaxon AI"
         />
 
-        <Suspense fallback={
-          <div style={{
-            width: 200, height: 200, borderRadius: '50%',
-            border: '1px solid #222', display: 'flex',
-            alignItems: 'center', justifyContent: 'center',
-            background: '#050505',
-          }}>
-            <div style={{ fontSize: '0.6rem', letterSpacing: '0.2em', color: '#333' }}>LOADING...</div>
-          </div>
-        }>
-          <VaxonOrb isActive={open} isSpeaking={isSpeaking} size={200} />
-        </Suspense>
-
         {/* Label */}
         <div style={{
           position: 'absolute', bottom: -4, left: '50%', transform: 'translateX(-50%)',
+          zIndex: 3, pointerEvents: 'none',
           fontSize: '0.55rem', letterSpacing: '0.22em', color: open ? '#c8102e' : '#444',
           textTransform: 'uppercase', whiteSpace: 'nowrap', transition: 'color 0.3s',
           textShadow: open ? '0 0 12px rgba(200,16,46,0.5)' : 'none',
-          pointerEvents: 'none',
         }}>
           {open ? 'VAXON AI / ACTIVE' : 'VAXON AI'}
         </div>

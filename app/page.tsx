@@ -1,7 +1,8 @@
 'use client'
 import { useEffect, useRef, useState, useCallback, lazy, Suspense } from 'react'
 
-const VaxonWidget = lazy(() => import('@/components/VaxonWidget'))
+const VaxonWidget      = lazy(() => import('@/components/VaxonWidget'))
+const SatelliteDiagram = lazy(() => import('@/components/SatelliteDiagram'))
 
 /* ─────────────────────────────────────────────────────── */
 /*  TYPES                                                   */
@@ -610,10 +611,14 @@ export default function VaxonPage() {
             VLEO SATELLITE SYSTEMS / DEFENSE + CONNECTIVITY
           </div>
           <h1 style={{ fontFamily: "'Bitter', Georgia, serif",
-            fontSize: 'clamp(2.5rem,6vw,5.5rem)', fontWeight: 900, lineHeight: 1.05,
+            fontSize: 'clamp(2rem,4vw,4rem)', fontWeight: 900, lineHeight: 1.08,
             letterSpacing: '-0.01em', margin: 0, animation: 'vx-fadeup 1s ease 0.5s both' }}>
-            <TypeWriter text="Real-time missile defense" delay={600} /><br />
-            <TypeWriter text="and connectivity today." delay={1800} />
+            <span style={{ display: 'block' }}>
+              <TypeWriter text="Real-time missile defense" delay={600} />
+            </span>
+            <span style={{ display: 'block' }}>
+              <TypeWriter text="and connectivity today." delay={1800} />
+            </span>
           </h1>
           <p style={{ color: '#777', fontSize: '1rem', maxWidth: 540, marginTop: '1.5rem',
             lineHeight: 1.7, animation: 'vx-fadeup 1s ease 0.8s both' }}>
@@ -768,6 +773,25 @@ export default function VaxonPage() {
               ))}
             </div>
           </div>
+
+          {/* Interactive Satellite Diagram */}
+          <Fade>
+            <div style={{ marginTop: '1rem', marginBottom: '4rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
+                <div style={{ width: 32, height: 1, background: '#c8102e22' }} />
+                <span style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#555' }}>ABEP SATELLITE DESIGN</span>
+              </div>
+              <Suspense fallback={
+                <div style={{ height: 520, border: '1px solid #111', display: 'flex',
+                  alignItems: 'center', justifyContent: 'center', background: '#020202' }}>
+                  <div style={{ fontSize: '0.6rem', letterSpacing: '0.22em', color: '#333',
+                    textTransform: 'uppercase' }}>LOADING 3D MODEL...</div>
+                </div>
+              }>
+                <SatelliteDiagram />
+              </Suspense>
+            </div>
+          </Fade>
 
           {/* VLEO vs LEO Comparison */}
           <Fade>
