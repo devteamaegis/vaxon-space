@@ -750,7 +750,7 @@ function GlobeAnimation() {
 /* ─────────────────────────────────────────────────────── */
 /*  LOGO STRIP                                              */
 /* ─────────────────────────────────────────────────────── */
-function LogoItem({ src, alt, invert = false }: { src: string; alt: string; invert?: boolean }) {
+function LogoItem({ src, alt, invert = false, blend = false }: { src: string; alt: string; invert?: boolean; blend?: boolean }) {
   const [hovered, setHovered] = useState(false)
   return (
     <div
@@ -758,9 +758,9 @@ function LogoItem({ src, alt, invert = false }: { src: string; alt: string; inve
       onMouseLeave={() => setHovered(false)}
       style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        width: 130, height: 90, flexShrink: 0,
+        width: 180, height: 130, flexShrink: 0,
         transition: 'transform 0.25s ease',
-        transform: hovered ? 'scale(1.12)' : 'scale(1)',
+        transform: hovered ? 'scale(1.1)' : 'scale(1)',
       }}
     >
       <img
@@ -769,11 +769,12 @@ function LogoItem({ src, alt, invert = false }: { src: string; alt: string; inve
         style={{
           maxWidth: '100%', maxHeight: '100%',
           objectFit: 'contain',
+          mixBlendMode: blend ? 'multiply' : 'normal',
           filter: hovered
-            ? 'opacity(1) drop-shadow(0 0 6px rgba(255,255,255,0.15))'
+            ? 'opacity(1) drop-shadow(0 0 8px rgba(255,255,255,0.2))'
             : invert
-              ? 'brightness(0) invert(1) opacity(0.8)'
-              : 'opacity(0.85)',
+              ? 'brightness(0) invert(1) opacity(0.85)'
+              : 'opacity(0.9)',
           transition: 'filter 0.3s ease',
         }}
       />
@@ -789,56 +790,48 @@ function LogoSection() {
     { src: '/vaxon/logos/nro.svg',                 alt: 'NRO',                       invert: false },
     { src: '/vaxon/logos/army.svg',                alt: 'US Army',                   invert: false },
     { src: '/vaxon/logos/disa.svg',                alt: 'DISA',                      invert: false },
-    { src: '/vaxon/logos/naval-research-lab.jpg',  alt: 'Naval Research Laboratory', invert: false },
+    { src: '/vaxon/logos/naval-research-lab.jpg',  alt: 'Naval Research Laboratory', invert: false, blend: true },
   ]
   const unis = [
-    { src: '/vaxon/logos/stanford.svg', alt: 'Stanford University',  invert: false },
-    { src: '/vaxon/logos/cornell.svg',  alt: 'Cornell University',   invert: false },
-    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/University_of_Michigan_Logo.svg',
-      alt: 'University of Michigan', invert: false },
-    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/Seal_of_The_University_of_Texas_at_Austin.svg',
-      alt: 'UT Austin', invert: false },
-    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/University_of_North_Carolina_at_Chapel_Hill_seal.svg',
-      alt: 'UNC Chapel Hill', invert: false },
-    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/US_Naval_War_College_seal.svg',
-      alt: 'US Naval War College', invert: false },
-    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/Army_West_Point_Athletics_logo.svg',
-      alt: 'West Point', invert: false },
-    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/University_of_Colorado_seal.svg',
-      alt: 'CU Boulder', invert: false },
-    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/Bates_College_seal.svg',
-      alt: 'Bates College', invert: false },
+    { src: '/vaxon/logos/stanford.svg',   alt: 'Stanford University',      invert: false },
+    { src: '/vaxon/logos/cornell.svg',    alt: 'Cornell University',        invert: false },
+    { src: '/vaxon/logos/michigan.svg',   alt: 'University of Michigan',    invert: false },
+    { src: '/vaxon/logos/ut-austin.png',  alt: 'UT Austin',                 invert: false, blend: true },
+    { src: '/vaxon/logos/unc.svg',        alt: 'UNC Chapel Hill',           invert: false },
+    { src: '/vaxon/logos/west-point.svg', alt: 'West Point',                invert: false },
+    { src: '/vaxon/logos/cu-boulder.svg', alt: 'CU Boulder',                invert: true  },
+    { src: '/vaxon/logos/bates.svg',      alt: 'Bates College',             invert: true  },
   ]
 
   return (
-    <section style={{ padding: '5rem 2.5rem', background: '#020202', borderTop: '1px solid #0d0d0d' }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+    <section style={{ padding: '6rem 2.5rem', background: '#020202', borderTop: '1px solid #0d0d0d' }}>
+      <div style={{ maxWidth: 1300, margin: '0 auto' }}>
         <Fade>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem', justifyContent: 'center' }}>
-            <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, transparent, #1a1a1a)' }} />
-            <span style={{ fontSize: '1.05rem', letterSpacing: '0.18em', textTransform: 'uppercase',
-              color: '#aaa', whiteSpace: 'nowrap', fontWeight: 600 }}>OUR TEAM HAS WORKED AT</span>
-            <div style={{ flex: 1, height: 1, background: 'linear-gradient(to left, transparent, #1a1a1a)' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1rem', justifyContent: 'center' }}>
+            <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, transparent, #2a2a2a)' }} />
+            <span style={{ fontSize: '1.75rem', letterSpacing: '0.12em', textTransform: 'uppercase',
+              color: '#ccc', whiteSpace: 'nowrap', fontWeight: 700 }}>OUR TEAM HAS WORKED AT</span>
+            <div style={{ flex: 1, height: 1, background: 'linear-gradient(to left, transparent, #2a2a2a)' }} />
           </div>
         </Fade>
 
         <Fade delay={100}>
-          <div style={{ marginTop: '2.5rem' }}>
-            <div style={{ fontSize: '0.55rem', letterSpacing: '0.22em', textTransform: 'uppercase',
-              color: '#444', textAlign: 'center', marginBottom: '1.5rem' }}>COMPANIES + ORGANIZATIONS</div>
+          <div style={{ marginTop: '3rem' }}>
+            <div style={{ fontSize: '0.75rem', letterSpacing: '0.2em', textTransform: 'uppercase',
+              color: '#666', textAlign: 'center', marginBottom: '2rem' }}>COMPANIES + ORGANIZATIONS</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center',
-              alignItems: 'center', gap: '1rem', rowGap: '1.5rem' }}>
+              alignItems: 'center', gap: '2rem', rowGap: '2rem' }}>
               {orgs.map(o => <LogoItem key={o.alt} {...o} />)}
             </div>
           </div>
         </Fade>
 
         <Fade delay={200}>
-          <div style={{ marginTop: '3.5rem' }}>
-            <div style={{ fontSize: '0.55rem', letterSpacing: '0.22em', textTransform: 'uppercase',
-              color: '#444', textAlign: 'center', marginBottom: '1.5rem' }}>UNIVERSITIES + RESEARCH</div>
+          <div style={{ marginTop: '4rem' }}>
+            <div style={{ fontSize: '0.75rem', letterSpacing: '0.2em', textTransform: 'uppercase',
+              color: '#666', textAlign: 'center', marginBottom: '2rem' }}>UNIVERSITIES + RESEARCH</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center',
-              alignItems: 'center', gap: '1rem', rowGap: '1.5rem' }}>
+              alignItems: 'center', gap: '2rem', rowGap: '2rem' }}>
               {unis.map(u => <LogoItem key={u.alt} {...u} />)}
             </div>
           </div>
