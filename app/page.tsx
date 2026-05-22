@@ -125,7 +125,7 @@ function TypeWriter({ text, delay = 0 }: { text: string; delay?: number }) {
       setDisplayed(text.slice(0, i + 1))
       i++
       if (i >= text.length) clearInterval(id)
-    }, 38)
+    }, 65)
     return () => clearInterval(id)
   }, [started, text])
 
@@ -160,7 +160,7 @@ function ClassifiedStat({ value, label, revealed, delay = 0 }: { value: string; 
       setDisplayed(value.slice(0, i + 1))
       i++
       if (i >= value.length) clearInterval(id)
-    }, 90)
+    }, 150)
     return () => clearInterval(id)
   }, [started, value])
 
@@ -748,6 +748,115 @@ function GlobeAnimation() {
 }
 
 /* ─────────────────────────────────────────────────────── */
+/*  LOGO STRIP                                              */
+/* ─────────────────────────────────────────────────────── */
+function LogoItem({ src, alt, invert = false }: { src: string; alt: string; invert?: boolean }) {
+  const [hovered, setHovered] = useState(false)
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        width: 120, height: 80, flexShrink: 0,
+        transition: 'transform 0.25s ease',
+        transform: hovered ? 'scale(1.14)' : 'scale(1)',
+      }}
+    >
+      <img
+        src={src}
+        alt={alt}
+        style={{
+          maxWidth: '100%', maxHeight: '100%',
+          objectFit: 'contain',
+          filter: hovered
+            ? 'brightness(1) grayscale(0) opacity(1)'
+            : invert
+              ? 'brightness(0) invert(1) opacity(0.55)'
+              : 'brightness(0) invert(1) opacity(0.55)',
+          transition: 'filter 0.3s ease',
+        }}
+      />
+    </div>
+  )
+}
+
+function LogoSection() {
+  const orgs = [
+    { src: '/vaxon/logos/nasa.svg',     alt: 'NASA',                invert: false },
+    { src: '/vaxon/logos/lockheed.svg', alt: 'Lockheed Martin',     invert: true  },
+    { src: '/vaxon/logos/dod.svg',      alt: 'Department of Defense', invert: false },
+    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/United_States_Space_Force_emblem.svg',
+      alt: 'US Space Force', invert: false },
+    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/National_Reconnaissance_Office_seal.svg',
+      alt: 'NRO', invert: false },
+    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/Seal_of_the_United_States_Department_of_the_Army.svg',
+      alt: 'US Army', invert: false },
+    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/Defense_Information_Systems_Agency_seal.svg',
+      alt: 'DISA', invert: false },
+    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/Naval_Research_Laboratory_logo.svg',
+      alt: 'Naval Research Laboratory', invert: false },
+    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/Space_and_Missile_Systems_Center.png',
+      alt: 'Space & Missile Systems Center', invert: false },
+  ]
+  const unis = [
+    { src: '/vaxon/logos/stanford.svg', alt: 'Stanford University',  invert: false },
+    { src: '/vaxon/logos/cornell.svg',  alt: 'Cornell University',   invert: false },
+    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/University_of_Michigan_Logo.svg',
+      alt: 'University of Michigan', invert: false },
+    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/Seal_of_The_University_of_Texas_at_Austin.svg',
+      alt: 'UT Austin', invert: false },
+    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/University_of_North_Carolina_at_Chapel_Hill_seal.svg',
+      alt: 'UNC Chapel Hill', invert: false },
+    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/US_Naval_War_College_seal.svg',
+      alt: 'US Naval War College', invert: false },
+    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/Army_West_Point_Athletics_logo.svg',
+      alt: 'West Point', invert: false },
+    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/University_of_Colorado_seal.svg',
+      alt: 'CU Boulder', invert: false },
+    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/Bates_College_seal.svg',
+      alt: 'Bates College', invert: false },
+  ]
+
+  return (
+    <section style={{ padding: '5rem 2.5rem', background: '#020202', borderTop: '1px solid #0d0d0d' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+        <Fade>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem', justifyContent: 'center' }}>
+            <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, transparent, #1a1a1a)' }} />
+            <span style={{ fontSize: '0.6rem', letterSpacing: '0.28em', textTransform: 'uppercase',
+              color: '#555', whiteSpace: 'nowrap' }}>OUR TEAM HAS WORKED AT</span>
+            <div style={{ flex: 1, height: 1, background: 'linear-gradient(to left, transparent, #1a1a1a)' }} />
+          </div>
+        </Fade>
+
+        <Fade delay={100}>
+          <div style={{ marginTop: '2.5rem' }}>
+            <div style={{ fontSize: '0.55rem', letterSpacing: '0.22em', textTransform: 'uppercase',
+              color: '#444', textAlign: 'center', marginBottom: '1.5rem' }}>COMPANIES + ORGANIZATIONS</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center',
+              alignItems: 'center', gap: '1rem', rowGap: '1.5rem' }}>
+              {orgs.map(o => <LogoItem key={o.alt} {...o} />)}
+            </div>
+          </div>
+        </Fade>
+
+        <Fade delay={200}>
+          <div style={{ marginTop: '3.5rem' }}>
+            <div style={{ fontSize: '0.55rem', letterSpacing: '0.22em', textTransform: 'uppercase',
+              color: '#444', textAlign: 'center', marginBottom: '1.5rem' }}>UNIVERSITIES + RESEARCH</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center',
+              alignItems: 'center', gap: '1rem', rowGap: '1.5rem' }}>
+              {unis.map(u => <LogoItem key={u.alt} {...u} />)}
+            </div>
+          </div>
+        </Fade>
+      </div>
+    </section>
+  )
+}
+
+/* ─────────────────────────────────────────────────────── */
 /*  MAIN PAGE                                               */
 /* ─────────────────────────────────────────────────────── */
 export default function VaxonPage() {
@@ -964,10 +1073,10 @@ export default function VaxonPage() {
           justifyContent: 'center', maxWidth: '100%',
           animation: 'vx-fadeup 1s ease 1.2s both' }}>
           {[
-            { v: '<15ms', label: 'LATENCY',      d: 0   },
-            { v: '<30cm', label: 'RESOLUTION',   d: 500 },
-            { v: '250km', label: 'ALTITUDE',     d: 1000 },
-            { v: '<2hr',  label: 'REVISIT TIME', d: 1500 },
+            { v: '<15ms', label: 'LATENCY',      d: 0    },
+            { v: '<30cm', label: 'RESOLUTION',   d: 800  },
+            { v: '250km', label: 'ALTITUDE',     d: 1600 },
+            { v: '<2hr',  label: 'REVISIT TIME', d: 2400 },
           ].map(m => (
             <ClassifiedStat key={m.label} value={m.v} label={m.label} revealed={statsVisible} delay={m.d} />
           ))}
@@ -984,6 +1093,9 @@ export default function VaxonPage() {
 
       {/* ── CAPABILITY STRIP ── */}
       <CapabilityStrip />
+
+      {/* ── LOGO STRIP ── */}
+      <LogoSection />
 
       {/* ── ABOUT ── */}
       <section ref={setRef('about')} id="about" style={{ padding: '6rem 2.5rem', background: '#000' }}>
