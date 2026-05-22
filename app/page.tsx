@@ -750,7 +750,7 @@ function GlobeAnimation() {
 /* ─────────────────────────────────────────────────────── */
 /*  LOGO STRIP                                              */
 /* ─────────────────────────────────────────────────────── */
-function LogoItem({ src, alt, invert = false, blend = false }: { src: string; alt: string; invert?: boolean; blend?: boolean }) {
+function LogoItem({ src, alt, invert = false }: { src: string; alt: string; invert?: boolean }) {
   const [hovered, setHovered] = useState(false)
   return (
     <div
@@ -769,7 +769,6 @@ function LogoItem({ src, alt, invert = false, blend = false }: { src: string; al
         style={{
           maxWidth: '100%', maxHeight: '100%',
           objectFit: 'contain',
-          mixBlendMode: blend ? 'multiply' : 'normal',
           filter: hovered
             ? 'opacity(1) drop-shadow(0 0 8px rgba(255,255,255,0.2))'
             : invert
@@ -785,22 +784,23 @@ function LogoItem({ src, alt, invert = false, blend = false }: { src: string; al
 function LogoSection() {
   const orgs = [
     { src: '/vaxon/logos/nasa.svg',               alt: 'NASA',                      invert: false },
-    { src: '/vaxon/logos/lockheed.svg',            alt: 'Lockheed Martin',           invert: true  },
+    { src: '/vaxon/logos/lockheed.svg',            alt: 'Lockheed Martin',           invert: false },
     { src: '/vaxon/logos/dod.svg',                 alt: 'Department of Defense',     invert: false },
     { src: '/vaxon/logos/nro.svg',                 alt: 'NRO',                       invert: false },
     { src: '/vaxon/logos/army.svg',                alt: 'US Army',                   invert: false },
     { src: '/vaxon/logos/disa.svg',                alt: 'DISA',                      invert: false },
-    { src: '/vaxon/logos/naval-research-lab.jpg',  alt: 'Naval Research Laboratory', invert: false, blend: true },
+    { src: '/vaxon/logos/naval-research-lab.png',  alt: 'Naval Research Laboratory', invert: false },
   ]
   const unis = [
     { src: '/vaxon/logos/stanford.svg',   alt: 'Stanford University',      invert: false },
     { src: '/vaxon/logos/cornell.svg',    alt: 'Cornell University',        invert: false },
     { src: '/vaxon/logos/michigan.svg',   alt: 'University of Michigan',    invert: false },
-    { src: '/vaxon/logos/ut-austin.png',  alt: 'UT Austin',                 invert: false, blend: true },
+    { src: '/vaxon/logos/ut-austin.png',  alt: 'UT Austin',                 invert: false },
     { src: '/vaxon/logos/unc.svg',        alt: 'UNC Chapel Hill',           invert: false },
-    { src: '/vaxon/logos/west-point.svg', alt: 'West Point',                invert: false },
-    { src: '/vaxon/logos/cu-boulder.svg', alt: 'CU Boulder',                invert: true  },
-    { src: '/vaxon/logos/bates.svg',      alt: 'Bates College',             invert: true  },
+    { src: '/vaxon/logos/naval-war-college.svg', alt: 'US Naval War College',     invert: false },
+    { src: '/vaxon/logos/west-point.svg',        alt: 'West Point',               invert: false },
+    { src: '/vaxon/logos/cu-boulder.svg',        alt: 'CU Boulder',               invert: false },
+    { src: '/vaxon/logos/bates.svg',             alt: 'Bates College',            invert: false },
   ]
 
   return (
