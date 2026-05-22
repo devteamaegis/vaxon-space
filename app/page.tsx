@@ -758,9 +758,9 @@ function LogoItem({ src, alt, invert = false }: { src: string; alt: string; inve
       onMouseLeave={() => setHovered(false)}
       style={{
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        width: 120, height: 80, flexShrink: 0,
+        width: 130, height: 90, flexShrink: 0,
         transition: 'transform 0.25s ease',
-        transform: hovered ? 'scale(1.14)' : 'scale(1)',
+        transform: hovered ? 'scale(1.12)' : 'scale(1)',
       }}
     >
       <img
@@ -770,10 +770,10 @@ function LogoItem({ src, alt, invert = false }: { src: string; alt: string; inve
           maxWidth: '100%', maxHeight: '100%',
           objectFit: 'contain',
           filter: hovered
-            ? 'brightness(1) grayscale(0) opacity(1)'
+            ? 'opacity(1) drop-shadow(0 0 6px rgba(255,255,255,0.15))'
             : invert
-              ? 'brightness(0) invert(1) opacity(0.55)'
-              : 'brightness(0) invert(1) opacity(0.55)',
+              ? 'brightness(0) invert(1) opacity(0.8)'
+              : 'opacity(0.85)',
           transition: 'filter 0.3s ease',
         }}
       />
@@ -783,21 +783,13 @@ function LogoItem({ src, alt, invert = false }: { src: string; alt: string; inve
 
 function LogoSection() {
   const orgs = [
-    { src: '/vaxon/logos/nasa.svg',     alt: 'NASA',                invert: false },
-    { src: '/vaxon/logos/lockheed.svg', alt: 'Lockheed Martin',     invert: true  },
-    { src: '/vaxon/logos/dod.svg',      alt: 'Department of Defense', invert: false },
-    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/United_States_Space_Force_emblem.svg',
-      alt: 'US Space Force', invert: false },
-    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/National_Reconnaissance_Office_seal.svg',
-      alt: 'NRO', invert: false },
-    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/Seal_of_the_United_States_Department_of_the_Army.svg',
-      alt: 'US Army', invert: false },
-    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/Defense_Information_Systems_Agency_seal.svg',
-      alt: 'DISA', invert: false },
-    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/Naval_Research_Laboratory_logo.svg',
-      alt: 'Naval Research Laboratory', invert: false },
-    { src: 'https://en.wikipedia.org/wiki/Special:FilePath/Space_and_Missile_Systems_Center.png',
-      alt: 'Space & Missile Systems Center', invert: false },
+    { src: '/vaxon/logos/nasa.svg',               alt: 'NASA',                      invert: false },
+    { src: '/vaxon/logos/lockheed.svg',            alt: 'Lockheed Martin',           invert: true  },
+    { src: '/vaxon/logos/dod.svg',                 alt: 'Department of Defense',     invert: false },
+    { src: '/vaxon/logos/nro.svg',                 alt: 'NRO',                       invert: false },
+    { src: '/vaxon/logos/army.svg',                alt: 'US Army',                   invert: false },
+    { src: '/vaxon/logos/disa.svg',                alt: 'DISA',                      invert: false },
+    { src: '/vaxon/logos/naval-research-lab.jpg',  alt: 'Naval Research Laboratory', invert: false },
   ]
   const unis = [
     { src: '/vaxon/logos/stanford.svg', alt: 'Stanford University',  invert: false },
@@ -824,8 +816,8 @@ function LogoSection() {
         <Fade>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem', justifyContent: 'center' }}>
             <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, transparent, #1a1a1a)' }} />
-            <span style={{ fontSize: '0.6rem', letterSpacing: '0.28em', textTransform: 'uppercase',
-              color: '#555', whiteSpace: 'nowrap' }}>OUR TEAM HAS WORKED AT</span>
+            <span style={{ fontSize: '1.05rem', letterSpacing: '0.18em', textTransform: 'uppercase',
+              color: '#aaa', whiteSpace: 'nowrap', fontWeight: 600 }}>OUR TEAM HAS WORKED AT</span>
             <div style={{ flex: 1, height: 1, background: 'linear-gradient(to left, transparent, #1a1a1a)' }} />
           </div>
         </Fade>
