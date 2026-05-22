@@ -16,6 +16,7 @@ export default function VaxonWidget({ size = 160 }: { size?: number }) {
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -228,6 +229,13 @@ export default function VaxonWidget({ size = 160 }: { size?: number }) {
           </>
         )}
 
+        {/* Hover glow overlay */}
+        <div style={{
+          position: 'absolute', inset: 0, borderRadius: '50%', pointerEvents: 'none', zIndex: 3,
+          background: 'radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%)',
+          opacity: isHovered ? 1 : 0, transition: 'opacity 0.3s',
+        }} />
+
         {/* Orb (pointer-events off so clicks pass to the button below) */}
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
           <Suspense fallback={
@@ -247,10 +255,12 @@ export default function VaxonWidget({ size = 160 }: { size?: number }) {
         {/* Clickable layer — on top of the canvas */}
         <button
           onClick={() => setOpen(o => !o)}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
           style={{
             position: 'absolute', inset: 0, borderRadius: '50%',
             background: 'transparent', border: 'none',
-            cursor: 'pointer', padding: 0, zIndex: 2,
+            cursor: 'pointer', padding: 0, zIndex: 4,
           }}
           aria-label="Open Vaxon AI"
         />
