@@ -107,40 +107,51 @@ export default function SatelliteDiagram() {
 
       /* ── MAIN BUS BODY ── */
       const busGeo = new THREE.BoxGeometry(0.95, 0.58, 2.2)
-      const busMat = mkMat(0xc8c8c8, 0.7, 0.25)
+      // Metallic white/silver body with slight warm tint
+      const busMat = mkMat(0xdde0e5, 0.75, 0.2)
       const busMesh = new THREE.Mesh(busGeo, busMat)
       busMesh.castShadow = true
       busMesh.userData.partId = 'bus'
       sat.add(busMesh)
 
+      // Gold-tinted thermal blanket panels on sides of bus
+      const blanketMat = mkMat(0xc8a84b, 0.3, 0.6) // gold MLI (multi-layer insulation)
+      const mkBlanket = (x: number) => {
+        const bg = new THREE.BoxGeometry(0.025, 0.52, 1.9)
+        const bm = new THREE.Mesh(bg, blanketMat.clone())
+        bm.position.set(x, 0, 0)
+        bm.userData.partId = 'coating'
+        sat.add(bm)
+      }
+      mkBlanket(0.49); mkBlanket(-0.49)
+
       // Edge wireframe on bus
       const edgeGeo = new THREE.EdgesGeometry(busGeo)
-      const edgeMat = new THREE.LineBasicMaterial({ color: 0x444444, transparent: true, opacity: 0.4 })
+      const edgeMat = new THREE.LineBasicMaterial({ color: 0x888888, transparent: true, opacity: 0.3 })
       const edges = new THREE.LineSegments(edgeGeo, edgeMat)
       sat.add(edges)
 
       /* ── SOLAR PANELS ── */
       const mkPanel = (xPos: number) => {
         const panelGeo = new THREE.BoxGeometry(1.7, 0.025, 0.72)
-        const panelMat = mkMat(0x1a2a44, 0.2, 0.8)
+        // Deep blue solar cells
+        const panelMat = mkMat(0x1a3a6e, 0.1, 0.85)
 
-        // Grid lines on panel face
         const panel = new THREE.Mesh(panelGeo, panelMat)
         panel.position.set(xPos, 0, 0.15)
         panel.castShadow = true
         panel.userData.partId = 'panels'
 
-        // Cell lines
+        // Cell grid lines (lighter blue)
         const cellEdges = new THREE.EdgesGeometry(new THREE.BoxGeometry(1.7, 0.026, 0.72))
-        const cellLines = new THREE.LineSegments(cellEdges, new THREE.LineBasicMaterial({ color: 0x334488, transparent: true, opacity: 0.5 }))
+        const cellLines = new THREE.LineSegments(cellEdges, new THREE.LineBasicMaterial({ color: 0x4488cc, transparent: true, opacity: 0.6 }))
         cellLines.position.copy(panel.position)
         cellLines.userData.partId = 'panels'
         sat.add(cellLines)
 
-        // Panel frame
-        const frameGeo = new THREE.BoxGeometry(1.72, 0.04, 0.74)
-        const frameMat = mkMat(0x888888, 0.8, 0.2)
-        const frame = new THREE.Mesh(frameGeo, frameMat)
+        // Aluminum panel frame (silver)
+        const frameGeo = new THREE.BoxGeometry(1.72, 0.045, 0.74)
+        const frame = new THREE.Mesh(frameGeo, mkMat(0xcccccc, 0.85, 0.15))
         frame.position.set(xPos, 0, 0.15)
         frame.userData.partId = 'panels'
         sat.add(frame)
@@ -151,19 +162,18 @@ export default function SatelliteDiagram() {
       const panelR = mkPanel(1.38)
       sat.add(panelL, panelR)
 
-      // Panel struts
-      const strutGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.9, 8)
-      const strutMat = mkMat(0x888888, 0.7, 0.3)
+      // Panel struts (aluminum)
+      const strutGeo = new THREE.CylinderGeometry(0.022, 0.022, 0.9, 8)
+      const strutMat = mkMat(0xbbbbbb, 0.8, 0.2)
       const strutL = new THREE.Mesh(strutGeo, strutMat)
-      const strutR = new THREE.Mesh(strutGeo, strutMat)
+      const strutR = new THREE.Mesh(strutGeo, strutMat.clone())
       strutL.rotation.z = Math.PI / 2; strutL.position.set(-0.89, 0, 0.15)
       strutR.rotation.z = Math.PI / 2; strutR.position.set(0.89, 0, 0.15)
       sat.add(strutL, strutR)
 
-      /* ── INLET (front) ── */
-      // Outer funnel
+      /* ── INLET (front) — polished titanium + orange glow ── */
       const inletFunnelGeo = new THREE.CylinderGeometry(0.06, 0.28, 0.55, 20)
-      const inletMat = mkMat(0xe8e8e8, 0.9, 0.1)
+      const inletMat = mkMat(0xe0c090, 0.95, 0.05) // warm titanium
       const inletFunnel = new THREE.Mesh(inletFunnelGeo, inletMat)
       inletFunnel.rotation.x = Math.PI / 2
       inletFunnel.position.set(0, 0.02, 1.37)
@@ -171,25 +181,34 @@ export default function SatelliteDiagram() {
       inletFunnel.userData.partId = 'inlet'
       sat.add(inletFunnel)
 
-      // Inlet ring (highlight band)
-      const inletRingGeo = new THREE.TorusGeometry(0.28, 0.022, 12, 48)
-      const inletRingMat = mkMat(0xdddddd, 0.95, 0.05)
+      // Inlet ring (glowing ring)
+      const inletRingGeo = new THREE.TorusGeometry(0.28, 0.024, 12, 48)
+      const inletRingMat = mkMat(0xff8c00, 0.4, 0.1, 0xff6600, 0.5) // orange emissive
       const inletRing = new THREE.Mesh(inletRingGeo, inletRingMat)
       inletRing.position.set(0, 0.02, 1.1)
       inletRing.userData.partId = 'inlet'
       sat.add(inletRing)
 
-      // Inner tube
-      const inletTubeGeo = new THREE.CylinderGeometry(0.05, 0.05, 0.3, 12)
-      const inletTube = new THREE.Mesh(inletTubeGeo, mkMat(0x333333, 0.5, 0.7))
+      // Inner tube (dark aperture)
+      const inletTubeGeo = new THREE.CylinderGeometry(0.055, 0.055, 0.32, 12)
+      const inletTube = new THREE.Mesh(inletTubeGeo, mkMat(0x1a1a1a, 0.3, 0.9))
       inletTube.rotation.x = Math.PI / 2
       inletTube.position.set(0, 0.02, 1.28)
       inletTube.userData.partId = 'inlet'
       sat.add(inletTube)
 
-      /* ── THRUSTER (rear) ── */
+      // Second intake ring
+      const inletRing2 = new THREE.Mesh(
+        new THREE.TorusGeometry(0.16, 0.012, 8, 32),
+        mkMat(0xffa040, 0.5, 0.2, 0xff6600, 0.3)
+      )
+      inletRing2.position.set(0, 0.02, 1.32)
+      inletRing2.userData.partId = 'inlet'
+      sat.add(inletRing2)
+
+      /* ── THRUSTER (rear) — ion blue glow ── */
       const thrusterGeo = new THREE.CylinderGeometry(0.18, 0.12, 0.42, 16)
-      const thrusterMat = mkMat(0x888888, 0.85, 0.15)
+      const thrusterMat = mkMat(0x9999aa, 0.85, 0.12, 0x4488ff, 0.15) // subtle blue emissive
       const thrusterMesh = new THREE.Mesh(thrusterGeo, thrusterMat)
       thrusterMesh.rotation.x = Math.PI / 2
       thrusterMesh.position.set(0, 0, -1.23)
@@ -197,26 +216,59 @@ export default function SatelliteDiagram() {
       thrusterMesh.userData.partId = 'thruster'
       sat.add(thrusterMesh)
 
-      // Thruster nozzle
-      const nozzleGeo = new THREE.CylinderGeometry(0.12, 0.2, 0.18, 16)
-      const nozzle = new THREE.Mesh(nozzleGeo, mkMat(0x555555, 0.9, 0.2))
+      // Nozzle (glowing ion blue)
+      const nozzleGeo = new THREE.CylinderGeometry(0.12, 0.21, 0.18, 16)
+      const nozzleMat = mkMat(0x6699cc, 0.6, 0.3, 0x2255ff, 0.4)
+      const nozzle = new THREE.Mesh(nozzleGeo, nozzleMat)
       nozzle.rotation.x = Math.PI / 2
       nozzle.position.set(0, 0, -1.56)
       nozzle.userData.partId = 'thruster'
       sat.add(nozzle)
 
-      /* ── SENSOR / PAYLOAD HOUSING ── */
+      // Thruster grill rings
+      for (let ti = 0; ti < 3; ti++) {
+        const tRing = new THREE.Mesh(
+          new THREE.TorusGeometry(0.14 - ti * 0.025, 0.008, 6, 24),
+          mkMat(0x7799dd, 0.5, 0.4, 0x3366ff, 0.2)
+        )
+        tRing.position.set(0, 0, -1.47 + ti * 0.04)
+        tRing.userData.partId = 'thruster'
+        sat.add(tRing)
+      }
+
+      /* ── SENSOR / PAYLOAD (ISR camera) ── */
       const sensorGeo = new THREE.BoxGeometry(0.32, 0.22, 0.45)
-      const sensor = new THREE.Mesh(sensorGeo, mkMat(0x999999, 0.5, 0.5))
+      const sensor = new THREE.Mesh(sensorGeo, mkMat(0x3a3a3a, 0.4, 0.6))
       sensor.position.set(0, 0.4, 0.25)
       sensor.userData.partId = 'bus'
       sat.add(sensor)
 
-      const lensGeo = new THREE.CylinderGeometry(0.08, 0.09, 0.15, 16)
-      const lens = new THREE.Mesh(lensGeo, mkMat(0x111122, 0.2, 0.9))
-      lens.position.set(0, 0.52, 0.25)
+      // Camera aperture (dark glass)
+      const lensGeo = new THREE.CylinderGeometry(0.09, 0.1, 0.18, 16)
+      const lens = new THREE.Mesh(lensGeo, mkMat(0x0a0a14, 0.1, 0.05))
+      lens.position.set(0, 0.53, 0.25)
       lens.userData.partId = 'bus'
       sat.add(lens)
+
+      // Camera lens ring
+      const lensRing = new THREE.Mesh(
+        new THREE.TorusGeometry(0.1, 0.01, 8, 24),
+        mkMat(0x999999, 0.9, 0.1)
+      )
+      lensRing.position.set(0, 0.53, 0.25)
+      lensRing.userData.partId = 'bus'
+      sat.add(lensRing)
+
+      // Attitude control thrusters (small corner nozzles)
+      const actGeo = new THREE.CylinderGeometry(0.03, 0.04, 0.1, 8)
+      const actMat = mkMat(0xaaaaaa, 0.8, 0.2)
+      ;[[-0.45, 0.32, 1.0], [0.45, 0.32, 1.0], [-0.45, 0.32, -1.0], [0.45, 0.32, -1.0]].forEach(([x, y, z]) => {
+        const act = new THREE.Mesh(actGeo, actMat.clone())
+        act.position.set(x, y, z)
+        act.rotation.x = Math.PI / 2
+        act.userData.partId = 'thruster'
+        sat.add(act)
+      })
 
       /* ── ALL MESHES FOR RAYCASTING ── */
       const allMeshes: any[] = []

@@ -10,7 +10,7 @@ const INITIAL_MESSAGE: Message = {
   content: 'VAXON AI ONLINE. I am Vaxon, your intelligence briefing system for Vaxon Space. Ask me about our VLEO satellite technology, ABEP propulsion, defense capabilities, or how to partner with us.',
 }
 
-export default function VaxonWidget() {
+export default function VaxonWidget({ size = 160 }: { size?: number }) {
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE])
   const [input, setInput] = useState('')
@@ -209,7 +209,7 @@ export default function VaxonWidget() {
       )}
 
       {/* Orb button */}
-      <div style={{ position: 'relative', width: 200, height: 200 }}>
+      <div style={{ position: 'relative', width: size, height: size }}>
         {/* Pulse rings when active */}
         {open && (
           <>
@@ -232,7 +232,7 @@ export default function VaxonWidget() {
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
           <Suspense fallback={
             <div style={{
-              width: 200, height: 200, borderRadius: '50%',
+              width: size, height: size, borderRadius: '50%',
               border: '1px solid #222', display: 'flex',
               alignItems: 'center', justifyContent: 'center',
               background: '#050505',
@@ -240,7 +240,7 @@ export default function VaxonWidget() {
               <div style={{ fontSize: '0.6rem', letterSpacing: '0.2em', color: '#333' }}>LOADING...</div>
             </div>
           }>
-            <VaxonOrb isActive={open} isSpeaking={isSpeaking} size={200} />
+            <VaxonOrb isActive={open} isSpeaking={isSpeaking} size={size} />
           </Suspense>
         </div>
 

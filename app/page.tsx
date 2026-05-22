@@ -321,7 +321,7 @@ function ExpandCard({ title, summary, full, image }: {
       {image && (
         <div style={{ width: '100%', height: 220, overflow: 'hidden', position: 'relative' }}>
           <img src={image} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover',
-            filter: 'grayscale(100%) brightness(0.7)',
+            filter: 'brightness(0.75)',
             transform: open ? 'scale(1.04)' : 'scale(1)', transition: 'transform 0.5s ease' }} />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 40%, #000)' }} />
         </div>
@@ -577,7 +577,7 @@ export default function VaxonPage() {
         {/* Hero image with parallax */}
         <img src="/vaxon/hero.png" alt="" style={{
           position: 'absolute', inset: 0, width: '100%', height: '120%',
-          objectFit: 'cover', filter: 'grayscale(100%) brightness(0.3)', zIndex: 0,
+          objectFit: 'cover', filter: 'brightness(0.38)', zIndex: 0,
           transform: `translateY(${heroParallax}px)`,
           top: '-10%',
         }} />
@@ -751,7 +751,7 @@ export default function VaxonPage() {
             <Fade up={false}>
               <div style={{ position: 'relative', border: '1px solid #1a1a1a' }}>
                 <img src="/vaxon/orbit.png" alt="Orbit diagram" style={{ width: '100%', display: 'block',
-                  filter: 'grayscale(100%) brightness(0.8)' }} />
+                  filter: 'brightness(0.85)' }} />
                 <div style={{ position: 'absolute', inset: 0,
                   background: 'linear-gradient(to right, transparent 60%, #040404)' }} />
               </div>
@@ -864,7 +864,7 @@ export default function VaxonPage() {
               </div>
               <div style={{ background: '#080808', aspectRatio: '16/9' }}>
                 <iframe
-                  style={{ width: '100%', height: '100%', border: 'none', filter: 'grayscale(30%)' }}
+                  style={{ width: '100%', height: '100%', border: 'none' }}
                   src="https://www.youtube.com/embed/videoseries?list=PLrFEm0hs_nHfT9SeSKxCVcSS2H1U5Y9Ws"
                   title="Vaxon Space CEO on VLEO"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -878,7 +878,7 @@ export default function VaxonPage() {
             <div style={{ marginBottom: '3rem', border: '1px solid #1a1a1a', overflow: 'hidden' }}>
               <img src="https://img1.wsimg.com/isteam/ip/b6d77e34-40ce-4ade-86a8-3e868f7bc80c/UNIVITY.png/:/rs=w:928,cg:true"
                 alt="UNIVITY" style={{ width: '100%', maxHeight: 200, objectFit: 'cover', display: 'block',
-                  filter: 'grayscale(100%) brightness(0.6)' }} />
+                  filter: 'brightness(0.7)' }} />
             </div>
           </Fade>
 
@@ -923,7 +923,7 @@ export default function VaxonPage() {
                 ))}
                 <div style={{ marginTop: '2rem', border: '1px solid #1a1a1a', overflow: 'hidden' }}>
                   <img src="/vaxon/earth.png" alt="VLEO" style={{ width: '100%', display: 'block',
-                    filter: 'grayscale(100%) brightness(0.5)', maxHeight: 200, objectFit: 'cover' }} />
+                    filter: 'brightness(0.6)', maxHeight: 200, objectFit: 'cover' }} />
                 </div>
               </div>
             </Fade>
@@ -953,7 +953,7 @@ export default function VaxonPage() {
 
       {/* ── VAXON AI ── */}
       <Suspense fallback={null}>
-        <VaxonWidget />
+        <VaxonWidget size={130} />
       </Suspense>
 
       {/* ── LOGIN MODAL ── */}
@@ -998,9 +998,9 @@ function TechStep({ n, title, sub, body }: { n: string; title: string; sub: stri
 /* ─────────────────────────────────────────────────────── */
 /*  TEAM CARD                                               */
 /* ─────────────────────────────────────────────────────── */
-type TeamMember = { name: string; role: string; image?: string; creds: string[] }
+type TeamMember = { name: string; role: string; image?: string; creds: string[]; linkedin?: string }
 
-function TeamCard({ name, role, image, creds }: TeamMember) {
+function TeamCard({ name, role, image, creds, linkedin }: TeamMember) {
   const [open, setOpen] = useState(false)
   const initials = name.split(' ').filter(w => w.length > 1).slice(-2).map(w => w[0]).join('')
   return (
@@ -1013,14 +1013,14 @@ function TeamCard({ name, role, image, creds }: TeamMember) {
     >
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.25rem' }}>
         <div style={{
-          width: 96, height: 96, borderRadius: '50%',
-          border: open ? '2px solid #c8102e' : '2px solid #1a1a1a',
+          width: 100, height: 100, borderRadius: '50%',
+          border: open ? '2px solid #c8102e' : '2px solid #2a2a2a',
           overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          background: '#080808', flexShrink: 0, transition: 'border-color 0.3s',
+          background: '#111', flexShrink: 0, transition: 'border-color 0.3s',
+          boxShadow: open ? '0 0 16px rgba(200,16,46,0.25)' : 'none',
         }}>
           {image ? (
-            <img src={image} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover',
-              filter: 'grayscale(100%)' }} />
+            <img src={image} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           ) : (
             <span style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.1rem',
               fontWeight: 700, color: '#444' }}>{initials}</span>
@@ -1034,7 +1034,7 @@ function TeamCard({ name, role, image, creds }: TeamMember) {
         <div style={{ fontSize: '0.68rem', color: '#555', letterSpacing: '0.08em',
           textTransform: 'uppercase', marginBottom: '0.75rem' }}>{role}</div>
 
-        <div style={{ maxHeight: open ? 300 : 0, overflow: 'hidden', transition: 'max-height 0.5s ease' }}>
+        <div style={{ maxHeight: open ? 360 : 0, overflow: 'hidden', transition: 'max-height 0.5s ease' }}>
           <div style={{ borderTop: '1px solid #0d0d0d', paddingTop: '1rem', marginTop: '0.5rem' }}>
             {creds.map(c => (
               <div key={c} style={{ fontSize: '0.78rem', color: '#666', lineHeight: 1.7,
@@ -1042,6 +1042,27 @@ function TeamCard({ name, role, image, creds }: TeamMember) {
                 <span style={{ color: '#c8102e', flexShrink: 0 }}>-</span>{c}
               </div>
             ))}
+            {linkedin && (
+              <a
+                href={linkedin.startsWith('http') ? linkedin : `https://${linkedin}`}
+                target="_blank" rel="noopener noreferrer"
+                onClick={e => e.stopPropagation()}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+                  marginTop: '0.75rem', fontSize: '0.6rem', letterSpacing: '0.14em',
+                  textTransform: 'uppercase', textDecoration: 'none',
+                  color: '#555', border: '1px solid #1a1a1a', padding: '0.3rem 0.6rem',
+                  transition: 'color 0.2s, border-color 0.2s',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#c8102e'; (e.currentTarget as HTMLAnchorElement).style.borderColor = '#c8102e' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#555'; (e.currentTarget as HTMLAnchorElement).style.borderColor = '#1a1a1a' }}
+              >
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+                LINKEDIN
+              </a>
+            )}
           </div>
         </div>
         <div style={{ fontSize: '0.58rem', letterSpacing: '0.14em', color: open ? '#c8102e' : '#333',
@@ -1143,6 +1164,7 @@ const CORE_TEAM: TeamMember[] = [
     name: 'Dr. Steven P. Shepard',
     role: 'Co-Founder + CEO',
     image: '/vaxon/team-shepard.png',
+    linkedin: 'https://www.linkedin.com/in/stevenpshepard/',
     creds: [
       '21+ years in satellite design and advanced systems',
       'Sr. R+D Program Manager, Lockheed Martin — $30M budget',
@@ -1154,6 +1176,7 @@ const CORE_TEAM: TeamMember[] = [
     name: 'Dr. Charles Lipscomb',
     role: 'Co-Founder + Chief Scientist',
     image: '/vaxon/team-lipscomb.png',
+    linkedin: 'https://www.linkedin.com/in/charleslipscomb88',
     creds: [
       'PhD Aerospace Engineering, University of Colorado Boulder',
       'Satellite Systems Engineer on COSMO',
@@ -1164,7 +1187,8 @@ const CORE_TEAM: TeamMember[] = [
   {
     name: 'Brandon Williamson',
     role: 'Head of Engineering',
-    image: '/vaxon/team-williamson.png',
+    image: '/vaxon/team-williamson.jpg',
+    linkedin: 'https://www.linkedin.com/in/brandon-williamson-83b0191ba/',
     creds: [
       'Aerospace engineering and plasma research background',
       'University of Michigan aerospace training',
@@ -1174,7 +1198,8 @@ const CORE_TEAM: TeamMember[] = [
   {
     name: 'Lt. Col. Anand Shah',
     role: 'Sr. Advisor, Defense',
-    image: '/vaxon/team-shah.png',
+    image: '/vaxon/team-shah.jpg',
+    linkedin: 'https://www.linkedin.com/in/ananddineshshah/',
     creds: [
       'Retired USAF Program Manager',
       'Deputy PM for SATCOM and AEHF',
@@ -1184,6 +1209,8 @@ const CORE_TEAM: TeamMember[] = [
   {
     name: 'Dr. Iain Boyd',
     role: 'Sr. Advisor, VLEO',
+    image: '/vaxon/team-boyd.png',
+    linkedin: 'https://www.linkedin.com/in/iain-boyd/',
     creds: [
       '30+ years in hypersonics and space plasma physics',
       'Professor, Aerospace Engineering Sciences, CU Boulder',
@@ -1197,6 +1224,8 @@ const ADVISORS: TeamMember[] = [
   {
     name: 'Lt. Gen. Joseph Anderson',
     role: 'Advisory Board',
+    image: '/vaxon/team-anderson.png',
+    linkedin: 'https://www.linkedin.com/in/joe--anderson',
     creds: [
       'Retired Deputy Chief of Staff, US Army',
       'President + CEO, Rafael Systems Global Sustainment',
@@ -1206,6 +1235,7 @@ const ADVISORS: TeamMember[] = [
   {
     name: 'Dr. Nelson Pedreiro',
     role: 'Advisory Board',
+    image: '/vaxon/team-pedreiro.jpg',
     creds: [
       '28 years at Lockheed Martin',
       'Former VP + Chief Engineer of Space',
