@@ -3,6 +3,28 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Vaxon Space',
   description: 'Real-time missile defense and connectivity today. Vaxon Space operates air-breathing satellites at 180-250 km altitude.',
+  openGraph: {
+    title: 'Vaxon Space — Air-Breathing Satellite Technology',
+    description: 'Real-time missile defense and connectivity. Vaxon Space operates satellites at 180-250 km altitude — 10× closer than traditional LEO.',
+    url: 'https://vaxon-space.vercel.app',
+    siteName: 'Vaxon Space',
+    images: [
+      {
+        url: 'https://vaxon-space.vercel.app/vaxon/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Vaxon Space — Air-Breathing Satellite Technology',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Vaxon Space — Air-Breathing Satellite Technology',
+    description: 'Real-time missile defense and connectivity. Satellites at 180-250 km altitude — 10× closer than traditional LEO.',
+    images: ['https://vaxon-space.vercel.app/vaxon/og-image.png'],
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
