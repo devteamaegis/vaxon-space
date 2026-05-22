@@ -142,30 +142,43 @@ function TypeWriter({ text, delay = 0 }: { text: string; delay?: number }) {
 /* ─────────────────────────────────────────────────────── */
 /*  CLASSIFIED STAT (redaction reveal)                     */
 /* ─────────────────────────────────────────────────────── */
-function ClassifiedStat({ value, label, revealed }: { value: string; label: string; revealed: boolean }) {
-  const [show, setShow] = useState(false)
+function ClassifiedStat({ value, label, revealed, delay = 0 }: { value: string; label: string; revealed: boolean; delay?: number }) {
+  const [displayed, setDisplayed] = useState('')
+  const [started, setStarted] = useState(false)
 
   useEffect(() => {
     if (revealed) {
-      const t = setTimeout(() => setShow(true), Math.random() * 400 + 200)
+      const t = setTimeout(() => setStarted(true), delay)
       return () => clearTimeout(t)
     }
-  }, [revealed])
+  }, [revealed, delay])
+
+  useEffect(() => {
+    if (!started) return
+    let i = 0
+    const id = setInterval(() => {
+      setDisplayed(value.slice(0, i + 1))
+      i++
+      if (i >= value.length) clearInterval(id)
+    }, 90)
+    return () => clearInterval(id)
+  }, [started, value])
+
+  const done = displayed.length >= value.length
 
   return (
     <div style={{ textAlign: 'center' }}>
       <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2.2rem,3.5vw,3.2rem)',
-        fontWeight: 900, color: show ? '#c8102e' : '#fff',
-        transition: 'color 0.4s ease', position: 'relative', display: 'inline-block' }}>
-        {show ? value : (
-          <span style={{
-            background: '#fff', color: 'transparent', borderRadius: 2, padding: '0 4px',
-            userSelect: 'none', filter: 'blur(0px)',
-          }}>{value}</span>
+        fontWeight: 900, color: '#fff', position: 'relative', display: 'inline-block',
+        minWidth: '4ch' }}>
+        {displayed || <span style={{ opacity: 0 }}>{value}</span>}
+        {started && !done && (
+          <span style={{ animation: 'vx-blink 0.8s ease infinite', opacity: 1, color: '#c8102e' }}>|</span>
         )}
       </div>
-      <div style={{ fontSize: '0.62rem', letterSpacing: '0.16em', color: show ? '#c8102e' : '#555',
-        textTransform: 'uppercase', marginTop: '0.3rem', transition: 'color 0.4s ease' }}>{label}</div>
+      <div style={{ fontSize: '0.62rem', letterSpacing: '0.16em', color: '#fff',
+        textTransform: 'uppercase', marginTop: '0.3rem', opacity: done ? 1 : 0.4,
+        transition: 'opacity 0.4s ease' }}>{label}</div>
     </div>
   )
 }
@@ -843,20 +856,20 @@ export default function VaxonPage() {
               background: 'none', border: 'none', cursor: 'pointer', padding: 0,
               fontSize: '0.7rem', letterSpacing: '0.14em', fontWeight: 500,
               textTransform: 'uppercase', fontFamily: "'Inter', sans-serif",
-              color: active === s ? '#c8102e' : '#555',
+              color: active === s ? '#c8102e' : '#bbb',
               borderBottom: active === s ? '1px solid #c8102e' : '1px solid transparent',
               paddingBottom: 2, transition: 'color 0.2s, border-color 0.2s',
             }}>{s}</button>
           ))}
           <button onClick={() => setShowLogin(true)} style={{
-            background: 'none', border: '1px solid #222', cursor: 'pointer',
-            padding: '0.3rem 0.9rem', color: '#555',
+            background: 'none', border: '1px solid #444', cursor: 'pointer',
+            padding: '0.3rem 0.9rem', color: '#bbb',
             fontSize: '0.65rem', letterSpacing: '0.14em', fontWeight: 600,
             textTransform: 'uppercase', fontFamily: "'Inter', sans-serif",
             transition: 'border-color 0.2s, color 0.2s',
           }}
             onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#c8102e'; (e.currentTarget as HTMLButtonElement).style.color = '#c8102e' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#222'; (e.currentTarget as HTMLButtonElement).style.color = '#555' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#444'; (e.currentTarget as HTMLButtonElement).style.color = '#bbb' }}
           >LOGIN</button>
         </div>
       </nav>
@@ -951,12 +964,12 @@ export default function VaxonPage() {
           justifyContent: 'center', maxWidth: '100%',
           animation: 'vx-fadeup 1s ease 1.2s both' }}>
           {[
-            { v: '<15ms', label: 'LATENCY' },
-            { v: '<30cm', label: 'RESOLUTION' },
-            { v: '250km', label: 'ALTITUDE' },
-            { v: '<2hr',  label: 'REVISIT TIME' },
+            { v: '<15ms', label: 'LATENCY',      d: 0   },
+            { v: '<30cm', label: 'RESOLUTION',   d: 500 },
+            { v: '250km', label: 'ALTITUDE',     d: 1000 },
+            { v: '<2hr',  label: 'REVISIT TIME', d: 1500 },
           ].map(m => (
-            <ClassifiedStat key={m.label} value={m.v} label={m.label} revealed={statsVisible} />
+            <ClassifiedStat key={m.label} value={m.v} label={m.label} revealed={statsVisible} delay={m.d} />
           ))}
         </div>
 
@@ -1124,8 +1137,8 @@ export default function VaxonPage() {
           <div style={{ fontSize: '0.78rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#888',
             marginBottom: '1.5rem', borderBottom: '1px solid #0d0d0d', paddingBottom: '0.75rem',
             marginTop: '2rem', textAlign: 'center' }}>ADVISORY BOARD</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.5rem' }}>
-            {ADVISORS.map((m, i) => <Fade key={m.name} delay={i * 80}><TeamCard {...m} /></Fade>)}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', justifyContent: 'center' }}>
+            {ADVISORS.map((m, i) => <Fade key={m.name} delay={i * 80}><div style={{ width: 240 }}><TeamCard {...m} /></div></Fade>)}
           </div>
         </div>
       </section>
@@ -1249,7 +1262,7 @@ export default function VaxonPage() {
                 Schedule a 30-minute intelligence briefing with our leadership team. Defense contractors, government officials, and investors may request a classified capabilities review.
               </p>
               <iframe
-                src="https://calendly.com/contact-vaxonspace/30min?hide_event_type_details=1&hide_gdpr_banner=1&background_color=000000&text_color=ffffff&primary_color=c8102e"
+                src="https://calendly.com/stevenpshepard-vaxonspace/30-1?hide_event_type_details=1&hide_gdpr_banner=1&background_color=000000&text_color=ffffff&primary_color=c8102e"
                 style={{ width: '100%', height: 700, border: 'none', background: '#000' }}
                 title="Book a Meeting"
               />
@@ -1259,23 +1272,35 @@ export default function VaxonPage() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer style={{ borderTop: '1px solid #0d0d0d', padding: '2rem 2.5rem',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        flexWrap: 'wrap', gap: '1rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <img src="/vaxon/logo.png" alt="Vaxon Space" style={{ height: 26, width: 'auto', opacity: 0.5 }} />
+      <footer style={{ borderTop: '1px solid #0d0d0d', padding: '2.5rem 2.5rem',
+        flexWrap: 'wrap', gap: '1.5rem', background: '#000' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
+          flexWrap: 'wrap', gap: '1.5rem', marginBottom: '1.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <img src="/vaxon/logo.png" alt="Vaxon Space" style={{ height: 26, width: 'auto', opacity: 0.5 }} />
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: '0.58rem', letterSpacing: '0.18em', color: '#555',
+              textTransform: 'uppercase', marginBottom: '0.4rem' }}>MAILING ADDRESS</div>
+            <div style={{ fontSize: '0.8rem', color: '#888', lineHeight: 1.7, fontFamily: "'Inter',sans-serif" }}>
+              Vaxon Space, Inc.<br />
+              2066 N Capitol Ave #5009<br />
+              San Jose, CA 95132
+            </div>
+          </div>
+          <button onClick={() => setShowLogin(true)} style={{
+            background: 'none', border: '1px solid #1a1a1a', color: '#555', cursor: 'pointer',
+            padding: '0.35rem 0.9rem', fontSize: '0.62rem', letterSpacing: '0.14em',
+            textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", transition: 'all 0.2s',
+          }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#c8102e'; (e.currentTarget as HTMLButtonElement).style.color = '#c8102e' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#1a1a1a'; (e.currentTarget as HTMLButtonElement).style.color = '#555' }}
+          >PORTAL LOGIN</button>
         </div>
-        <div style={{ fontSize: '0.62rem', letterSpacing: '0.12em', color: '#333', textTransform: 'uppercase' }}>
+        <div style={{ borderTop: '1px solid #0d0d0d', paddingTop: '1.25rem',
+          fontSize: '0.62rem', letterSpacing: '0.12em', color: '#333', textTransform: 'uppercase' }}>
           Copyright 2026 Vaxon Space. All Rights Reserved.
         </div>
-        <button onClick={() => setShowLogin(true)} style={{
-          background: 'none', border: '1px solid #1a1a1a', color: '#333', cursor: 'pointer',
-          padding: '0.35rem 0.9rem', fontSize: '0.62rem', letterSpacing: '0.14em',
-          textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", transition: 'all 0.2s',
-        }}
-          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#c8102e'; (e.currentTarget as HTMLButtonElement).style.color = '#c8102e' }}
-          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#1a1a1a'; (e.currentTarget as HTMLButtonElement).style.color = '#333' }}
-        >PORTAL LOGIN</button>
       </footer>
 
       {/* ── VAXON AI ── */}

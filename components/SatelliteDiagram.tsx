@@ -458,11 +458,11 @@ export default function SatelliteDiagram() {
               onMouseLeave={() => setHovered(null)}
               style={{
                 background: selected === id ? '#c8102e' : hovered === id ? '#1a1a1a' : '#0a0a0a',
-                border: `1px solid ${selected === id ? '#c8102e' : '#222'}`,
-                color: selected === id ? '#fff' : '#888',
-                padding: '0.35rem 0.85rem', cursor: 'pointer',
-                fontSize: '0.58rem', letterSpacing: '0.16em', textTransform: 'uppercase',
-                fontFamily: "'Inter',sans-serif", transition: 'all 0.2s',
+                border: `1px solid ${selected === id ? '#c8102e' : '#333'}`,
+                color: selected === id ? '#fff' : '#ccc',
+                padding: '0.55rem 1.2rem', cursor: 'pointer',
+                fontSize: '0.72rem', letterSpacing: '0.14em', textTransform: 'uppercase',
+                fontFamily: "'Inter',sans-serif", transition: 'all 0.2s', fontWeight: 600,
               }}
             >
               {part.tag.split(' / ')[0]} {part.tag.split(' / ')[1]}
