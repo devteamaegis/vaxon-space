@@ -809,7 +809,7 @@ function LogoSection() {
         <Fade>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1rem', justifyContent: 'center' }}>
             <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, transparent, #2a2a2a)' }} />
-            <span style={{ fontSize: '1.75rem', letterSpacing: '0.12em', textTransform: 'uppercase',
+            <span className="vx-worked-title" style={{ fontSize: '1.75rem', letterSpacing: '0.12em', textTransform: 'uppercase',
               color: '#ccc', whiteSpace: 'nowrap', fontWeight: 700 }}>OUR TEAM HAS WORKED AT</span>
             <div style={{ flex: 1, height: 1, background: 'linear-gradient(to left, transparent, #2a2a2a)' }} />
           </div>
@@ -844,7 +844,19 @@ function LogoSection() {
 /* ─────────────────────────────────────────────────────── */
 /*  MAIN PAGE                                               */
 /* ─────────────────────────────────────────────────────── */
+function useIsMobile() {
+  const [mobile, setMobile] = useState(false)
+  useEffect(() => {
+    const check = () => setMobile(window.innerWidth < 768)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
+  return mobile
+}
+
 export default function VaxonPage() {
+  const isMobile = useIsMobile()
   const [active, setActive] = useState<Section>('home')
   const [showLogin, setShowLogin] = useState(false)
   const [navScrolled, setNavScrolled] = useState(false)
@@ -852,6 +864,7 @@ export default function VaxonPage() {
   const [heroParallax, setHeroParallax] = useState(0)
   const [statsVisible, setStatsVisible] = useState(false)
   const [compVisible, setCompVisible] = useState(false)
+  const [scrollPct, setScrollPct] = useState(0)
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({})
   const statsRef = useRef<HTMLDivElement>(null)
   const compRef = useRef<HTMLDivElement>(null)
@@ -868,6 +881,8 @@ export default function VaxonPage() {
       const sy = window.scrollY
       setNavScrolled(sy > 40)
       setHeroParallax(sy * 0.25)
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+      setScrollPct(maxScroll > 0 ? (sy / maxScroll) * 100 : 0)
 
       const sections: Section[] = ['home', 'about', 'technology', 'team', 'news', 'contact']
       for (const id of [...sections].reverse()) {
@@ -921,7 +936,26 @@ export default function VaxonPage() {
         @keyframes vx-spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
         @keyframes vx-redact { 0%{filter:blur(0px);background:#fff} 100%{filter:blur(0px);background:transparent} }
         @keyframes vx-strip-scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+        @keyframes vx-skeleton { 0%{opacity:0.3} 50%{opacity:0.7} 100%{opacity:0.3} }
+        @media (max-width: 767px) {
+          .vx-stats-grid { grid-template-columns: repeat(2,1fr) !important; }
+          .vx-two-col { grid-template-columns: 1fr !important; gap: 2rem !important; }
+          .vx-nav-links { display: none !important; }
+          .vx-hero-pad { padding: 0 1.25rem 4rem !important; }
+          .vx-section-pad { padding: 4rem 1.25rem !important; }
+          .vx-news-video { grid-template-columns: 1fr !important; }
+          .vx-news-video > div:first-child { border-right: none !important; border-bottom: 1px solid #1a1a1a; }
+          .vx-logo-item { width: 120px !important; height: 85px !important; }
+          .vx-worked-title { font-size: 1.1rem !important; }
+        }
       `}</style>
+
+      {/* ── SCROLL PROGRESS ── */}
+      <div style={{
+        position: 'fixed', top: 0, left: 0, zIndex: 9999, height: 2,
+        width: `${scrollPct}%`, background: '#c8102e',
+        transition: 'width 0.1s linear', pointerEvents: 'none',
+      }} />
 
       {/* ── LOADING ── */}
       <LoadingScreen done={loaded} />
@@ -944,7 +978,7 @@ export default function VaxonPage() {
           <img src="/vaxon/logo.png" alt="Vaxon Space" style={{ height: 34, width: 'auto' }} />
         </button>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' }}>
+        <div className="vx-nav-links" style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' }}>
           {NAV.filter(s => s !== 'home').map(s => (
             <button key={s} onClick={() => scrollTo(s)} style={{
               background: 'none', border: 'none', cursor: 'pointer', padding: 0,
@@ -969,7 +1003,7 @@ export default function VaxonPage() {
       </nav>
 
       {/* ── HOME ── */}
-      <section ref={setRef('home')} id="home" style={{
+      <section ref={setRef('home')} id="home" className="vx-hero-pad" style={{
         position: 'relative', height: '100vh',
         display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
         padding: '0 2.5rem 5rem', overflow: 'hidden',
@@ -1048,6 +1082,16 @@ export default function VaxonPage() {
               onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.borderColor = '#c8102e'}
               onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.borderColor = '#333'}
             >VIEW TECHNOLOGY</button>
+            <a href="https://calendly.com/vaxonspace" target="_blank" rel="noopener noreferrer" style={{
+              background: '#c8102e', color: '#fff', border: 'none', cursor: 'pointer',
+              padding: '0.75rem 2rem', fontSize: '0.72rem', fontWeight: 600,
+              letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif",
+              textDecoration: 'none', display: 'inline-flex', alignItems: 'center',
+              transition: 'background 0.2s',
+            }}
+              onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.background = '#a00c26'}
+              onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.background = '#c8102e'}
+            >REQUEST A BRIEFING</a>
           </div>
         </div>
 
@@ -1056,7 +1100,7 @@ export default function VaxonPage() {
           display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '2px',
           marginTop: '4rem', borderTop: '1px solid #1a1a1a', paddingTop: '2rem',
           justifyContent: 'center', maxWidth: '100%',
-          animation: 'vx-fadeup 1s ease 1.2s both' }}>
+          animation: 'vx-fadeup 1s ease 1.2s both' }} className="vx-stats-grid">
           {[
             { v: '<15ms', label: 'LATENCY',      d: 0    },
             { v: '<30cm', label: 'RESOLUTION',   d: 800  },
@@ -1154,7 +1198,7 @@ export default function VaxonPage() {
             </p>
           </Fade>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start', marginBottom: '4rem' }}>
+          <div className="vx-two-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start', marginBottom: '4rem' }}>
             <Fade up={false}>
               <div style={{ position: 'relative', border: '1px solid #1a1a1a' }}>
                 <GlobeAnimation />
@@ -1189,10 +1233,34 @@ export default function VaxonPage() {
                 <span style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#555' }}>ABEP SATELLITE DESIGN</span>
               </div>
               <Suspense fallback={
-                <div style={{ height: 520, border: '1px solid #111', display: 'flex',
-                  alignItems: 'center', justifyContent: 'center', background: '#020202' }}>
-                  <div style={{ fontSize: '0.6rem', letterSpacing: '0.22em', color: '#333',
-                    textTransform: 'uppercase' }}>LOADING 3D MODEL...</div>
+                <div style={{ height: 520, border: '1px solid #111', background: '#020202',
+                  overflow: 'hidden', position: 'relative' }}>
+                  {/* Skeleton shimmer blocks */}
+                  {[
+                    { top: '20%', left: '30%', w: '40%', h: 12 },
+                    { top: '35%', left: '20%', w: '60%', h: 8 },
+                    { top: '48%', left: '25%', w: '50%', h: 8 },
+                    { top: '61%', left: '35%', w: '30%', h: 8 },
+                  ].map((b, i) => (
+                    <div key={i} style={{
+                      position: 'absolute', top: b.top, left: b.left,
+                      width: b.w, height: b.h, background: '#1a1a1a', borderRadius: 2,
+                      animation: `vx-skeleton 1.6s ease-in-out ${i * 0.2}s infinite`,
+                    }} />
+                  ))}
+                  {/* Center ring */}
+                  <div style={{
+                    position: 'absolute', top: '50%', left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 80, height: 80, borderRadius: '50%',
+                    border: '1px solid #1a1a1a',
+                    animation: 'vx-skeleton 1.6s ease-in-out infinite',
+                  }} />
+                  <div style={{
+                    position: 'absolute', bottom: '1.5rem', left: 0, right: 0,
+                    textAlign: 'center', fontSize: '0.58rem', letterSpacing: '0.22em',
+                    color: '#2a2a2a', textTransform: 'uppercase',
+                  }}>INITIALIZING 3D MODEL</div>
                 </div>
               }>
                 <SatelliteDiagram />
@@ -1253,7 +1321,7 @@ export default function VaxonPage() {
           </Fade>
 
           <Fade>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0',
+            <div className="vx-news-video" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0',
               border: '1px solid #1a1a1a', marginBottom: '3rem' }}>
               <div style={{ padding: '2.5rem', borderRight: '1px solid #1a1a1a' }}>
                 <div style={{ fontSize: '0.6rem', letterSpacing: '0.16em', textTransform: 'uppercase',
@@ -1322,7 +1390,7 @@ export default function VaxonPage() {
             </p>
           </Fade>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem' }}>
+          <div className="vx-two-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem' }}>
             <Fade up={false}><ContactForm /></Fade>
             <Fade delay={150}>
               <div>
