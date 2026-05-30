@@ -13,12 +13,15 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@sanity/image-url": "^1.0.2",
     "@types/node": "^25.9.1",
     "@types/react": "^19.2.15",
     "@types/three": "^0.184.1",
     "next": "^16.2.6",
+    "next-sanity": "^9.8.21",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
+    "sanity": "^3.88.1",
     "three": "^0.184.0",
     "typescript": "^6.0.3"
   }
