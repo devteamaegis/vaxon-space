@@ -865,9 +865,26 @@ export default function VaxonPage() {
   const [statsVisible, setStatsVisible] = useState(false)
   const [compVisible, setCompVisible] = useState(false)
   const [scrollPct, setScrollPct] = useState(0)
+  const [cmsNews, setCmsNews] = useState<NewsItem[] | null>(null)
+  const [cmsCoreTeam, setCmsCoreTeam] = useState<TeamMember[] | null>(null)
+  const [cmsAdvisors, setCmsAdvisors] = useState<TeamMember[] | null>(null)
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({})
   const statsRef = useRef<HTMLDivElement>(null)
   const compRef = useRef<HTMLDivElement>(null)
+
+  /* CMS data fetch */
+  useEffect(() => {
+    fetch('/api/cms')
+      .then(r => r.json())
+      .then(data => {
+        if (data.news?.length) setCmsNews(data.news)
+        if (data.team?.length) {
+          setCmsCoreTeam(data.team.filter((m: TeamMember & { isAdvisor?: boolean }) => !m.isAdvisor))
+          setCmsAdvisors(data.team.filter((m: TeamMember & { isAdvisor?: boolean }) => m.isAdvisor))
+        }
+      })
+      .catch(() => {}) // fall back to hardcoded data silently
+  }, [])
 
   /* Loading screen */
   useEffect(() => {
@@ -1296,14 +1313,14 @@ export default function VaxonPage() {
             marginBottom: '1.5rem', borderBottom: '1px solid #0d0d0d', paddingBottom: '0.75rem',
             textAlign: 'center' }}>CORE LEADERSHIP</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
-            {CORE_TEAM.map((m, i) => <Fade key={m.name} delay={i * 80}><TeamCard {...m} /></Fade>)}
+            {(cmsCoreTeam ?? CORE_TEAM).map((m, i) => <Fade key={m.name} delay={i * 80}><TeamCard {...m} /></Fade>)}
           </div>
 
           <div style={{ fontSize: '0.78rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#888',
             marginBottom: '1.5rem', borderBottom: '1px solid #0d0d0d', paddingBottom: '0.75rem',
             marginTop: '2rem', textAlign: 'center' }}>ADVISORY BOARD</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', justifyContent: 'center' }}>
-            {ADVISORS.map((m, i) => <Fade key={m.name} delay={i * 80}><div style={{ width: 240 }}><TeamCard {...m} /></div></Fade>)}
+            {(cmsAdvisors ?? ADVISORS).map((m, i) => <Fade key={m.name} delay={i * 80}><div style={{ width: 240 }}><TeamCard {...m} /></div></Fade>)}
           </div>
         </div>
       </section>
@@ -1369,7 +1386,7 @@ export default function VaxonPage() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
             gap: '1px', background: '#0d0d0d' }}>
-            {NEWS.map((n, i) => <Fade key={n.title} delay={i * 60}><NewsCard {...n} /></Fade>)}
+            {(cmsNews ?? NEWS).map((n, i) => <Fade key={n.title} delay={i * 60}><NewsCard {...n} /></Fade>)}
           </div>
         </div>
       </section>
