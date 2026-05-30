@@ -1,1790 +1,931 @@
 'use client'
-import { useEffect, useRef, useState, useCallback, lazy, Suspense } from 'react'
+import { useEffect, useRef, useState, lazy, Suspense } from 'react'
 
-const VaxonWidget      = lazy(() => import('@/components/VaxonWidget'))
 const SatelliteDiagram = lazy(() => import('@/components/SatelliteDiagram'))
+const EarthGlobe       = lazy(() => import('@/components/EarthGlobe'))
+const VaxonWidget      = lazy(() => import('@/components/VaxonWidget'))
 
-/* ─────────────────────────────────────────────────────── */
-/*  TYPES                                                   */
-/* ─────────────────────────────────────────────────────── */
-type Section = 'home' | 'about' | 'technology' | 'team' | 'news' | 'contact'
+/* ─────────────────────────────────────────────────────────────
+   TYPES
+───────────────────────────────────────────────────────────────*/
+type Tab = 'home' | 'about' | 'technology' | 'team' | 'news' | 'contact'
 
-/* ─────────────────────────────────────────────────────── */
-/*  LOADING SCREEN                                          */
-/* ─────────────────────────────────────────────────────── */
-function LoadingScreen({ done }: { done: boolean }) {
-  return (
-    <div style={{
-      position: 'fixed', inset: 0, zIndex: 9999, background: '#000',
-      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-      opacity: done ? 0 : 1, pointerEvents: done ? 'none' : 'all',
-      transition: 'opacity 0.6s ease 0.1s',
-    }}>
-      <img src="/vaxon/logo.png" alt="Vaxon Space" style={{
-        height: 56, width: 'auto', opacity: done ? 0 : 1,
-        animation: 'vx-logofade 1.2s ease both',
-      }} />
-      <div style={{
-        marginTop: '2rem', display: 'flex', gap: '0.4rem',
-        animation: 'vx-logofade 1.2s ease 0.3s both',
-      }}>
-        {[0,1,2,3,4].map(i => (
-          <div key={i} style={{
-            width: 3, height: 3, borderRadius: '50%', background: '#333',
-            animation: `vx-load-dot 1.2s ease-in-out ${i * 0.15}s infinite`,
-          }} />
-        ))}
-      </div>
-      <div style={{
-        marginTop: '1.25rem', fontSize: '0.6rem', letterSpacing: '0.28em',
-        textTransform: 'uppercase', color: '#333',
-        animation: 'vx-logofade 1.2s ease 0.5s both',
-      }}>
-        VAXON SPACE / INITIALIZING
-      </div>
-    </div>
-  )
+type TeamMember = {
+  name: string; role: string; image?: string
+  creds: string[]; linkedin?: string; bio?: string; isAdvisor?: boolean
+}
+type NewsItem = {
+  date: string; title: string; body: string
+  source: string; link?: string; image?: string
 }
 
-/* ─────────────────────────────────────────────────────── */
-/*  STARFIELD CANVAS                                        */
-/* ─────────────────────────────────────────────────────── */
-function StarField() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+/* ─────────────────────────────────────────────────────────────
+   DATA
+───────────────────────────────────────────────────────────────*/
+const TABS: { id: Tab; label: string }[] = [
+  { id: 'home', label: 'HOME' },
+  { id: 'about', label: 'ABOUT' },
+  { id: 'technology', label: 'TECHNOLOGY' },
+  { id: 'team', label: 'TEAM' },
+  { id: 'news', label: 'NEWS' },
+  { id: 'contact', label: 'CONTACT' },
+]
 
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    const resize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-    }
-    resize()
-    window.addEventListener('resize', resize)
-
-    const STARS = 200
-    const stars = Array.from({ length: STARS }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: Math.random() * 0.8 + 0.2,
-      speed: Math.random() * 0.15 + 0.03,
-      opacity: Math.random() * 0.7 + 0.1,
-      twinkle: Math.random() * Math.PI * 2,
-    }))
-
-    let animId: number
-
-    const draw = () => {
-      animId = requestAnimationFrame(draw)
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-      for (const s of stars) {
-        s.twinkle += s.speed * 0.05
-        const op = s.opacity * (0.6 + 0.4 * Math.sin(s.twinkle))
-        ctx.beginPath()
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(255,255,255,${op})`
-        ctx.fill()
-      }
-    }
-    draw()
-
-    return () => {
-      cancelAnimationFrame(animId)
-      window.removeEventListener('resize', resize)
-    }
-  }, [])
-
-  return (
-    <canvas ref={canvasRef} style={{
-      position: 'absolute', inset: 0, width: '100%', height: '100%',
-      zIndex: 1, pointerEvents: 'none',
-    }} />
-  )
-}
-
-/* ─────────────────────────────────────────────────────── */
-/*  TYPEWRITER                                              */
-/* ─────────────────────────────────────────────────────── */
-function TypeWriter({ text, delay = 0 }: { text: string; delay?: number }) {
-  const [displayed, setDisplayed] = useState('')
-  const [started, setStarted] = useState(false)
-
-  useEffect(() => {
-    const t = setTimeout(() => setStarted(true), delay)
-    return () => clearTimeout(t)
-  }, [delay])
-
-  useEffect(() => {
-    if (!started) return
-    let i = 0
-    const id = setInterval(() => {
-      setDisplayed(text.slice(0, i + 1))
-      i++
-      if (i >= text.length) clearInterval(id)
-    }, 65)
-    return () => clearInterval(id)
-  }, [started, text])
-
-  return (
-    <>
-      {displayed}
-      {displayed.length < text.length && (
-        <span style={{ animation: 'vx-blink 0.8s ease infinite', opacity: 1 }}>|</span>
-      )}
-    </>
-  )
-}
-
-/* ─────────────────────────────────────────────────────── */
-/*  CLASSIFIED STAT (redaction reveal)                     */
-/* ─────────────────────────────────────────────────────── */
-function ClassifiedStat({ value, label, revealed, delay = 0 }: { value: string; label: string; revealed: boolean; delay?: number }) {
-  const [displayed, setDisplayed] = useState('')
-  const [started, setStarted] = useState(false)
-
-  useEffect(() => {
-    if (revealed) {
-      const t = setTimeout(() => setStarted(true), delay)
-      return () => clearTimeout(t)
-    }
-  }, [revealed, delay])
-
-  useEffect(() => {
-    if (!started) return
-    let i = 0
-    const id = setInterval(() => {
-      setDisplayed(value.slice(0, i + 1))
-      i++
-      if (i >= value.length) clearInterval(id)
-    }, 150)
-    return () => clearInterval(id)
-  }, [started, value])
-
-  const done = displayed.length >= value.length
-
-  return (
-    <div style={{ textAlign: 'center' }}>
-      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2.2rem,3.5vw,3.2rem)',
-        fontWeight: 900, color: '#fff', position: 'relative', display: 'inline-block',
-        minWidth: '4ch' }}>
-        {displayed || <span style={{ opacity: 0 }}>{value}</span>}
-        {started && !done && (
-          <span style={{ animation: 'vx-blink 0.8s ease infinite', opacity: 1, color: '#c8102e' }}>|</span>
-        )}
-      </div>
-      <div style={{ fontSize: '0.62rem', letterSpacing: '0.16em', color: '#fff',
-        textTransform: 'uppercase', marginTop: '0.3rem', opacity: done ? 1 : 0.4,
-        transition: 'opacity 0.4s ease' }}>{label}</div>
-    </div>
-  )
-}
-
-/* ─────────────────────────────────────────────────────── */
-/*  VLEO COMPARISON BAR                                    */
-/* ─────────────────────────────────────────────────────── */
-function VLEOComparison({ visible }: { visible: boolean }) {
-  const bars = [
-    { label: 'Image Resolution', vleo: 95, leo: 55, vUnit: '<30cm', lUnit: '~50cm' },
-    { label: 'Signal Latency',   vleo: 92, leo: 40, vUnit: '<15ms', lUnit: '~40ms' },
-    { label: 'Revisit Time',     vleo: 90, leo: 50, vUnit: '<2hr',  lUnit: '~4hr'  },
-    { label: 'Debris Risk',      vleo: 88, leo: 30, vUnit: 'Weeks', lUnit: 'Years'  },
-  ]
-
-  return (
-    <div style={{ marginTop: '3rem' }}>
-      <div style={{ fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase',
-        color: '#444', marginBottom: '1.5rem', display: 'flex', gap: '2rem', alignItems: 'center' }}>
-        <span>VLEO vs LEO PERFORMANCE</span>
-        <span style={{ display: 'flex', gap: '1rem' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <span style={{ width: 8, height: 8, background: '#c8102e', display: 'inline-block' }} />VLEO
-          </span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <span style={{ width: 8, height: 8, background: '#333', display: 'inline-block' }} />LEO
-          </span>
-        </span>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-        {bars.map((b, i) => (
-          <div key={b.label}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
-              <span style={{ fontSize: '0.72rem', color: '#ddd', letterSpacing: '0.06em', fontFamily: "'Inter', sans-serif" }}>{b.label}</span>
-              <span style={{ fontSize: '0.68rem', color: '#c8102e', letterSpacing: '0.08em' }}>{b.vUnit}</span>
-            </div>
-            <div style={{ position: 'relative', height: 6, background: '#111', borderRadius: 0 }}>
-              {/* LEO bar */}
-              <div style={{
-                position: 'absolute', left: 0, top: 0, height: '100%',
-                background: '#2a2a2a',
-                width: visible ? `${b.leo}%` : '0%',
-                transition: `width 1.2s cubic-bezier(0.4,0,0.2,1) ${i * 0.15}s`,
-              }} />
-              {/* VLEO bar */}
-              <div style={{
-                position: 'absolute', left: 0, top: 0, height: '100%',
-                background: 'linear-gradient(90deg, #8b0000, #c8102e)',
-                width: visible ? `${b.vleo}%` : '0%',
-                transition: `width 1.2s cubic-bezier(0.4,0,0.2,1) ${i * 0.15 + 0.2}s`,
-                boxShadow: '0 0 8px rgba(200,16,46,0.4)',
-              }} />
-            </div>
-            <div style={{ fontSize: '0.6rem', color: '#555', marginTop: '0.25rem', textAlign: 'right', fontFamily: "'Inter', sans-serif" }}>
-              LEO: {b.lUnit}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-/* ─────────────────────────────────────────────────────── */
-/*  LEFT SECTION INDICATOR                                  */
-/* ─────────────────────────────────────────────────────── */
-function SectionIndicator({ active }: { active: Section }) {
-  const SECTIONS: Section[] = ['home', 'about', 'technology', 'team', 'news', 'contact']
-  return (
-    <div style={{
-      position: 'fixed', left: '1.5rem', top: '50%', transform: 'translateY(-50%)',
-      zIndex: 150, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem',
-    }}>
-      <div style={{ width: 1, height: 40, background: 'linear-gradient(to bottom, transparent, #333)' }} />
-      {SECTIONS.map(s => (
-        <div key={s} title={s.toUpperCase()} style={{
-          width: active === s ? 6 : 4,
-          height: active === s ? 6 : 4,
-          borderRadius: '50%',
-          background: active === s ? '#c8102e' : '#333',
-          boxShadow: active === s ? '0 0 8px #c8102e' : 'none',
-          transition: 'all 0.3s ease',
-          cursor: 'default',
-        }} />
-      ))}
-      <div style={{ width: 1, height: 40, background: 'linear-gradient(to bottom, #333, transparent)' }} />
-    </div>
-  )
-}
-
-/* ─────────────────────────────────────────────────────── */
-/*  SCROLL REVEAL                                           */
-/* ─────────────────────────────────────────────────────── */
-function useReveal(threshold = 0.12) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [vis, setVis] = useState(false)
-  useEffect(() => {
-    const el = ref.current; if (!el) return
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVis(true) }, { threshold })
-    obs.observe(el); return () => obs.disconnect()
-  }, [threshold])
-  return { ref, vis }
-}
-
-function Fade({ children, delay = 0, up = true, fromRight = false }: {
-  children: React.ReactNode; delay?: number; up?: boolean; fromRight?: boolean
-}) {
-  const { ref, vis } = useReveal()
-  return (
-    <div ref={ref} style={{
-      opacity: vis ? 1 : 0,
-      transform: vis ? 'none' : (fromRight ? 'translateX(40px)' : up ? 'translateY(24px)' : 'translateX(-20px)'),
-      transition: `opacity 0.75s ease ${delay}ms, transform 0.75s ease ${delay}ms`,
-    }}>{children}</div>
-  )
-}
-
-/* ─────────────────────────────────────────────────────── */
-/*  COUNTER                                                 */
-/* ─────────────────────────────────────────────────────── */
-function Counter({ to, suffix = '', prefix = '' }: { to: number; suffix?: string; prefix?: string }) {
-  const [n, setN] = useState(0)
-  const { ref, vis } = useReveal()
-  useEffect(() => {
-    if (!vis) return
-    let start: number
-    const raf = (ts: number) => {
-      if (!start) start = ts
-      const p = Math.min((ts - start) / 1600, 1)
-      setN(Math.round((1 - Math.pow(1 - p, 3)) * to))
-      if (p < 1) requestAnimationFrame(raf)
-    }
-    requestAnimationFrame(raf)
-  }, [vis, to])
-  return <span ref={ref}>{prefix}{n}{suffix}</span>
-}
-
-/* ─────────────────────────────────────────────────────── */
-/*  EXPANDABLE CARD                                         */
-/* ─────────────────────────────────────────────────────── */
-function ExpandCard({ title, summary, full, image }: {
-  title: string; summary: string; full: string; image?: string
-}) {
-  const [open, setOpen] = useState(false)
-  return (
-    <div
-      onClick={() => setOpen(o => !o)}
-      style={{ cursor: 'pointer', border: '1px solid #1a1a1a', background: open ? '#0a0a0a' : '#000',
-        transition: 'background 0.3s, border-color 0.2s' }}
-      onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.borderColor = '#c8102e'}
-      onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.borderColor = '#1a1a1a'}
-    >
-      {image && (
-        <div style={{ width: '100%', height: 220, overflow: 'hidden', position: 'relative' }}>
-          <img src={image} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover',
-            filter: 'brightness(0.75)',
-            transform: open ? 'scale(1.04)' : 'scale(1)', transition: 'transform 0.5s ease' }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 40%, #000)' }} />
-        </div>
-      )}
-      <div style={{ padding: '1.75rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
-          <h3 style={{ fontFamily: "'Bitter', Georgia, serif", fontSize: '1.15rem', fontWeight: 700,
-            letterSpacing: '0.04em', textTransform: 'uppercase', color: '#fff', margin: 0 }}>{title}</h3>
-          <span style={{ fontSize: '1.25rem', color: open ? '#c8102e' : '#555', flexShrink: 0, marginTop: 2,
-            transform: open ? 'rotate(45deg)' : 'none', transition: 'transform 0.3s, color 0.3s', display: 'inline-block' }}>+</span>
-        </div>
-        <p style={{ color: '#ddd', fontSize: '0.95rem', marginTop: '0.75rem', lineHeight: 1.7, fontFamily: "'Inter', sans-serif" }}>{summary}</p>
-        <div style={{ maxHeight: open ? 400 : 0, overflow: 'hidden', transition: 'max-height 0.5s ease' }}>
-          <p style={{ color: '#e0e0e0', fontSize: '0.95rem', marginTop: '1rem', lineHeight: 1.8,
-            borderTop: '1px solid #222', paddingTop: '1rem', fontFamily: "'Inter', sans-serif" }}>{full}</p>
-        </div>
-        <div style={{ marginTop: '0.75rem', fontSize: '0.7rem', letterSpacing: '0.12em',
-          color: open ? '#c8102e' : '#555', textTransform: 'uppercase', transition: 'color 0.3s' }}>
-          {open ? 'COLLAPSE' : 'READ MORE'}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/* ─────────────────────────────────────────────────────── */
-/*  LOGIN MODAL                                             */
-/* ─────────────────────────────────────────────────────── */
-function LoginModal({ onClose }: { onClose: () => void }) {
-  return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 300, background: 'rgba(0,0,0,0.95)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-      onClick={onClose}>
-      <div style={{ background: '#050505', border: '1px solid #1a1a1a', padding: '2.5rem',
-        width: 360, maxWidth: '90vw' }}
-        onClick={e => e.stopPropagation()}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <span style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1rem', fontWeight: 700,
-            letterSpacing: '0.12em', textTransform: 'uppercase' }}>SECURE ACCESS</span>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#555',
-            cursor: 'pointer', fontSize: '1.1rem', lineHeight: 1 }}>x</button>
-        </div>
-        <div style={{ borderBottom: '1px solid #1a1a1a', marginBottom: '2rem', paddingBottom: '1rem' }}>
-          <div style={{ fontSize: '0.6rem', letterSpacing: '0.16em', color: '#c8102e',
-            textTransform: 'uppercase', marginBottom: '0.5rem' }}>STATUS: RESTRICTED</div>
-          <div style={{ color: '#ddd', fontSize: '0.88rem', fontFamily: "'Inter', sans-serif" }}>
-            Portal under development. Access credentials will be issued upon authorization.
-          </div>
-        </div>
-        {['EMAIL / CLEARANCE ID', 'PASSPHRASE'].map(ph => (
-          <div key={ph} style={{ marginBottom: '1rem' }}>
-            <div style={{ fontSize: '0.62rem', letterSpacing: '0.12em', color: '#444',
-              marginBottom: '0.35rem', textTransform: 'uppercase' }}>{ph}</div>
-            <input disabled type={ph.includes('PASS') ? 'password' : 'email'} placeholder="---"
-              style={{ width: '100%', background: '#0a0a0a', border: '1px solid #1a1a1a', color: '#444',
-                padding: '0.6rem 0.75rem', fontSize: '0.85rem', fontFamily: 'inherit',
-                boxSizing: 'border-box' }} />
-          </div>
-        ))}
-        <button disabled style={{ width: '100%', padding: '0.75rem', marginTop: '0.5rem',
-          background: '#0d0d0d', border: '1px solid #c8102e22', color: '#c8102e44',
-          fontFamily: "'Bitter',Georgia,serif", fontSize: '0.75rem', fontWeight: 700,
-          letterSpacing: '0.15em', textTransform: 'uppercase', cursor: 'not-allowed' }}>
-          ACCESS RESTRICTED
-        </button>
-      </div>
-    </div>
-  )
-}
-
-/* ─────────────────────────────────────────────────────── */
-/*  CAPABILITY STRIP — auto-scroll + click modal           */
-/* ─────────────────────────────────────────────────────── */
-type CapCard = { tag: string; title: string; sub: string; body: string }
-
-function CapabilityStrip() {
-  const [selectedCap, setSelectedCap] = useState<CapCard | null>(null)
-
-  const cards: CapCard[] = [
-    {
-      tag: 'ISR',
-      title: 'Persistent Surveillance',
-      sub: '24/7 sub-30cm imaging coverage',
-      body: 'Vaxon satellites operating in VLEO deliver sub-30cm resolution imagery with revisit times under two hours. This persistent coverage enables continuous battlefield awareness, infrastructure monitoring, and disaster response that legacy satellites simply cannot match.',
-    },
-    {
-      tag: 'DEFENSE',
-      title: 'Missile Defense',
-      sub: 'Golden Dome ready, <15ms guidance',
-      body: 'Our VLEO constellation provides precise navigation data for hypersonic and intercept missiles with latency under 15ms. The shorter signal path from 200km altitude is critical for Golden Dome-class missile defense systems requiring near-instantaneous guidance corrections.',
-    },
-    {
-      tag: 'COMMS',
-      title: 'High-Speed Connectivity',
-      sub: '5x lower latency than LEO',
-      body: 'Operating five times closer to Earth than conventional LEO satellites, Vaxon delivers latency improvements that transform real-time communications. Financial trading, remote surgery, directed energy systems, and military C2 networks all benefit from this dramatic reduction.',
-    },
-    {
-      tag: 'VLEO',
-      title: 'Self-Cleaning Orbit',
-      sub: 'Debris-free in weeks, not decades',
-      body: "Natural atmospheric drag at VLEO altitudes clears debris within weeks rather than the decades required at LEO. This self-cleaning mechanism dramatically reduces collision risk and ensures the long-term sustainability of Vaxon's operational constellation.",
-    },
-    {
-      tag: 'ABEP',
-      title: 'No Propellant Limits',
-      sub: 'Atmosphere as infinite fuel source',
-      body: "Vaxon's patented Air-Breathing Electric Propulsion system collects atmospheric molecules and uses them as propellant, eliminating the traditional constraint of finite fuel tanks. Satellites can operate indefinitely in VLEO, turning atmospheric drag from a mission-ending enemy into a renewable resource.",
-    },
-    {
-      tag: 'AI',
-      title: 'AI-Enabled Sensing',
-      sub: 'Edge compute for on-orbit processing',
-      body: 'Onboard AI processors perform real-time analysis of sensor data before downlink, dramatically reducing bandwidth requirements while accelerating decision timelines. Target detection, change analysis, and threat classification happen in orbit, not in a ground data center.',
-    },
-  ]
-
-  return (
-    <>
-      <div style={{ borderTop: '1px solid #111', borderBottom: '1px solid #111', overflow: 'hidden',
-        background: '#030303' }}>
-        <div style={{ display: 'flex', animation: 'vx-strip-scroll 35s linear infinite' }}>
-          {[...cards, ...cards].map((c, i) => (
-            <div key={i} onClick={() => setSelectedCap(c)} style={{
-              flexShrink: 0, width: 240, padding: '2rem 1.75rem',
-              borderRight: '1px solid #111', cursor: 'pointer',
-              transition: 'background 0.2s',
-            }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLDivElement).style.background = '#0a0a0a'
-                const tag = e.currentTarget.querySelector('.cap-tag') as HTMLElement
-                if (tag) tag.style.color = '#c8102e'
-              }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLDivElement).style.background = 'transparent'
-                const tag = e.currentTarget.querySelector('.cap-tag') as HTMLElement
-                if (tag) tag.style.color = '#444'
-              }}
-            >
-              <div className="cap-tag" style={{ fontSize: '0.58rem', letterSpacing: '0.2em',
-                color: '#444', textTransform: 'uppercase', marginBottom: '0.6rem',
-                transition: 'color 0.2s' }}>{c.tag}</div>
-              <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', fontWeight: 700,
-                marginBottom: '0.4rem', color: '#fff' }}>{c.title}</div>
-              <div style={{ fontSize: '0.84rem', color: '#ddd', lineHeight: 1.5, fontFamily: "'Inter', sans-serif" }}>{c.sub}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Modal */}
-      {selectedCap && (
-        <div
-          onClick={() => setSelectedCap(null)}
-          style={{ position: 'fixed', inset: 0, zIndex: 400, background: 'rgba(0,0,0,0.88)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            backdropFilter: 'blur(12px)' }}
-        >
-          <div
-            onClick={e => e.stopPropagation()}
-            style={{ background: '#060606', border: '1px solid #222', padding: '3rem',
-              width: 540, maxWidth: '90vw', animation: 'vx-fadeup 0.35s ease both',
-              position: 'relative' }}
-          >
-            <button
-              onClick={() => setSelectedCap(null)}
-              style={{ position: 'absolute', top: '1.25rem', right: '1.25rem',
-                background: 'none', border: 'none', color: '#555', cursor: 'pointer',
-                fontSize: '1.2rem', lineHeight: 1 }}
-            >×</button>
-            <div style={{ fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase',
-              color: '#c8102e', marginBottom: '0.75rem' }}>{selectedCap.tag}</div>
-            <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.75rem', fontWeight: 700,
-              color: '#fff', margin: '0 0 0.5rem', lineHeight: 1.2 }}>{selectedCap.title}</h2>
-            <div style={{ fontSize: '0.8rem', color: '#c8102e', letterSpacing: '0.08em',
-              marginBottom: '1.5rem', fontFamily: "'Inter', sans-serif" }}>{selectedCap.sub}</div>
-            <p style={{ color: '#ddd', fontSize: '0.95rem', lineHeight: 1.8,
-              fontFamily: "'Inter', sans-serif", margin: 0 }}>{selectedCap.body}</p>
-          </div>
-        </div>
-      )}
-    </>
-  )
-}
-
-/* ─────────────────────────────────────────────────────── */
-/*  GLOBE ANIMATION (2D canvas)                            */
-/* ─────────────────────────────────────────────────────── */
-function GlobeAnimation() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    const W = 600
-    const H = 420
-    canvas.width = W
-    canvas.height = H
-
-    const cx = W * 0.42
-    const cy = H * 0.5
-    const R = 140
-    const vleoR = R + 28
-    const leoR = R + 65
-    const sunX = W - 90
-    const sunY = 75
-
-    let angle = 0
-    let animId: number
-
-    // Trail history
-    const trail: { x: number; y: number }[] = []
-
-    const draw = () => {
-      animId = requestAnimationFrame(draw)
-      ctx.clearRect(0, 0, W, H)
-
-      // ── Sun-to-Earth light beam ──
-      const beamGrad = ctx.createLinearGradient(sunX, sunY, cx, cy)
-      beamGrad.addColorStop(0, 'rgba(255,240,100,0.12)')
-      beamGrad.addColorStop(1, 'rgba(255,240,100,0)')
-      ctx.beginPath()
-      ctx.moveTo(sunX, sunY)
-      ctx.lineTo(cx, cy)
-      ctx.strokeStyle = beamGrad
-      ctx.lineWidth = 18
-      ctx.stroke()
-
-      // ── Earth base ──
-      ctx.beginPath()
-      ctx.arc(cx, cy, R, 0, Math.PI * 2)
-      ctx.fillStyle = '#0a1a2e'
-      ctx.fill()
-
-      // ── Continent blobs ──
-      const continents = [
-        { dx: -55, dy: -40, rx: 32, ry: 22, rot: 0.3 },
-        { dx: 20, dy: -50, rx: 28, ry: 18, rot: -0.2 },
-        { dx: -20, dy: 20, rx: 40, ry: 26, rot: 0.5 },
-        { dx: 55, dy: 10, rx: 22, ry: 30, rot: -0.4 },
-        { dx: -60, dy: 50, rx: 18, ry: 12, rot: 0.1 },
-      ]
-      ctx.save()
-      ctx.beginPath()
-      ctx.arc(cx, cy, R - 1, 0, Math.PI * 2)
-      ctx.clip()
-      for (const c of continents) {
-        ctx.save()
-        ctx.translate(cx + c.dx, cy + c.dy)
-        ctx.rotate(c.rot)
-        ctx.beginPath()
-        ctx.ellipse(0, 0, c.rx, c.ry, 0, 0, Math.PI * 2)
-        ctx.fillStyle = '#1a5a1a'
-        ctx.fill()
-        ctx.restore()
-      }
-      ctx.restore()
-
-      // ── Night-side shadow ──
-      const sunDir = Math.atan2(sunY - cy, sunX - cx)
-      const shadowGrad = ctx.createRadialGradient(
-        cx - Math.cos(sunDir) * R * 0.4, cy - Math.sin(sunDir) * R * 0.4, R * 0.1,
-        cx - Math.cos(sunDir) * R * 0.1, cy - Math.sin(sunDir) * R * 0.1, R
-      )
-      shadowGrad.addColorStop(0, 'rgba(0,0,0,0)')
-      shadowGrad.addColorStop(0.5, 'rgba(0,0,20,0.4)')
-      shadowGrad.addColorStop(1, 'rgba(0,0,20,0.85)')
-      ctx.beginPath()
-      ctx.arc(cx, cy, R, 0, Math.PI * 2)
-      ctx.fillStyle = shadowGrad
-      ctx.fill()
-
-      // ── Light-side highlight ──
-      const litGrad = ctx.createRadialGradient(
-        cx + Math.cos(sunDir) * R * 0.3, cy + Math.sin(sunDir) * R * 0.3, 0,
-        cx + Math.cos(sunDir) * R * 0.3, cy + Math.sin(sunDir) * R * 0.3, R * 0.8
-      )
-      litGrad.addColorStop(0, 'rgba(100,180,255,0.08)')
-      litGrad.addColorStop(1, 'rgba(100,180,255,0)')
-      ctx.beginPath()
-      ctx.arc(cx, cy, R, 0, Math.PI * 2)
-      ctx.fillStyle = litGrad
-      ctx.fill()
-
-      // ── Atmosphere ring ──
-      const atmosGrad = ctx.createRadialGradient(cx, cy, R - 2, cx, cy, R + 22)
-      atmosGrad.addColorStop(0, 'rgba(80,160,255,0.18)')
-      atmosGrad.addColorStop(0.5, 'rgba(80,160,255,0.07)')
-      atmosGrad.addColorStop(1, 'rgba(80,160,255,0)')
-      ctx.beginPath()
-      ctx.arc(cx, cy, R + 22, 0, Math.PI * 2)
-      ctx.fillStyle = atmosGrad
-      ctx.fill()
-
-      // ── Earth outline ──
-      ctx.beginPath()
-      ctx.arc(cx, cy, R, 0, Math.PI * 2)
-      ctx.strokeStyle = 'rgba(80,160,255,0.35)'
-      ctx.lineWidth = 1.5
-      ctx.stroke()
-
-      // ── LEO orbit (dashed) ──
-      ctx.save()
-      ctx.setLineDash([6, 8])
-      ctx.beginPath()
-      ctx.ellipse(cx, cy, leoR, leoR * 0.38, 0, 0, Math.PI * 2)
-      ctx.strokeStyle = 'rgba(100,100,100,0.25)'
-      ctx.lineWidth = 1
-      ctx.stroke()
-      ctx.setLineDash([])
-      ctx.restore()
-      // LEO label
-      const leoLabelX = cx + leoR * Math.cos(-0.3)
-      const leoLabelY = cy + leoR * 0.38 * Math.sin(-0.3) - 10
-      ctx.fillStyle = 'rgba(120,120,120,0.7)'
-      ctx.font = '10px Inter, sans-serif'
-      ctx.fillText('LEO 400km', leoLabelX, leoLabelY)
-
-      // ── VLEO orbit (solid red) ──
-      ctx.beginPath()
-      ctx.ellipse(cx, cy, vleoR, vleoR * 0.38, 0, 0, Math.PI * 2)
-      ctx.strokeStyle = 'rgba(200,16,46,0.4)'
-      ctx.lineWidth = 1.5
-      ctx.stroke()
-      // VLEO label
-      const vleoLabelX = cx + vleoR * Math.cos(0.4)
-      const vleoLabelY = cy + vleoR * 0.38 * Math.sin(0.4) - 8
-      ctx.fillStyle = 'rgba(200,16,46,0.9)'
-      ctx.font = '10px Inter, sans-serif'
-      ctx.fillText('VLEO 200km', vleoLabelX, vleoLabelY)
-
-      // ── Satellite position ──
-      const satX = cx + Math.cos(angle) * vleoR
-      const satY = cy + Math.sin(angle) * vleoR * 0.38
-      angle += 0.008
-
-      // Update trail
-      trail.push({ x: satX, y: satY })
-      if (trail.length > 8) trail.shift()
-
-      // Ion exhaust trail
-      for (let ti = 0; ti < trail.length; ti++) {
-        const alpha = (ti / trail.length) * 0.5
-        ctx.beginPath()
-        ctx.arc(trail[ti].x, trail[ti].y, 2.5 - ti * 0.25, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(100,200,255,${alpha})`
-        ctx.fill()
-      }
-
-      // Satellite glow
-      const glowGrad = ctx.createRadialGradient(satX, satY, 0, satX, satY, 18)
-      glowGrad.addColorStop(0, 'rgba(100,220,255,0.35)')
-      glowGrad.addColorStop(1, 'rgba(100,220,255,0)')
-      ctx.beginPath()
-      ctx.arc(satX, satY, 18, 0, Math.PI * 2)
-      ctx.fillStyle = glowGrad
-      ctx.fill()
-
-      // Satellite body
-      ctx.fillStyle = '#aab'
-      ctx.fillRect(satX - 4, satY - 6, 8, 12)
-
-      // Solar panels
-      ctx.fillStyle = '#2244aa'
-      ctx.fillRect(satX - 12, satY - 2, 7, 4)
-      ctx.fillRect(satX + 5, satY - 2, 7, 4)
-
-      // ── Sun ──
-      // Sun rays
-      for (let i = 0; i < 8; i++) {
-        const rayAngle = (i / 8) * Math.PI * 2
-        ctx.beginPath()
-        ctx.moveTo(sunX + Math.cos(rayAngle) * 14, sunY + Math.sin(rayAngle) * 14)
-        ctx.lineTo(sunX + Math.cos(rayAngle) * 22, sunY + Math.sin(rayAngle) * 22)
-        ctx.strokeStyle = 'rgba(255,220,80,0.6)'
-        ctx.lineWidth = 1.5
-        ctx.stroke()
-      }
-      // Sun body
-      const sunGrad = ctx.createRadialGradient(sunX - 3, sunY - 3, 2, sunX, sunY, 14)
-      sunGrad.addColorStop(0, '#fff8c0')
-      sunGrad.addColorStop(0.5, '#ffcc00')
-      sunGrad.addColorStop(1, '#ff8800')
-      ctx.beginPath()
-      ctx.arc(sunX, sunY, 14, 0, Math.PI * 2)
-      ctx.fillStyle = sunGrad
-      ctx.fill()
-      // Sun outer glow
-      const sunGlow = ctx.createRadialGradient(sunX, sunY, 10, sunX, sunY, 30)
-      sunGlow.addColorStop(0, 'rgba(255,200,0,0.15)')
-      sunGlow.addColorStop(1, 'rgba(255,200,0,0)')
-      ctx.beginPath()
-      ctx.arc(sunX, sunY, 30, 0, Math.PI * 2)
-      ctx.fillStyle = sunGlow
-      ctx.fill()
-    }
-
-    draw()
-    return () => cancelAnimationFrame(animId)
-  }, [])
-
-  return (
-    <canvas
-      ref={canvasRef}
-      style={{ width: '100%', height: 'auto', display: 'block' }}
-    />
-  )
-}
-
-/* ─────────────────────────────────────────────────────── */
-/*  LOGO STRIP                                              */
-/* ─────────────────────────────────────────────────────── */
-function LogoItem({ src, alt, invert = false }: { src: string; alt: string; invert?: boolean }) {
-  const [hovered, setHovered] = useState(false)
-  return (
-    <div
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        width: 180, height: 130, flexShrink: 0,
-        transition: 'transform 0.25s ease',
-        transform: hovered ? 'scale(1.1)' : 'scale(1)',
-      }}
-    >
-      <img
-        src={src}
-        alt={alt}
-        style={{
-          maxWidth: '100%', maxHeight: '100%',
-          objectFit: 'contain',
-          filter: hovered
-            ? 'opacity(1) drop-shadow(0 0 8px rgba(255,255,255,0.2))'
-            : invert
-              ? 'brightness(0) invert(1) opacity(0.85)'
-              : 'opacity(0.9)',
-          transition: 'filter 0.3s ease',
-        }}
-      />
-    </div>
-  )
-}
-
-function LogoSection() {
-  const orgs = [
-    { src: '/vaxon/logos/nasa.svg',               alt: 'NASA',                      invert: false },
-    { src: '/vaxon/logos/lockheed.svg',            alt: 'Lockheed Martin',           invert: false },
-    { src: '/vaxon/logos/dod.svg',                 alt: 'Department of Defense',     invert: false },
-    { src: '/vaxon/logos/nro.svg',                 alt: 'NRO',                       invert: false },
-    { src: '/vaxon/logos/army.svg',                alt: 'US Army',                   invert: false },
-    { src: '/vaxon/logos/disa.svg',                alt: 'DISA',                      invert: false },
-    { src: '/vaxon/logos/naval-research-lab.png',  alt: 'Naval Research Laboratory', invert: false },
-  ]
-  const unis = [
-    { src: '/vaxon/logos/stanford.svg',   alt: 'Stanford University',      invert: false },
-    { src: '/vaxon/logos/cornell.svg',    alt: 'Cornell University',        invert: false },
-    { src: '/vaxon/logos/michigan.svg',   alt: 'University of Michigan',    invert: false },
-    { src: '/vaxon/logos/ut-austin.png',  alt: 'UT Austin',                 invert: false },
-    { src: '/vaxon/logos/unc.svg',        alt: 'UNC Chapel Hill',           invert: false },
-    { src: '/vaxon/logos/naval-war-college.svg', alt: 'US Naval War College',     invert: false },
-    { src: '/vaxon/logos/west-point.svg',        alt: 'West Point',               invert: false },
-    { src: '/vaxon/logos/cu-boulder.svg',        alt: 'CU Boulder',               invert: false },
-    { src: '/vaxon/logos/bates.svg',             alt: 'Bates College',            invert: false },
-  ]
-
-  return (
-    <section style={{ padding: '6rem 2.5rem', background: '#020202', borderTop: '1px solid #0d0d0d' }}>
-      <div style={{ maxWidth: 1300, margin: '0 auto' }}>
-        <Fade>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1rem', justifyContent: 'center' }}>
-            <div style={{ flex: 1, height: 1, background: 'linear-gradient(to right, transparent, #2a2a2a)' }} />
-            <span className="vx-worked-title" style={{ fontSize: '1.75rem', letterSpacing: '0.12em', textTransform: 'uppercase',
-              color: '#ccc', whiteSpace: 'nowrap', fontWeight: 700 }}>OUR TEAM HAS WORKED AT</span>
-            <div style={{ flex: 1, height: 1, background: 'linear-gradient(to left, transparent, #2a2a2a)' }} />
-          </div>
-        </Fade>
-
-        <Fade delay={100}>
-          <div style={{ marginTop: '3rem' }}>
-            <div style={{ fontSize: '0.75rem', letterSpacing: '0.2em', textTransform: 'uppercase',
-              color: '#666', textAlign: 'center', marginBottom: '2rem' }}>COMPANIES + ORGANIZATIONS</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center',
-              alignItems: 'center', gap: '2rem', rowGap: '2rem' }}>
-              {orgs.map(o => <LogoItem key={o.alt} {...o} />)}
-            </div>
-          </div>
-        </Fade>
-
-        <Fade delay={200}>
-          <div style={{ marginTop: '4rem' }}>
-            <div style={{ fontSize: '0.75rem', letterSpacing: '0.2em', textTransform: 'uppercase',
-              color: '#666', textAlign: 'center', marginBottom: '2rem' }}>UNIVERSITIES + RESEARCH</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center',
-              alignItems: 'center', gap: '2rem', rowGap: '2rem' }}>
-              {unis.map(u => <LogoItem key={u.alt} {...u} />)}
-            </div>
-          </div>
-        </Fade>
-      </div>
-    </section>
-  )
-}
-
-/* ─────────────────────────────────────────────────────── */
-/*  MAIN PAGE                                               */
-/* ─────────────────────────────────────────────────────── */
-function useIsMobile() {
-  const [mobile, setMobile] = useState(false)
-  useEffect(() => {
-    const check = () => setMobile(window.innerWidth < 768)
-    check()
-    window.addEventListener('resize', check)
-    return () => window.removeEventListener('resize', check)
-  }, [])
-  return mobile
-}
-
-export default function VaxonPage() {
-  const isMobile = useIsMobile()
-  const [active, setActive] = useState<Section>('home')
-  const [showLogin, setShowLogin] = useState(false)
-  const [navScrolled, setNavScrolled] = useState(false)
-  const [loaded, setLoaded] = useState(false)
-  const [heroParallax, setHeroParallax] = useState(0)
-  const [statsVisible, setStatsVisible] = useState(false)
-  const [compVisible, setCompVisible] = useState(false)
-  const [scrollPct, setScrollPct] = useState(0)
-  const [cmsNews, setCmsNews] = useState<NewsItem[] | null>(null)
-  const [cmsCoreTeam, setCmsCoreTeam] = useState<TeamMember[] | null>(null)
-  const [cmsAdvisors, setCmsAdvisors] = useState<TeamMember[] | null>(null)
-  const sectionRefs = useRef<Record<string, HTMLElement | null>>({})
-  const statsRef = useRef<HTMLDivElement>(null)
-  const compRef = useRef<HTMLDivElement>(null)
-
-  /* CMS data fetch */
-  useEffect(() => {
-    fetch('/api/cms')
-      .then(r => r.json())
-      .then(data => {
-        if (data.news?.length) setCmsNews(data.news)
-        if (data.team?.length) {
-          setCmsCoreTeam(data.team.filter((m: TeamMember & { isAdvisor?: boolean }) => !m.isAdvisor))
-          setCmsAdvisors(data.team.filter((m: TeamMember & { isAdvisor?: boolean }) => m.isAdvisor))
-        }
-      })
-      .catch(() => {}) // fall back to hardcoded data silently
-  }, [])
-
-  /* Loading screen */
-  useEffect(() => {
-    const t = setTimeout(() => setLoaded(true), 1500)
-    return () => clearTimeout(t)
-  }, [])
-
-  /* Scroll handler */
-  useEffect(() => {
-    const onScroll = () => {
-      const sy = window.scrollY
-      setNavScrolled(sy > 40)
-      setHeroParallax(sy * 0.25)
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight
-      setScrollPct(maxScroll > 0 ? (sy / maxScroll) * 100 : 0)
-
-      const sections: Section[] = ['home', 'about', 'technology', 'team', 'news', 'contact']
-      for (const id of [...sections].reverse()) {
-        const el = sectionRefs.current[id]
-        if (el && sy >= el.offsetTop - 120) { setActive(id); break }
-      }
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  /* Stats + comparison visibility */
-  useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setStatsVisible(true) }, { threshold: 0.3 })
-    if (statsRef.current) obs.observe(statsRef.current)
-    return () => obs.disconnect()
-  }, [])
-
-  useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setCompVisible(true) }, { threshold: 0.2 })
-    if (compRef.current) obs.observe(compRef.current)
-    return () => obs.disconnect()
-  }, [])
-
-  const scrollTo = useCallback((id: Section) => {
-    const el = sectionRefs.current[id]
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
-  }, [])
-
-  const setRef = (id: Section) => (el: HTMLElement | null) => { sectionRefs.current[id] = el }
-  const NAV: Section[] = ['home', 'about', 'technology', 'team', 'news', 'contact']
-
-  return (
-    <div style={{ background: '#000', color: '#fff', fontFamily: "'Inter', sans-serif",
-      minHeight: '100vh', overflowX: 'hidden' }}>
-
-      {/* ── GLOBAL STYLES ── */}
-      <style>{`
-        body { background: #000 !important; color: #fff !important; font-family: 'Inter', sans-serif !important; }
-        * { box-sizing: border-box; }
-        ::selection { background: #c8102e; color: #fff; }
-        ::-webkit-scrollbar { width: 3px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: #c8102e; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        @keyframes vx-logofade { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
-        @keyframes vx-load-dot { 0%,80%,100%{opacity:0.15} 40%{opacity:0.8} }
-        @keyframes scan { 0%{transform:translateY(-100%)} 100%{transform:translateY(100vh)} }
-        @keyframes vx-blink { 0%,100%{opacity:1} 50%{opacity:0} }
-        @keyframes vx-fadeup { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
-        @keyframes vx-spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-        @keyframes vx-redact { 0%{filter:blur(0px);background:#fff} 100%{filter:blur(0px);background:transparent} }
-        @keyframes vx-strip-scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-        @keyframes vx-skeleton { 0%{opacity:0.3} 50%{opacity:0.7} 100%{opacity:0.3} }
-        @media (max-width: 767px) {
-          .vx-stats-grid { grid-template-columns: repeat(2,1fr) !important; }
-          .vx-two-col { grid-template-columns: 1fr !important; gap: 2rem !important; }
-          .vx-nav-links { display: none !important; }
-          .vx-hero-pad { padding: 0 1.25rem 4rem !important; }
-          .vx-section-pad { padding: 4rem 1.25rem !important; }
-          .vx-news-video { grid-template-columns: 1fr !important; }
-          .vx-news-video > div:first-child { border-right: none !important; border-bottom: 1px solid #1a1a1a; }
-          .vx-logo-item { width: 120px !important; height: 85px !important; }
-          .vx-worked-title { font-size: 1.1rem !important; }
-        }
-      `}</style>
-
-      {/* ── SCROLL PROGRESS ── */}
-      <div style={{
-        position: 'fixed', top: 0, left: 0, zIndex: 9999, height: 2,
-        width: `${scrollPct}%`, background: '#c8102e',
-        transition: 'width 0.1s linear', pointerEvents: 'none',
-      }} />
-
-      {/* ── LOADING ── */}
-      <LoadingScreen done={loaded} />
-
-      {/* ── LEFT INDICATOR ── */}
-      <SectionIndicator active={active} />
-
-      {/* ── NAV ── */}
-      <nav style={{
-        position: 'fixed', top: 20, left: 0, right: 0, zIndex: 100,
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '0 2.5rem', height: 56,
-        background: navScrolled ? 'rgba(0,0,0,0.92)' : 'transparent',
-        borderBottom: navScrolled ? '1px solid #111' : 'none',
-        backdropFilter: navScrolled ? 'blur(16px)' : 'none',
-        transition: 'all 0.3s ease',
-      }}>
-        <button onClick={() => scrollTo('home')} style={{ background: 'none', border: 'none',
-          cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.75rem', padding: 0 }}>
-          <img src="/vaxon/logo.png" alt="Vaxon Space" style={{ height: 34, width: 'auto' }} />
-        </button>
-
-        <div className="vx-nav-links" style={{ display: 'flex', alignItems: 'center', gap: '2.5rem' }}>
-          {NAV.filter(s => s !== 'home').map(s => (
-            <button key={s} onClick={() => scrollTo(s)} style={{
-              background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-              fontSize: '0.7rem', letterSpacing: '0.14em', fontWeight: 500,
-              textTransform: 'uppercase', fontFamily: "'Inter', sans-serif",
-              color: active === s ? '#c8102e' : '#bbb',
-              borderBottom: active === s ? '1px solid #c8102e' : '1px solid transparent',
-              paddingBottom: 2, transition: 'color 0.2s, border-color 0.2s',
-            }}>{s}</button>
-          ))}
-          <button onClick={() => setShowLogin(true)} style={{
-            background: 'none', border: '1px solid #444', cursor: 'pointer',
-            padding: '0.3rem 0.9rem', color: '#bbb',
-            fontSize: '0.65rem', letterSpacing: '0.14em', fontWeight: 600,
-            textTransform: 'uppercase', fontFamily: "'Inter', sans-serif",
-            transition: 'border-color 0.2s, color 0.2s',
-          }}
-            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#c8102e'; (e.currentTarget as HTMLButtonElement).style.color = '#c8102e' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#444'; (e.currentTarget as HTMLButtonElement).style.color = '#bbb' }}
-          >LOGIN</button>
-        </div>
-      </nav>
-
-      {/* ── HOME ── */}
-      <section ref={setRef('home')} id="home" className="vx-hero-pad" style={{
-        position: 'relative', height: '100vh',
-        display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
-        padding: '0 2.5rem 5rem', overflow: 'hidden',
-      }}>
-        {/* Starfield */}
-        <StarField />
-
-        {/* Hero image with parallax */}
-        <img src="/vaxon/hero.png" alt="" style={{
-          position: 'absolute', inset: 0, width: '100%', height: '120%',
-          objectFit: 'cover', filter: 'brightness(0.38)', zIndex: 0,
-          transform: `translateY(${heroParallax}px)`,
-          top: '-10%',
-        }} />
-
-        {/* Noise texture overlay */}
-        <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 2,
-          pointerEvents: 'none', opacity: 0.04 }}>
-          <filter id="noise">
-            <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="4" stitchTiles="stitch" />
-            <feColorMatrix type="saturate" values="0" />
-          </filter>
-          <rect width="100%" height="100%" filter="url(#noise)" />
-        </svg>
-
-        {/* Gradient overlay */}
-        <div style={{ position: 'absolute', inset: 0,
-          background: 'linear-gradient(to top, #000 0%, rgba(0,0,0,0.3) 55%, transparent 100%)',
-          zIndex: 3 }} />
-
-        {/* Scan line */}
-        <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', zIndex: 4, pointerEvents: 'none' }}>
-          <div style={{ position: 'absolute', left: 0, right: 0, height: 1,
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent)',
-            animation: 'scan 10s linear infinite' }} />
-        </div>
-
-        {/* Content */}
-        <div style={{ position: 'relative', zIndex: 5, maxWidth: 900 }}>
-          <div style={{ fontSize: '0.63rem', letterSpacing: '0.24em', textTransform: 'uppercase',
-            color: '#c8102e', marginBottom: '1.5rem', animation: 'vx-fadeup 1s ease 0.3s both' }}>
-            VLEO SATELLITE SYSTEMS / DEFENSE + CONNECTIVITY
-          </div>
-          <h1 style={{ fontFamily: "'Bitter', Georgia, serif",
-            fontSize: 'clamp(2rem,4vw,4rem)', fontWeight: 900, lineHeight: 1.08,
-            letterSpacing: '-0.01em', margin: 0, animation: 'vx-fadeup 1s ease 0.5s both' }}>
-            <span style={{ display: 'block' }}>
-              <TypeWriter text="Real-time missile defense" delay={600} />
-            </span>
-            <span style={{ display: 'block' }}>
-              <TypeWriter text="and connectivity today." delay={1800} />
-            </span>
-          </h1>
-          <p style={{ color: '#ddd', fontSize: '1rem', maxWidth: 540, marginTop: '1.5rem',
-            lineHeight: 1.7, animation: 'vx-fadeup 1s ease 0.8s both', fontFamily: "'Inter', sans-serif" }}>
-            Vaxon Space operates air-breathing satellites at 180-250 km altitude, delivering defense-grade
-            imaging, sub-15ms latency, and next-generation connectivity with no propellant limits.
-          </p>
-          <div style={{ display: 'flex', gap: '1rem', marginTop: '2.5rem', flexWrap: 'wrap',
-            animation: 'vx-fadeup 1s ease 1s both' }}>
-            <button onClick={() => scrollTo('about')} style={{
-              background: '#fff', color: '#000', border: 'none', cursor: 'pointer',
-              padding: '0.75rem 2rem', fontSize: '0.72rem', fontWeight: 600,
-              letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif",
-              transition: 'background 0.2s',
-            }}
-              onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = '#ddd'}
-              onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = '#fff'}
-            >EXPLORE MISSION</button>
-            <button onClick={() => scrollTo('technology')} style={{
-              background: 'transparent', color: '#fff', border: '1px solid #333', cursor: 'pointer',
-              padding: '0.75rem 2rem', fontSize: '0.72rem', fontWeight: 600,
-              letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif",
-              transition: 'border-color 0.2s',
-            }}
-              onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.borderColor = '#c8102e'}
-              onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.borderColor = '#333'}
-            >VIEW TECHNOLOGY</button>
-            <a href="https://calendly.com/vaxonspace" target="_blank" rel="noopener noreferrer" style={{
-              background: '#c8102e', color: '#fff', border: 'none', cursor: 'pointer',
-              padding: '0.75rem 2rem', fontSize: '0.72rem', fontWeight: 600,
-              letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: "'Inter', sans-serif",
-              textDecoration: 'none', display: 'inline-flex', alignItems: 'center',
-              transition: 'background 0.2s',
-            }}
-              onMouseEnter={e => (e.currentTarget as HTMLAnchorElement).style.background = '#a00c26'}
-              onMouseLeave={e => (e.currentTarget as HTMLAnchorElement).style.background = '#c8102e'}
-            >REQUEST A BRIEFING</a>
-          </div>
-        </div>
-
-        {/* CLASSIFIED metrics bar */}
-        <div ref={statsRef} style={{ position: 'relative', zIndex: 5,
-          display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '2px',
-          marginTop: '4rem', borderTop: '1px solid #1a1a1a', paddingTop: '2rem',
-          justifyContent: 'center', maxWidth: '100%',
-          animation: 'vx-fadeup 1s ease 1.2s both' }} className="vx-stats-grid">
-          {[
-            { v: '<15ms', label: 'LATENCY',      d: 0    },
-            { v: '<30cm', label: 'RESOLUTION',   d: 800  },
-            { v: '250km', label: 'ALTITUDE',     d: 1600 },
-            { v: '<2hr',  label: 'REVISIT TIME', d: 2400 },
-          ].map(m => (
-            <ClassifiedStat key={m.label} value={m.v} label={m.label} revealed={statsVisible} delay={m.d} />
-          ))}
-        </div>
-
-        {/* Scroll cue */}
-        <div style={{ position: 'absolute', bottom: '2rem', right: '2.5rem', zIndex: 5 }}>
-          <div style={{ width: 1, height: 60,
-            background: 'linear-gradient(to bottom, transparent, #c8102e)', margin: '0 auto' }} />
-          <div style={{ fontSize: '0.58rem', letterSpacing: '0.22em', color: '#444',
-            marginTop: '0.5rem', writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>SCROLL</div>
-        </div>
-      </section>
-
-      {/* ── CAPABILITY STRIP ── */}
-      <CapabilityStrip />
-
-      {/* ── LOGO STRIP ── */}
-      <LogoSection />
-
-      {/* ── ABOUT ── */}
-      <section ref={setRef('about')} id="about" style={{ padding: '6rem 2.5rem', background: '#000' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <Fade>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '3.5rem' }}>
-              <div style={{ width: 32, height: 1, background: '#c8102e22' }} />
-              <span style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#555' }}>MISSION CAPABILITIES</span>
-            </div>
-            <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2rem,4vw,3rem)',
-              fontWeight: 900, margin: '0 0 1rem', letterSpacing: '-0.01em' }}>
-              Four Pillars of VLEO Superiority
-            </h2>
-            <p style={{ color: '#ddd', maxWidth: 580, lineHeight: 1.75, marginBottom: '3.5rem', fontSize: '0.95rem', fontFamily: "'Inter', sans-serif" }}>
-              Operating 3x closer to Earth's surface unlocks capabilities that are physically impossible from higher orbits.
-              Click any capability to expand the full briefing.
-            </p>
-          </Fade>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '1px', background: '#0d0d0d' }}>
-            {[
-              {
-                title: 'Remote Sensing',
-                summary: 'Sub-30cm imagery with 1-2 hour revisit times. Defense and commercial ISR from 180-250km.',
-                image: '/vaxon/scene1.png',
-                full: 'Operating 3x closer to the surface in very low Earth orbit (VLEO) with altitudes of 180-250 km, Vaxon satellites revolutionize space-based imaging and intelligence. VLEO operation enables image resolutions under 30 cm with revisit times of 1-2 hours, serving the US government and its allies to ensure leaders and soldiers have the pivotal information they need to make vital decisions. We also provide information to the commercial market, providing agriculture, energy, infrastructure, forestry and mapping services.',
-              },
-              {
-                title: 'Missile Defense',
-                summary: 'Golden Dome ready. Precise navigation for hypersonic and intercept missiles via decreased latency.',
-                image: '/vaxon/scene2.png',
-                full: 'Golden Dome is the DoD\'s next big challenge and Vaxon Space is ready to partner. Our satellites enable more precise navigation for hypersonic and intercept missiles by decreasing latency. Faster response for hypersonic tracking is paramount and enabled by Vaxon\'s patented air-breathing electric propulsion subsystem. Precise navigation also extends to our commercial customers, such as maritime tracking and traffic route optimization.',
-              },
-              {
-                title: 'Connectivity',
-                summary: 'Best-in-class VLEO bus for satellite partners. Sub-15ms latency for military comms and AI data transmission.',
-                image: '/vaxon/scene3.png',
-                full: 'Vaxon Space is a bus provider for satellite partners looking to bring connectivity to another level. With advancements in AI and data transmission exponentially increasing, satellites operating in VLEO provide best-in-class performance. As Internet providers increase their footprint in space, we will be right there with them to revolutionize information dissemination. Lower latency also enhances financial trading, remote surgery, directed energy weapons and military communications.',
-              },
-              {
-                title: 'Space Resiliency',
-                summary: 'Self-cleaning orbit. Debris re-enters within weeks, not decades. Survivability advantage over LEO.',
-                image: '/vaxon/scene4.png',
-                full: 'Satellites in low Earth orbit (LEO) are susceptible to orbital debris, e.g. by anti-satellite attacks or careless operations. Operating in VLEO has the advantage of being self-cleaning where debris falls down into Earth\'s atmosphere within a few weeks versus decades or years for LEO satellites. Vaxon satellites, as well as partnering companies using Vaxon buses for payload operations, will have this survivability advantage over traditional satellites as we create the next generation of proliferated satellites.',
-              },
-            ].map((c, i) => (
-              <Fade key={c.title} delay={i * 80}>
-                <ExpandCard {...c} />
-              </Fade>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── TECHNOLOGY ── */}
-      <section ref={setRef('technology')} id="technology" style={{ padding: '6rem 2.5rem', background: '#040404' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <Fade>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '3.5rem' }}>
-              <div style={{ width: 32, height: 1, background: '#c8102e22' }} />
-              <span style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#555' }}>BREAKTHROUGH TECHNOLOGY</span>
-            </div>
-            <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2rem,4vw,3rem)',
-              fontWeight: 900, margin: '0 0 1rem', letterSpacing: '-0.01em' }}>
-              Air-Breathing Electric Propulsion
-            </h2>
-            <p style={{ color: '#ddd', maxWidth: 620, lineHeight: 1.75, marginBottom: '4rem', fontSize: '0.95rem', fontFamily: "'Inter', sans-serif" }}>
-              ABEP harnesses atmospheric molecules as propellant, enabling continuous operation in ultra-low Earth orbits
-              where conventional satellites cannot survive. ABEP transforms extreme atmospheric drag from an enemy into an advantage.
-            </p>
-          </Fade>
-
-          <div className="vx-two-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start', marginBottom: '4rem' }}>
-            <Fade up={false}>
-              <div style={{ position: 'relative', border: '1px solid #1a1a1a' }}>
-                <GlobeAnimation />
-                <div style={{ position: 'absolute', inset: 0,
-                  background: 'linear-gradient(to right, transparent 60%, #040404)',
-                  pointerEvents: 'none' }} />
-              </div>
-            </Fade>
-            <div>
-              {[
-                { n: '01', title: 'Sharper Imagery', sub: 'Under 30cm Resolution',
-                  body: 'Operating three times closer to Earth delivers up to twice the imaging precision. Our proprietary Air Intake System achieves this without heavier optical systems.' },
-                { n: '02', title: 'Ultra-Low Latency', sub: 'Under 15ms Signal Path',
-                  body: 'A five-times shorter signal path means near-real-time performance that is unattainable at higher altitudes. Critical for directed energy, missile guidance, and remote surgery.' },
-                { n: '03', title: 'Self-Cleaning Orbit', sub: 'Weeks, Not Decades',
-                  body: 'Natural atmospheric drag continuously clears debris. The orbit remains safe and sustainable while LEO debris persists for years.' },
-                { n: '04', title: 'The ABEP Advantage', sub: 'Atmosphere as Fuel',
-                  body: 'Using the atmosphere itself as fuel, turning a former enemy into an ally. Indefinite mission duration with no propellant tank required.' },
-              ].map((s, i) => (
-                <Fade key={s.n} delay={i * 100} fromRight>
-                  <TechStep {...s} />
-                </Fade>
-              ))}
-            </div>
-          </div>
-
-          {/* Interactive Satellite Diagram */}
-          <Fade>
-            <div style={{ marginTop: '1rem', marginBottom: '4rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
-                <div style={{ width: 32, height: 1, background: '#c8102e22' }} />
-                <span style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#555' }}>ABEP SATELLITE DESIGN</span>
-              </div>
-              <Suspense fallback={
-                <div style={{ height: 520, border: '1px solid #111', background: '#020202',
-                  overflow: 'hidden', position: 'relative' }}>
-                  {/* Skeleton shimmer blocks */}
-                  {[
-                    { top: '20%', left: '30%', w: '40%', h: 12 },
-                    { top: '35%', left: '20%', w: '60%', h: 8 },
-                    { top: '48%', left: '25%', w: '50%', h: 8 },
-                    { top: '61%', left: '35%', w: '30%', h: 8 },
-                  ].map((b, i) => (
-                    <div key={i} style={{
-                      position: 'absolute', top: b.top, left: b.left,
-                      width: b.w, height: b.h, background: '#1a1a1a', borderRadius: 2,
-                      animation: `vx-skeleton 1.6s ease-in-out ${i * 0.2}s infinite`,
-                    }} />
-                  ))}
-                  {/* Center ring */}
-                  <div style={{
-                    position: 'absolute', top: '50%', left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: 80, height: 80, borderRadius: '50%',
-                    border: '1px solid #1a1a1a',
-                    animation: 'vx-skeleton 1.6s ease-in-out infinite',
-                  }} />
-                  <div style={{
-                    position: 'absolute', bottom: '1.5rem', left: 0, right: 0,
-                    textAlign: 'center', fontSize: '0.58rem', letterSpacing: '0.22em',
-                    color: '#2a2a2a', textTransform: 'uppercase',
-                  }}>INITIALIZING 3D MODEL</div>
-                </div>
-              }>
-                <SatelliteDiagram />
-              </Suspense>
-            </div>
-          </Fade>
-
-          {/* VLEO vs LEO Comparison */}
-          <Fade>
-            <div ref={compRef}>
-              <VLEOComparison visible={compVisible} />
-            </div>
-          </Fade>
-        </div>
-      </section>
-
-      {/* ── TEAM ── */}
-      <section ref={setRef('team')} id="team" style={{ padding: '6rem 2.5rem', background: '#000' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <Fade>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '3.5rem' }}>
-              <div style={{ width: 32, height: 1, background: '#c8102e22' }} />
-              <span style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#555' }}>LEADERSHIP</span>
-            </div>
-            <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2rem,4vw,3rem)',
-              fontWeight: 900, margin: '0 0 1rem', letterSpacing: '-0.01em' }}>Command Structure</h2>
-            <p style={{ color: '#ddd', maxWidth: 560, lineHeight: 1.75, marginBottom: '4rem', fontSize: '0.95rem', fontFamily: "'Inter', sans-serif" }}>
-              Decades of Lockheed Martin, DoD, Space Force, NRO, and Stanford experience. Click any member to read the full brief.
-            </p>
-          </Fade>
-
-          <div style={{ fontSize: '0.78rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#888',
-            marginBottom: '1.5rem', borderBottom: '1px solid #0d0d0d', paddingBottom: '0.75rem',
-            textAlign: 'center' }}>CORE LEADERSHIP</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
-            {(cmsCoreTeam ?? CORE_TEAM).map((m, i) => <Fade key={m.name} delay={i * 80}><TeamCard {...m} /></Fade>)}
-          </div>
-
-          <div style={{ fontSize: '0.78rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#888',
-            marginBottom: '1.5rem', borderBottom: '1px solid #0d0d0d', paddingBottom: '0.75rem',
-            marginTop: '2rem', textAlign: 'center' }}>ADVISORY BOARD</div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', justifyContent: 'center' }}>
-            {(cmsAdvisors ?? ADVISORS).map((m, i) => <Fade key={m.name} delay={i * 80}><div style={{ width: 240 }}><TeamCard {...m} /></div></Fade>)}
-          </div>
-        </div>
-      </section>
-
-      {/* ── NEWS ── */}
-      <section ref={setRef('news')} id="news" style={{ padding: '6rem 2.5rem', background: '#040404' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <Fade>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '3.5rem' }}>
-              <div style={{ width: 32, height: 1, background: '#c8102e22' }} />
-              <span style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#555' }}>INTELLIGENCE FEED</span>
-            </div>
-            <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2rem,4vw,3rem)',
-              fontWeight: 900, margin: '0 0 1rem', letterSpacing: '-0.01em' }}>News + Media</h2>
-          </Fade>
-
-          <Fade>
-            <div className="vx-news-video" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0',
-              border: '1px solid #1a1a1a', marginBottom: '3rem' }}>
-              <div style={{ padding: '2.5rem', borderRight: '1px solid #1a1a1a' }}>
-                <div style={{ fontSize: '0.6rem', letterSpacing: '0.16em', textTransform: 'uppercase',
-                  color: '#c8102e', marginBottom: '0.75rem' }}>FEATURED / FEB 25 2026</div>
-                <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.3rem', fontWeight: 700,
-                  margin: '0 0 1rem', lineHeight: 1.3 }}>CEO Dr. Steven Shepard on VLEO Momentum</h3>
-                <p style={{ color: '#ddd', fontSize: '0.95rem', lineHeight: 1.75, marginBottom: '1.5rem', fontFamily: "'Inter', sans-serif" }}>
-                  Dr. Shepard joins Balerion Space Ventures to discuss VLEO mission use cases including ISR,
-                  missile defense sensing, and AI-enabled space capabilities.
-                </p>
-                <a href="https://www.youtube.com/@balerionspaceventures" target="_blank" rel="noopener noreferrer"
-                  style={{ fontSize: '0.68rem', letterSpacing: '0.14em', textTransform: 'uppercase',
-                    color: '#666', textDecoration: 'none', borderBottom: '1px solid #222', paddingBottom: 2 }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#c8102e'; (e.currentTarget as HTMLAnchorElement).style.borderColor = '#c8102e' }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#666'; (e.currentTarget as HTMLAnchorElement).style.borderColor = '#222' }}
-                >WATCH ON YOUTUBE / BALERION SPACE VENTURES</a>
-              </div>
-              <div style={{ background: '#080808', aspectRatio: '16/9' }}>
-                <a href="https://www.youtube.com/watch?v=piWj3lWfUEM" target="_blank" rel="noopener noreferrer"
-                  style={{ display: 'block', position: 'relative', width: '100%', height: '100%' }}>
-                  <img src="https://img.youtube.com/vi/piWj3lWfUEM/maxresdefault.jpg"
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: 'rgba(0,0,0,0.3)', transition: 'background 0.2s' }}
-                    onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.background = 'rgba(0,0,0,0.1)'}
-                    onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.background = 'rgba(0,0,0,0.3)'}
-                  >
-                    <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(200,16,46,0.9)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <span style={{ color: '#fff', fontSize: '1.5rem', marginLeft: '4px' }}>&#9654;</span>
-                    </div>
-                  </div>
-                </a>
-              </div>
-            </div>
-          </Fade>
-
-          <Fade>
-            <div style={{ marginBottom: '3rem', border: '1px solid #1a1a1a', overflow: 'hidden' }}>
-              <img src="https://img1.wsimg.com/isteam/ip/b6d77e34-40ce-4ade-86a8-3e868f7bc80c/UNIVITY.png/:/rs=w:928,cg:true"
-                alt="UNIVITY" style={{ width: '100%', maxHeight: 200, objectFit: 'cover', display: 'block',
-                  filter: 'brightness(0.7)' }} />
-            </div>
-          </Fade>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-            gap: '1px', background: '#0d0d0d' }}>
-            {(cmsNews ?? NEWS).map((n, i) => <Fade key={n.title} delay={i * 60}><NewsCard {...n} /></Fade>)}
-          </div>
-        </div>
-      </section>
-
-      {/* ── CONTACT ── */}
-      <section ref={setRef('contact')} id="contact" style={{ padding: '6rem 2.5rem', background: '#000' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <Fade>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '3.5rem' }}>
-              <div style={{ width: 32, height: 1, background: '#c8102e22' }} />
-              <span style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#555' }}>SECURE CONTACT</span>
-            </div>
-            <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2rem,4vw,3rem)',
-              fontWeight: 900, margin: '0 0 1rem', letterSpacing: '-0.01em' }}>Partner With Vaxon Space</h2>
-            <p style={{ color: '#ddd', maxWidth: 520, lineHeight: 1.75, marginBottom: '4rem', fontSize: '0.95rem', fontFamily: "'Inter', sans-serif" }}>
-              Defense contractors, investors, and commercial partners may submit inquiries below.
-              All communications are handled with appropriate discretion.
-            </p>
-          </Fade>
-
-          <div className="vx-two-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem' }}>
-            <Fade up={false}><ContactForm /></Fade>
-            <Fade delay={150}>
-              <div>
-                {[
-                  { label: 'EMAIL', val: 'contact@vaxonspace.com' },
-                  { label: 'WEB', val: 'vaxonspace.com' },
-                  { label: 'LOCATION', val: 'United States' },
-                ].map(d => (
-                  <div key={d.label} style={{ borderBottom: '1px solid #0d0d0d',
-                    paddingBottom: '1.25rem', marginBottom: '1.25rem' }}>
-                    <div style={{ fontSize: '0.6rem', letterSpacing: '0.18em', textTransform: 'uppercase',
-                      color: '#333', marginBottom: '0.35rem' }}>{d.label}</div>
-                    <div style={{ color: '#ddd', fontSize: '0.95rem', fontFamily: "'Inter', sans-serif" }}>{d.val}</div>
-                  </div>
-                ))}
-                <div style={{ marginTop: '2rem', border: '1px solid #1a1a1a', overflow: 'hidden' }}>
-                  <img src="/vaxon/earth.png" alt="VLEO" style={{ width: '100%', display: 'block',
-                    filter: 'brightness(0.6)', maxHeight: 200, objectFit: 'cover' }} />
-                </div>
-              </div>
-            </Fade>
-          </div>
-
-          {/* Calendly Booker */}
-          <Fade>
-            <div style={{ marginTop: '4rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
-                <div style={{ width: 32, height: 1, background: '#c8102e22' }} />
-                <span style={{ fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#555' }}>SCHEDULE A BRIEFING</span>
-              </div>
-              <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.5rem', fontWeight: 700,
-                margin: '0 0 1rem', color: '#fff' }}>Book a Meeting with Vaxon Space</h3>
-              <p style={{ color: '#aaa', fontSize: '0.9rem', lineHeight: 1.75, marginBottom: '2rem', maxWidth: 520, fontFamily: "'Inter', sans-serif" }}>
-                Schedule a 30-minute intelligence briefing with our leadership team. Defense contractors, government officials, and investors may request a classified capabilities review.
-              </p>
-              <iframe
-                src="https://calendly.com/stevenpshepard-vaxonspace/30-1?hide_event_type_details=1&hide_gdpr_banner=1&background_color=000000&text_color=ffffff&primary_color=c8102e"
-                style={{ width: '100%', height: 700, border: 'none', background: '#000' }}
-                title="Book a Meeting"
-              />
-            </div>
-          </Fade>
-        </div>
-      </section>
-
-      {/* ── FOOTER ── */}
-      <footer style={{ borderTop: '1px solid #0d0d0d', padding: '2.5rem 2.5rem',
-        flexWrap: 'wrap', gap: '1.5rem', background: '#000' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
-          flexWrap: 'wrap', gap: '1.5rem', marginBottom: '1.75rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <img src="/vaxon/logo.png" alt="Vaxon Space" style={{ height: 26, width: 'auto', opacity: 0.5 }} />
-          </div>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '0.58rem', letterSpacing: '0.18em', color: '#555',
-              textTransform: 'uppercase', marginBottom: '0.4rem' }}>MAILING ADDRESS</div>
-            <div style={{ fontSize: '0.8rem', color: '#888', lineHeight: 1.7, fontFamily: "'Inter',sans-serif" }}>
-              Vaxon Space, Inc.<br />
-              2066 N Capitol Ave #5009<br />
-              San Jose, CA 95132
-            </div>
-          </div>
-          <button onClick={() => setShowLogin(true)} style={{
-            background: 'none', border: '1px solid #1a1a1a', color: '#555', cursor: 'pointer',
-            padding: '0.35rem 0.9rem', fontSize: '0.62rem', letterSpacing: '0.14em',
-            textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", transition: 'all 0.2s',
-          }}
-            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#c8102e'; (e.currentTarget as HTMLButtonElement).style.color = '#c8102e' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = '#1a1a1a'; (e.currentTarget as HTMLButtonElement).style.color = '#555' }}
-          >PORTAL LOGIN</button>
-        </div>
-        <div style={{ borderTop: '1px solid #0d0d0d', paddingTop: '1.25rem',
-          fontSize: '0.62rem', letterSpacing: '0.12em', color: '#333', textTransform: 'uppercase' }}>
-          Copyright 2026 Vaxon Space. All Rights Reserved.
-        </div>
-      </footer>
-
-      {/* ── VAXON AI ── */}
-      <Suspense fallback={null}>
-        <VaxonWidget size={130} />
-      </Suspense>
-
-      {/* ── LOGIN MODAL ── */}
-      {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
-    </div>
-  )
-}
-
-/* ─────────────────────────────────────────────────────── */
-/*  TECH STEP                                               */
-/* ─────────────────────────────────────────────────────── */
-function TechStep({ n, title, sub, body }: { n: string; title: string; sub: string; body: string }) {
-  const [open, setOpen] = useState(false)
-  return (
-    <div onClick={() => setOpen(o => !o)} style={{
-      cursor: 'pointer', borderBottom: '1px solid #0d0d0d', padding: '1.25rem 0',
-    }}>
-      <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-        <span style={{ fontSize: '0.62rem', color: '#c8102e', letterSpacing: '0.1em',
-          marginTop: '0.15rem', flexShrink: 0, fontFamily: "'Bitter',Georgia,serif" }}>{n}</span>
-        <div style={{ flex: 1 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '1rem',
-                letterSpacing: '0.02em' }}>{title}</div>
-              <div style={{ fontSize: '0.84rem', color: '#ddd', marginTop: '0.2rem', fontFamily: "'Inter', sans-serif" }}>{sub}</div>
-            </div>
-            <span style={{ color: open ? '#c8102e' : '#444', fontSize: '1.1rem',
-              transform: open ? 'rotate(45deg)' : 'none', transition: 'transform 0.3s, color 0.3s',
-              flexShrink: 0, marginLeft: '1rem', display: 'inline-block' }}>+</span>
-          </div>
-          <div style={{ maxHeight: open ? 200 : 0, overflow: 'hidden', transition: 'max-height 0.4s ease' }}>
-            <p style={{ color: '#e0e0e0', fontSize: '0.88rem', lineHeight: 1.75, marginTop: '0.75rem',
-              paddingTop: '0.75rem', borderTop: '1px solid #0d0d0d', fontFamily: "'Inter', sans-serif" }}>{body}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/* ─────────────────────────────────────────────────────── */
-/*  TEAM CARD                                               */
-/* ─────────────────────────────────────────────────────── */
-type TeamMember = { name: string; role: string; image?: string; creds: string[]; linkedin?: string }
-
-function TeamCard({ name, role, image, creds, linkedin }: TeamMember) {
-  const [open, setOpen] = useState(false)
-  const initials = name.split(' ').filter(w => w.length > 1).slice(-2).map(w => w[0]).join('')
-  return (
-    <div onClick={() => setOpen(o => !o)} style={{
-      cursor: 'pointer', background: '#000', border: '1px solid #0d0d0d',
-      padding: '1.75rem', transition: 'border-color 0.2s',
-    }}
-      onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.borderColor = '#c8102e'}
-      onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.borderColor = '#0d0d0d'}
-    >
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.25rem' }}>
-        <div style={{
-          width: 130, height: 130, borderRadius: '50%',
-          border: open ? '2px solid #c8102e' : '2px solid #2a2a2a',
-          overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          background: '#111', flexShrink: 0, transition: 'border-color 0.3s',
-          boxShadow: open ? '0 0 16px rgba(200,16,46,0.25)' : 'none',
-        }}>
-          {image ? (
-            <img src={image} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          ) : (
-            <span style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.1rem',
-              fontWeight: 700, color: '#444' }}>{initials}</span>
-          )}
-        </div>
-      </div>
-
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700,
-          fontSize: '1.1rem', marginBottom: '0.3rem' }}>{name}</div>
-        <div style={{ fontSize: '0.75rem', color: '#555', letterSpacing: '0.08em',
-          textTransform: 'uppercase', marginBottom: '0.75rem', fontFamily: "'Inter', sans-serif" }}>{role}</div>
-
-        <div style={{ maxHeight: open ? 360 : 0, overflow: 'hidden', transition: 'max-height 0.5s ease' }}>
-          <div style={{ borderTop: '1px solid #0d0d0d', paddingTop: '1rem', marginTop: '0.5rem' }}>
-            {creds.map(c => (
-              <div key={c} style={{ fontSize: '0.84rem', color: '#ddd', lineHeight: 1.7,
-                display: 'flex', gap: '0.5rem', textAlign: 'left', marginBottom: '0.3rem',
-                fontFamily: "'Inter', sans-serif" }}>
-                <span style={{ color: '#c8102e', flexShrink: 0 }}>-</span>{c}
-              </div>
-            ))}
-            {linkedin && (
-              <a
-                href={linkedin.startsWith('http') ? linkedin : `https://${linkedin}`}
-                target="_blank" rel="noopener noreferrer"
-                onClick={e => e.stopPropagation()}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
-                  marginTop: '0.75rem', fontSize: '0.6rem', letterSpacing: '0.14em',
-                  textTransform: 'uppercase', textDecoration: 'none',
-                  color: '#555', border: '1px solid #1a1a1a', padding: '0.3rem 0.6rem',
-                  transition: 'color 0.2s, border-color 0.2s',
-                }}
-                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#c8102e'; (e.currentTarget as HTMLAnchorElement).style.borderColor = '#c8102e' }}
-                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#555'; (e.currentTarget as HTMLAnchorElement).style.borderColor = '#1a1a1a' }}
-              >
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                </svg>
-                LINKEDIN
-              </a>
-            )}
-          </div>
-        </div>
-        <div style={{ fontSize: '0.58rem', letterSpacing: '0.14em', color: open ? '#c8102e' : '#333',
-          textTransform: 'uppercase', marginTop: '0.5rem', transition: 'color 0.3s' }}>
-          {open ? 'COLLAPSE' : 'VIEW BIO'}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/* ─────────────────────────────────────────────────────── */
-/*  NEWS CARD                                               */
-/* ─────────────────────────────────────────────────────── */
-type NewsItem = { date: string; title: string; body: string; source: string; link?: string }
-
-function NewsCard({ date, title, body, source, link }: NewsItem) {
-  return (
-    <a href={link || '#'} target={link ? '_blank' : '_self'} rel="noopener noreferrer"
-      style={{ display: 'block', background: '#000', padding: '1.75rem', textDecoration: 'none',
-        borderRight: '1px solid #0d0d0d', transition: 'background 0.2s, border-left-color 0.2s',
-        borderLeft: '2px solid transparent' }}
-      onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = '#060606'; (e.currentTarget as HTMLAnchorElement).style.borderLeftColor = '#c8102e' }}
-      onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = '#000'; (e.currentTarget as HTMLAnchorElement).style.borderLeftColor = 'transparent' }}
-    >
-      <div style={{ fontSize: '0.6rem', color: '#444', letterSpacing: '0.1em',
-        textTransform: 'uppercase', marginBottom: '0.6rem' }}>{date}</div>
-      <h4 style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '0.95rem',
-        color: '#fff', margin: '0 0 0.75rem', lineHeight: 1.45 }}>{title}</h4>
-      <p style={{ fontSize: '0.88rem', color: '#ddd', lineHeight: 1.7, margin: '0 0 1rem', fontFamily: "'Inter', sans-serif" }}>{body}</p>
-      <div style={{ fontSize: '0.6rem', letterSpacing: '0.14em', textTransform: 'uppercase',
-        color: '#333', borderTop: '1px solid #0d0d0d', paddingTop: '0.75rem' }}>{source}</div>
-    </a>
-  )
-}
-
-/* ─────────────────────────────────────────────────────── */
-/*  CONTACT FORM                                            */
-/* ─────────────────────────────────────────────────────── */
-function ContactForm() {
-  const [sent, setSent] = useState(false)
-  return (
-    <form onSubmit={e => { e.preventDefault(); setSent(true) }}
-      style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
-      {[
-        { label: 'FULL NAME', type: 'text' },
-        { label: 'EMAIL ADDRESS', type: 'email' },
-        { label: 'ORGANIZATION', type: 'text' },
-      ].map(f => (
-        <div key={f.label} style={{ marginBottom: '1.25rem' }}>
-          <div style={{ fontSize: '0.6rem', letterSpacing: '0.16em', textTransform: 'uppercase',
-            color: '#333', marginBottom: '0.4rem' }}>{f.label}</div>
-          <input type={f.type} style={{
-            width: '100%', background: '#060606', border: '1px solid #111',
-            color: '#ccc', padding: '0.65rem 0.75rem', fontSize: '0.9rem',
-            fontFamily: 'inherit', outline: 'none',
-          }}
-            onFocus={e => (e.target.style.borderColor = '#c8102e')}
-            onBlur={e => (e.target.style.borderColor = '#111')}
-          />
-        </div>
-      ))}
-      <div style={{ marginBottom: '1.25rem' }}>
-        <div style={{ fontSize: '0.6rem', letterSpacing: '0.16em', textTransform: 'uppercase',
-          color: '#333', marginBottom: '0.4rem' }}>MESSAGE</div>
-        <textarea rows={5} style={{
-          width: '100%', background: '#060606', border: '1px solid #111',
-          color: '#ccc', padding: '0.65rem 0.75rem', fontSize: '0.9rem',
-          fontFamily: 'inherit', outline: 'none', resize: 'vertical',
-        }}
-          onFocus={e => (e.target.style.borderColor = '#c8102e')}
-          onBlur={e => (e.target.style.borderColor = '#111')}
-        />
-      </div>
-      <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.5rem',
-        cursor: 'pointer', color: '#ddd', fontSize: '0.84rem', letterSpacing: '0.06em', fontFamily: "'Inter', sans-serif" }}>
-        <input type="checkbox" style={{ accentColor: '#c8102e' }} />
-        Subscribe to Vaxon Space updates
-      </label>
-      <button type="submit" style={{
-        background: sent ? '#0d0d0d' : '#fff', color: sent ? '#c8102e' : '#000',
-        border: sent ? '1px solid #c8102e22' : 'none',
-        padding: '0.75rem 2rem', cursor: sent ? 'default' : 'pointer',
-        fontSize: '0.72rem', fontWeight: 600, letterSpacing: '0.16em',
-        textTransform: 'uppercase', fontFamily: "'Bitter',Georgia,serif",
-        transition: 'all 0.4s', alignSelf: 'flex-start',
-      }}>
-        {sent ? 'MESSAGE TRANSMITTED' : 'SEND MESSAGE'}
-      </button>
-    </form>
-  )
-}
-
-/* ─────────────────────────────────────────────────────── */
-/*  DATA                                                    */
-/* ─────────────────────────────────────────────────────── */
 const CORE_TEAM: TeamMember[] = [
   {
-    name: 'Dr. Steven P. Shepard',
-    role: 'Co-Founder + CEO',
+    name: 'Dr. Steven P. Shepard', role: 'Co-Founder & CEO',
     image: '/vaxon/team-shepard.png',
     linkedin: 'https://www.linkedin.com/in/stevenpshepard/',
-    creds: [
-      '21+ years in satellite design and advanced systems',
-      'Sr. R+D Program Manager, Lockheed Martin — $30M budget',
-      'Advisor: Space Force, NASA, DoD, University of Michigan',
-      'Author: Vanquishing Cancer',
-    ],
+    bio: 'Dr. Shepard brings 21+ years of satellite design and advanced systems experience. As Senior R&D Program Manager at Lockheed Martin he managed a $30M portfolio and has advised Space Force, NASA, and DoD on next-generation space architectures.',
+    creds: ['21+ years in satellite design and advanced systems', 'Sr. R+D Program Manager, Lockheed Martin — $30M budget', 'Advisor: Space Force, NASA, DoD, University of Michigan', 'Author: Vanquishing Cancer'],
   },
   {
-    name: 'Dr. Charles Lipscomb',
-    role: 'Co-Founder + Chief Scientist',
+    name: 'Dr. Charles Lipscomb', role: 'Co-Founder & Chief Scientist',
     image: '/vaxon/team-lipscomb.png',
     linkedin: 'https://www.linkedin.com/in/charleslipscomb88',
-    creds: [
-      'PhD Aerospace Engineering, University of Colorado Boulder',
-      'Satellite Systems Engineer on COSMO',
-      'Specialist in electric propulsion integration',
-      'Air-breathing propulsion and plasmadynamics modeling',
-    ],
+    bio: 'Dr. Lipscomb is the technical architect of Vaxon\'s air-breathing propulsion system. His doctoral research at CU Boulder in plasmadynamics and electric propulsion and work on the COSMO satellite program provide the scientific foundation for sustained VLEO operations.',
+    creds: ['PhD Aerospace Engineering, University of Colorado Boulder', 'Satellite Systems Engineer on COSMO', 'Specialist in electric propulsion integration', 'Air-breathing propulsion and plasmadynamics modeling'],
   },
   {
-    name: 'Brandon Williamson',
-    role: 'Head of Engineering',
+    name: 'Brandon Williamson', role: 'Head of Engineering',
     image: '/vaxon/team-williamson.jpg',
     linkedin: 'https://www.linkedin.com/in/brandon-williamson-83b0191ba/',
-    creds: [
-      'Aerospace engineering and plasma research background',
-      'University of Michigan aerospace training',
-      'Design, analysis, testing and system integration for VLEO',
-    ],
+    bio: 'Brandon leads Vaxon\'s engineering team, overseeing all aspects of system design, analysis, testing, and integration. His plasma research background from the University of Michigan makes him uniquely qualified to advance VLEO satellite hardware.',
+    creds: ['Aerospace engineering and plasma research background', 'University of Michigan aerospace training', 'Design, analysis, testing and system integration for VLEO'],
   },
   {
-    name: 'Lt. Col. Anand Shah',
-    role: 'Sr. Advisor, Defense',
+    name: 'Lt. Col. Anand Shah', role: 'Sr. Advisor, Defense',
     image: '/vaxon/team-shah.jpg',
     linkedin: 'https://www.linkedin.com/in/ananddineshshah/',
-    creds: [
-      'Retired USAF Program Manager',
-      'Deputy PM for SATCOM and AEHF',
-      'Chief of Flight Sciences and Payload Analysis at NRO',
-    ],
+    bio: 'A retired USAF Program Manager with deep experience in military satellite systems, Lt. Col. Shah guided major SATCOM and AEHF programs and served as Chief of Flight Sciences and Payload Analysis at the NRO.',
+    creds: ['Retired USAF Program Manager', 'Deputy PM for SATCOM and AEHF', 'Chief of Flight Sciences and Payload Analysis at NRO'],
   },
   {
-    name: 'Dr. Iain Boyd',
-    role: 'Sr. Advisor, VLEO',
+    name: 'Dr. Iain Boyd', role: 'Sr. Advisor, VLEO',
     image: '/vaxon/team-boyd.png',
     linkedin: 'https://www.linkedin.com/in/iain-boyd/',
-    creds: [
-      '30+ years in hypersonics and space plasma physics',
-      'Professor, Aerospace Engineering Sciences, CU Boulder',
-      'Director, Center for National Security Initiatives',
-      '200+ peer-reviewed publications',
-    ],
+    bio: 'With 30+ years in hypersonics and space plasma physics and 200+ peer-reviewed publications, Dr. Boyd directs the Center for National Security Initiatives at CU Boulder and is among the world\'s foremost VLEO propulsion experts.',
+    creds: ['30+ years in hypersonics and space plasma physics', 'Professor, Aerospace Engineering Sciences, CU Boulder', 'Director, Center for National Security Initiatives', '200+ peer-reviewed publications'],
   },
 ]
 
 const ADVISORS: TeamMember[] = [
   {
-    name: 'Lt. Gen. Joseph Anderson',
-    role: 'Advisory Board',
+    name: 'Lt. Gen. Joseph Anderson', role: 'Advisory Board',
     image: '/vaxon/team-anderson.png',
     linkedin: 'https://www.linkedin.com/in/joe--anderson',
-    creds: [
-      'Retired Deputy Chief of Staff, US Army',
-      'President + CEO, Rafael Systems Global Sustainment',
-      'Commanded XVIII Airborne Corps',
-    ],
+    bio: 'Lt. Gen. Anderson served as Deputy Chief of Staff of the US Army and commanded XVIII Airborne Corps. Now President and CEO of Rafael Systems Global Sustainment, he provides Vaxon with strategic guidance on large-scale defense operations and government relationships.',
+    creds: ['Retired Deputy Chief of Staff, US Army', 'President + CEO, Rafael Systems Global Sustainment', 'Commanded XVIII Airborne Corps'],
+    isAdvisor: true,
   },
   {
-    name: 'Dr. Nelson Pedreiro',
-    role: 'Advisory Board',
+    name: 'Dr. Nelson Pedreiro', role: 'Advisory Board',
     image: '/vaxon/team-pedreiro.jpg',
-    creds: [
-      '28 years at Lockheed Martin',
-      'Former VP + Chief Engineer of Space',
-      'PhD Aerospace Engineering, Stanford University',
-      'National Academy of Engineering member',
-    ],
+    bio: 'Dr. Pedreiro spent 28 years at Lockheed Martin, culminating as VP and Chief Engineer of Space. A National Academy of Engineering member with a PhD from Stanford, he is one of the most respected satellite systems architects in the industry.',
+    creds: ['28 years at Lockheed Martin', 'Former VP + Chief Engineer of Space', 'PhD Aerospace Engineering, Stanford University', 'National Academy of Engineering member'],
+    isAdvisor: true,
   },
 ]
 
 const NEWS: NewsItem[] = [
-  { date: 'APR 23 2026', title: 'UNIVITY Raises 27M EUR for VLEO 5G Connectivity', body: 'Paris-based UNIVITY secured Series A funding to advance VLEO 5G demonstration and commercial deployment by 2028.', source: 'EU STARTUPS' },
-  { date: 'MAR 16 2026', title: 'EDA Commits $17.9M to VLEO Military Research', body: 'European Defence Agency launches initiative exploring VLEO for enhanced ISR and new mission architectures.', source: 'VIA SATELLITE' },
-  { date: 'FEB 25 2026', title: 'Vaxon Space CEO Discusses VLEO Momentum', body: 'Dr. Shepard joins Balerion Space Ventures to discuss ISR, missile defense sensing, and AI-enabled space capabilities.', source: 'YOUTUBE', link: 'https://www.youtube.com/@balerionspaceventures' },
-  { date: 'FEB 05 2026', title: 'Vaxon Joins Starburst / IAI Cohort 4', body: 'Selected for IAI Catalyst cohort focused on autonomous systems, advanced sensing, AI computing, and VLEO satellites.', source: 'LINKEDIN', link: 'https://www.linkedin.com/company/vaxon-space' },
-  { date: 'JAN 14 2026', title: 'AIAA SciTech 2026 VLEO Panel', body: 'Dr. Shepard spoke on ABEP, emerging VLEO use cases, and growing alignment across academia, industry, and government.', source: 'LINKEDIN' },
-  { date: 'NOV 19 2025', title: 'Redwire Awarded $44M DARPA ABEP Contract', body: 'Redwire receives Phase 2 DARPA contract for air-breathing satellite development, validating ABEP as a defense priority.', source: 'SPACENEWS', link: 'https://spacenews.com' },
+  {
+    date: 'APR 23 2026', title: 'UNIVITY Raises 27M EUR for VLEO 5G Connectivity',
+    body: 'Paris-based UNIVITY secured Series A funding to advance VLEO 5G demonstration and commercial deployment by 2028, signaling strong investor confidence in the VLEO connectivity market that Vaxon is positioned to lead in the US defense and commercial sectors.',
+    source: 'EU STARTUPS',
+    image: 'https://img1.wsimg.com/isteam/ip/b6d77e34-40ce-4ade-86a8-3e868f7bc80c/UNIVITY.png',
+  },
+  {
+    date: 'MAR 16 2026', title: 'EDA Commits $17.9M to VLEO Military Research',
+    body: 'The European Defence Agency launches a major initiative exploring VLEO for enhanced ISR and new mission architectures, validating the strategic importance of sub-200km satellite operations for modern defense applications worldwide.',
+    source: 'VIA SATELLITE',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Sentinel-1_radar_vision.jpg/1280px-Sentinel-1_radar_vision.jpg',
+  },
+  {
+    date: 'FEB 25 2026', title: 'Vaxon Space CEO Discusses VLEO Momentum',
+    body: 'Dr. Shepard joins Balerion Space Ventures to discuss ISR, missile defense sensing, and AI-enabled space capabilities. The conversation covers ABEP technology, the commercial satellite market, Vaxon\'s competitive advantages, and the company\'s near-term roadmap.',
+    source: 'YOUTUBE',
+    link: 'https://www.youtube.com/@balerionspaceventures',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/ISS_and_Endeavour_seen_from_the_Soyuz_TMA-20_spacecraft_14.jpg/1280px-ISS_and_Endeavour_seen_from_the_Soyuz_TMA-20_spacecraft_14.jpg',
+  },
+  {
+    date: 'FEB 05 2026', title: 'Vaxon Joins Starburst / IAI Cohort 4',
+    body: 'Selected for the IAI Catalyst cohort focused on autonomous systems, advanced sensing, AI computing, and VLEO satellites. Vaxon joins a prestigious group of defense-focused startups advancing next-generation space capabilities for US and allied forces.',
+    source: 'LINKEDIN',
+    link: 'https://www.linkedin.com/company/vaxon-space',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/The_Earth_seen_from_Apollo_17.jpg/1280px-The_Earth_seen_from_Apollo_17.jpg',
+  },
+  {
+    date: 'JAN 14 2026', title: 'AIAA SciTech 2026 VLEO Panel',
+    body: 'Dr. Shepard spoke on ABEP, emerging VLEO use cases, and growing alignment across academia, industry, and government. The panel highlighted the maturation of VLEO technology and its increasing relevance for both defense and commercial applications.',
+    source: 'LINKEDIN',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Bluelight.jpg/1280px-Bluelight.jpg',
+  },
+  {
+    date: 'NOV 19 2025', title: 'Redwire Awarded $44M DARPA ABEP Contract',
+    body: 'Redwire receives Phase 2 DARPA contract for air-breathing satellite development, validating ABEP as a defense priority. This contract confirms the maturation of air-breathing electric propulsion technology that forms the technical foundation of Vaxon\'s propulsion system.',
+    source: 'SPACENEWS',
+    link: 'https://spacenews.com',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Redwire_Space_logo.jpg/1280px-Redwire_Space_logo.jpg',
+  },
 ]
+
+/* ─────────────────────────────────────────────────────────────
+   LOADING SCREEN
+───────────────────────────────────────────────────────────────*/
+function LoadingScreen({ done }: { done: boolean }) {
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 9999, background: '#02020d',
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      opacity: done ? 0 : 1, pointerEvents: done ? 'none' : 'all',
+      transition: 'opacity 0.8s ease 0.2s',
+    }}>
+      <img src="/vaxon/logo.png" alt="Vaxon Space" style={{ height: 50, width: 'auto', animation: 'vx-fade 1.2s ease both' }} />
+      <div style={{ marginTop: '1.75rem', display: 'flex', gap: '0.5rem', animation: 'vx-fade 1.2s ease 0.3s both' }}>
+        {[0,1,2].map(i => (
+          <div key={i} style={{ width: 4, height: 4, borderRadius: '50%', background: '#c8102e', animation: `vx-dot 1.2s ease-in-out ${i*0.2}s infinite` }} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
+   STARFIELD
+───────────────────────────────────────────────────────────────*/
+function StarField() {
+  const ref = useRef<HTMLCanvasElement>(null)
+  useEffect(() => {
+    const c = ref.current; if (!c) return
+    const ctx = c.getContext('2d'); if (!ctx) return
+    const resize = () => { c.width = innerWidth; c.height = innerHeight }
+    resize(); window.addEventListener('resize', resize)
+    const stars = Array.from({ length: 280 }, () => ({
+      x: Math.random() * c.width, y: Math.random() * c.height,
+      r: Math.random() * 0.85 + 0.1, spd: Math.random() * 0.1 + 0.02,
+      op: Math.random() * 0.6 + 0.1, tw: Math.random() * Math.PI * 2,
+    }))
+    let id: number
+    const draw = () => {
+      id = requestAnimationFrame(draw)
+      ctx.clearRect(0, 0, c.width, c.height)
+      for (const s of stars) {
+        s.tw += s.spd * 0.04
+        const op = s.op * (0.5 + 0.5 * Math.sin(s.tw))
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(255,255,255,${op})`; ctx.fill()
+      }
+    }
+    draw()
+    return () => { cancelAnimationFrame(id); window.removeEventListener('resize', resize) }
+  }, [])
+  return <canvas ref={ref} style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }} />
+}
+
+/* ─────────────────────────────────────────────────────────────
+   NAV
+───────────────────────────────────────────────────────────────*/
+function Nav({ active, setActive }: { active: Tab; setActive: (t: Tab) => void }) {
+  const [dark, setDark] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => {
+    const el = document.getElementById('vxs-' + active)
+    const fn = () => setDark((el?.scrollTop ?? 0) > 30)
+    el?.addEventListener('scroll', fn, { passive: true })
+    return () => el?.removeEventListener('scroll', fn)
+  }, [active])
+
+  const go = (t: Tab) => { setActive(t); setMenuOpen(false) }
+
+  return (
+    <nav style={{
+      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000, height: 64,
+      display: 'flex', alignItems: 'center', padding: '0 2.5rem',
+      background: dark ? 'rgba(2,2,13,0.96)' : 'rgba(2,2,13,0.6)',
+      backdropFilter: 'blur(16px)',
+      borderBottom: `1px solid ${dark ? '#131323' : 'transparent'}`,
+      transition: 'background 0.3s, border-color 0.3s',
+    }}>
+      {/* Logo */}
+      <button onClick={() => go('home')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' }}>
+        <img src="/vaxon/logo.png" alt="Vaxon Space" style={{ height: 30, width: 'auto' }} />
+      </button>
+
+      {/* Desktop tabs */}
+      <div className="vx-nav-tabs" style={{ margin: '0 auto', display: 'flex', gap: '0.15rem' }}>
+        {TABS.map(t => (
+          <button key={t.id} onClick={() => go(t.id)} style={{
+            background: 'none', border: 'none', cursor: 'pointer',
+            padding: '0.5rem 1.1rem',
+            fontSize: '0.6rem', letterSpacing: '0.2em', fontFamily: "'Inter',sans-serif",
+            color: active === t.id ? '#fff' : '#4a4a5e',
+            borderBottom: active === t.id ? '1px solid #c8102e' : '1px solid transparent',
+            transition: 'color 0.2s',
+          }}>{t.label}</button>
+        ))}
+      </div>
+
+      {/* Right */}
+      <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center' }}>
+        <a href="/login" className="vx-login-lnk" style={{ fontSize: '0.6rem', letterSpacing: '0.2em', color: '#4a4a5e', textDecoration: 'none', fontFamily: "'Inter',sans-serif", transition: 'color 0.2s' }}
+          onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+          onMouseLeave={e => (e.currentTarget.style.color = '#4a4a5e')}
+        >LOGIN</a>
+        {/* Hamburger */}
+        <button className="vx-burger" onClick={() => setMenuOpen(m => !m)} style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', flexDirection: 'column', gap: 4, padding: 4 }}>
+          {[0,1,2].map(i => <div key={i} style={{ width: 20, height: 1, background: menuOpen ? (i === 1 ? 'transparent' : '#c8102e') : '#aaa' }} />)}
+        </button>
+      </div>
+
+      {/* Mobile overlay */}
+      {menuOpen && (
+        <div style={{ position: 'fixed', inset: 0, top: 64, background: 'rgba(2,2,13,0.98)', zIndex: 999, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '2.5rem' }}>
+          {TABS.map(t => (
+            <button key={t.id} onClick={() => go(t.id)} style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              fontFamily: "'Bitter',Georgia,serif", fontSize: '1.8rem', fontWeight: 700,
+              color: active === t.id ? '#fff' : '#333', letterSpacing: '0.05em',
+            }}>{t.label}</button>
+          ))}
+        </div>
+      )}
+    </nav>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SECTION WRAPPER
+───────────────────────────────────────────────────────────────*/
+function Section({ id, active, children, overflow = 'auto' }: {
+  id: Tab; active: Tab; children: React.ReactNode; overflow?: string
+}) {
+  return (
+    <div id={`vxs-${id}`} style={{
+      position: 'fixed', inset: 0, top: 64,
+      overflowY: overflow as 'auto' | 'hidden',
+      opacity: active === id ? 1 : 0,
+      pointerEvents: active === id ? 'all' : 'none',
+      transition: 'opacity 0.45s ease',
+      zIndex: active === id ? 2 : 1,
+    }}>
+      {children}
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
+   VIDEO LIGHTBOX
+───────────────────────────────────────────────────────────────*/
+function VideoModal({ url, onClose }: { url: string; onClose: () => void }) {
+  useEffect(() => {
+    const fn = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', fn)
+    return () => document.removeEventListener('keydown', fn)
+  }, [onClose])
+
+  return (
+    <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 9000, background: 'rgba(0,0,0,0.9)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+      <div onClick={e => e.stopPropagation()} style={{ width: '90vw', maxWidth: 960, aspectRatio: '16/9', position: 'relative' }}>
+        <iframe src={url} style={{ width: '100%', height: '100%', border: 'none' }} allow="autoplay; encrypted-media" allowFullScreen />
+        <button onClick={onClose} style={{ position: 'absolute', top: -36, right: 0, background: 'none', border: 'none', cursor: 'pointer', color: '#555', fontSize: '0.6rem', letterSpacing: '0.2em', fontFamily: "'Inter',sans-serif" }}>ESC / CLOSE</button>
+      </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
+   HOME SECTION
+───────────────────────────────────────────────────────────────*/
+function HomeSection({ onNav }: { onNav: (t: Tab) => void }) {
+  const [videoOk, setVideoOk] = useState(false)
+  const [showStory, setShowStory] = useState(false)
+  // Update this URL once Dr. Shepard provides the actual 60-sec video link
+  const PITCH_URL = 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0'
+
+  return (
+    <>
+      {showStory && <VideoModal url={PITCH_URL} onClose={() => setShowStory(false)} />}
+      <div style={{ position: 'relative', height: '100%', overflow: 'hidden' }}>
+        {/* Video bg */}
+        <video autoPlay muted loop playsInline onCanPlay={() => setVideoOk(true)}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 1, opacity: videoOk ? 0.3 : 0, transition: 'opacity 2s ease' }}>
+          <source src="/vaxon/hero-video.mp4" type="video/mp4" />
+        </video>
+
+        {/* Gradient */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 2, background: 'linear-gradient(to bottom, rgba(2,2,13,0.5) 0%, rgba(2,2,13,0.15) 50%, rgba(2,2,13,0.85) 100%)' }} />
+
+        {/* Content */}
+        <div style={{ position: 'relative', zIndex: 3, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 2rem 5rem' }}>
+          <div style={{ fontSize: '0.58rem', letterSpacing: '0.32em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '2rem' }}>
+            VERY LOW EARTH ORBIT — 180–250KM ALTITUDE
+          </div>
+
+          <h1 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2.2rem,5.5vw,4.8rem)', fontWeight: 900, lineHeight: 1.05, color: '#fff', margin: '0 0 1.5rem', maxWidth: 860, letterSpacing: '-0.01em' }}>
+            Real-Time Missile Defense<br />and Connectivity Today
+          </h1>
+
+          <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 'clamp(0.85rem,1.5vw,1.05rem)', color: '#6b7280', lineHeight: 1.75, maxWidth: 520, margin: '0 0 3rem', fontWeight: 300 }}>
+            Vaxon Space operates air-breathing satellites at 180–250km — 10× closer than traditional LEO, delivering unprecedented resolution, latency, and persistence.
+          </p>
+
+          <div style={{ display: 'flex', gap: '0.875rem', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '2.5rem' }}>
+            <button onClick={() => onNav('technology')} style={{ background: '#c8102e', color: '#fff', border: 'none', cursor: 'pointer', padding: '0.875rem 2.25rem', fontSize: '0.62rem', fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", transition: 'background 0.2s' }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#a50d26')}
+              onMouseLeave={e => (e.currentTarget.style.background = '#c8102e')}
+            >EXPLORE TECHNOLOGY</button>
+            <a href="https://calendly.com/vaxonspace" target="_blank" rel="noopener noreferrer" style={{ background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.18)', cursor: 'pointer', padding: '0.875rem 2.25rem', fontSize: '0.62rem', fontWeight: 500, letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", textDecoration: 'none', display: 'inline-flex', alignItems: 'center', transition: 'border-color 0.2s' }}
+              onMouseEnter={e => (e.currentTarget.style.borderColor = '#c8102e')}
+              onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)')}
+            >REQUEST A BRIEFING</a>
+          </div>
+
+          {/* Watch Our Story */}
+          <button onClick={() => setShowStory(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'rgba(255,255,255,0.5)', fontFamily: "'Inter',sans-serif", fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', transition: 'color 0.2s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.9)')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.5)')}
+          >
+            <div style={{ width: 34, height: 34, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ width: 0, height: 0, borderTop: '5px solid transparent', borderBottom: '5px solid transparent', borderLeft: '9px solid currentColor', marginLeft: 2 }} />
+            </div>
+            WATCH OUR STORY
+          </button>
+        </div>
+
+        {/* Stats strip */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 3, display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', background: 'rgba(2,2,13,0.85)', backdropFilter: 'blur(12px)', borderTop: '1px solid #131323' }}>
+          {[
+            { v: '180–250km', l: 'Orbital Altitude' },
+            { v: '<15ms',     l: 'Signal Latency' },
+            { v: '10×',      l: 'Closer Than LEO' },
+            { v: '24/7',     l: 'Persistent Coverage' },
+          ].map((s, i) => (
+            <div key={i} style={{ padding: '1.25rem 1rem', textAlign: 'center', borderRight: i < 3 ? '1px solid #131323' : 'none' }}>
+              <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.1rem,2.5vw,1.75rem)', fontWeight: 900, color: '#fff' }}>{s.v}</div>
+              <div style={{ fontSize: '0.55rem', letterSpacing: '0.15em', color: '#4a4a5e', textTransform: 'uppercase', marginTop: '0.25rem', fontFamily: "'Inter',sans-serif" }}>{s.l}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ABOUT SECTION
+───────────────────────────────────────────────────────────────*/
+function AboutSection() {
+  return (
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem 5rem' }}>
+      <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>ABOUT VAXON SPACE</div>
+      <div style={{ width: 36, height: 1, background: '#1e1e30', marginBottom: '3.5rem' }} />
+
+      {/* Globe + mission */}
+      <div className="vx-about-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center', marginBottom: '5rem' }}>
+        {/* Left: globe */}
+        <div style={{ height: 440 }}>
+          <Suspense fallback={
+            <div style={{ height: '100%', background: '#050512', border: '1px solid #131323', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ fontSize: '0.6rem', letterSpacing: '0.2em', color: '#333', fontFamily: "'Inter',sans-serif" }}>LOADING EARTH MODEL…</div>
+            </div>
+          }>
+            <EarthGlobe />
+          </Suspense>
+        </div>
+
+        {/* Right: mission text */}
+        <div>
+          <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 900, color: '#fff', lineHeight: 1.15, margin: '0 0 1.75rem' }}>
+            The Physics Advantage in Low-Altitude Orbit
+          </h2>
+          <p style={{ color: '#6b7280', lineHeight: 1.85, fontSize: '0.9rem', margin: '0 0 1.5rem' }}>
+            Traditional LEO satellites orbit at 400–600km. Vaxon operates at 180–250km — the Very Low Earth Orbit. This is a physics-driven step-change in what satellites can see, hear, and respond to.
+          </p>
+          <p style={{ color: '#6b7280', lineHeight: 1.85, fontSize: '0.9rem', margin: '0 0 2.5rem' }}>
+            Our Air-Breathing Electric Propulsion (ABEP) system harvests atmospheric molecules as propellant, enabling unlimited orbital endurance without carrying fuel — solving the fundamental challenge of sustained VLEO operations.
+          </p>
+          <div style={{ fontSize: '0.6rem', letterSpacing: '0.18em', color: '#333', fontFamily: "'Inter',sans-serif", display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#c8102e' }} />
+            EST. 2021 — BOULDER, COLORADO
+          </div>
+        </div>
+      </div>
+
+      {/* Advantage cards */}
+      <div style={{ borderTop: '1px solid #131323', paddingTop: '3.5rem', marginBottom: '4rem' }}>
+        <div style={{ fontSize: '0.58rem', letterSpacing: '0.25em', color: '#333', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '2rem' }}>KEY ADVANTAGES</div>
+        <div className="vx-4col" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1px', background: '#131323' }}>
+          {[
+            { tag: 'IMAGERY', h: '<30cm Resolution', b: '5× sharper than standard LEO. Sub-decimeter imagery enabling target identification at orbital speed.' },
+            { tag: 'LATENCY', h: '<15ms Signal', b: 'Near-ground-speed communications for real-time missile defense coordination and C2 networks.' },
+            { tag: 'COVERAGE', h: 'Persistent ISR', b: 'Continuous surveillance of high-priority zones — not 4-hour revisit windows.' },
+            { tag: 'PROPULSION', h: 'No Propellant Limit', b: 'ABEP harvests atmosphere as fuel. Unlimited mission duration with no propellant mass penalty.' },
+          ].map((c, i) => (
+            <div key={i} style={{ background: '#02020d', padding: '2rem 1.5rem', transition: 'background 0.2s' }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#090918')}
+              onMouseLeave={e => (e.currentTarget.style.background = '#02020d')}
+            >
+              <div style={{ fontSize: '0.55rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '0.6rem' }}>{c.tag}</div>
+              <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', fontWeight: 700, color: '#fff', marginBottom: '0.6rem', lineHeight: 1.3 }}>{c.h}</div>
+              <div style={{ fontSize: '0.78rem', color: '#4a4a5e', lineHeight: 1.65 }}>{c.b}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Altitude comparison */}
+      <div style={{ borderTop: '1px solid #131323', paddingTop: '3rem' }}>
+        <div style={{ fontSize: '0.58rem', letterSpacing: '0.25em', color: '#333', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '2rem' }}>ALTITUDE COMPARISON</div>
+        {[
+          { l: 'GEO', km: '35,786 km', pct: 100, note: 'Weather / Comms', hi: false },
+          { l: 'MEO', km: '8,000 km',  pct: 58,  note: 'GPS Constellation', hi: false },
+          { l: 'LEO', km: '400–600 km', pct: 28, note: 'ISS / Starlink',   hi: false },
+          { l: 'VLEO', km: '180–250 km', pct: 10, note: 'Vaxon Space ★',   hi: true },
+        ].map((tier, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', marginBottom: '1.1rem' }}>
+            <div style={{ width: 48, fontSize: '0.58rem', letterSpacing: '0.12em', color: tier.hi ? '#fff' : '#4a4a5e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif" }}>{tier.l}</div>
+            <div style={{ flex: 1, height: 2, background: '#131323', position: 'relative', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: `${tier.pct}%`, background: tier.hi ? '#c8102e' : '#1a1a2e' }} />
+            </div>
+            <div style={{ width: 88, fontSize: '0.62rem', color: '#4a4a5e', fontFamily: "'Inter',sans-serif", textAlign: 'right' }}>{tier.km}</div>
+            <div style={{ width: 130, fontSize: '0.6rem', color: tier.hi ? '#c8102e' : '#2a2a3e', fontFamily: "'Inter',sans-serif" }}>{tier.note}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TECHNOLOGY SECTION
+───────────────────────────────────────────────────────────────*/
+function TechnologySection() {
+  const [expanded, setExpanded] = useState<number | null>(null)
+  const caps = [
+    { tag: 'ISR', title: 'Persistent Surveillance', body: 'Continuous, wide-area intelligence, surveillance, and reconnaissance at sub-30cm resolution. Revisit any target within minutes, not hours. Ideal for border security, contested zone monitoring, and real-time battle-space awareness.' },
+    { tag: 'DEFENSE', title: 'Missile Defense', body: 'Ultra-low latency tracking enables real-time missile detection and intercept coordination. Compatible with Golden Dome architecture. The critical edge for kinetic and non-kinetic intercept decisions at machine speed.' },
+    { tag: 'CONNECTIVITY', title: 'High-Speed Data Links', body: 'Near-ground-speed communications for C2 networks, tactical data links, and forward-deployed assets in contested environments. Latency under 15ms enables true real-time coordination across distributed forces.' },
+    { tag: 'RESILIENCE', title: 'Self-Cleaning Orbit', body: 'At 180–250km, orbital debris clears in weeks versus decades at LEO. Dramatically reducing long-term space traffic risk and providing a resilient, reconstitutable architecture for persistent national security missions.' },
+    { tag: 'PROPULSION', title: 'ABEP Technology', body: 'Air-Breathing Electric Propulsion harvests atmospheric molecules as propellant, enabling indefinite orbital endurance without onboard fuel mass limits. DARPA-validated. Strategic partnership with Phase 2 ABEP engine supplier.' },
+    { tag: 'AI SENSING', title: 'On-Orbit AI Processing', body: 'Edge AI inference hardware processes raw sensor data on-orbit, delivering actionable intelligence to operators in real time. Reduces downlink bandwidth requirements by 10× while enabling autonomous target cueing.' },
+  ]
+
+  return (
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem 5rem' }}>
+      <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>TECHNOLOGY</div>
+      <div style={{ width: 36, height: 1, background: '#1e1e30', marginBottom: '3.5rem' }} />
+
+      <div className="vx-tech-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start' }}>
+        {/* 3D Satellite */}
+        <div style={{ position: 'sticky', top: 0 }}>
+          <Suspense fallback={
+            <div style={{ height: 520, background: '#050512', border: '1px solid #131323', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
+              {[0,1,2,3].map(i => <div key={i} style={{ width: 160 - i*30, height: 6, background: '#111', borderRadius: 2, animation: 'vx-skel 1.5s ease infinite', animationDelay: `${i*0.2}s` }} />)}
+              <div style={{ fontSize: '0.58rem', letterSpacing: '0.2em', color: '#2a2a3e', fontFamily: "'Inter',sans-serif", marginTop: '0.5rem' }}>INITIALIZING 3D MODEL</div>
+            </div>
+          }>
+            <SatelliteDiagram />
+          </Suspense>
+          <div style={{ marginTop: '1rem', fontSize: '0.58rem', letterSpacing: '0.15em', color: '#333', fontFamily: "'Inter',sans-serif", textAlign: 'center' }}>
+            CLICK PARTS TO EXPLORE SYSTEM ARCHITECTURE
+          </div>
+        </div>
+
+        {/* Capabilities */}
+        <div>
+          <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.6rem,2.8vw,2.4rem)', fontWeight: 900, color: '#fff', lineHeight: 1.2, margin: '0 0 2.5rem' }}>
+            Six Mission-Critical Capabilities
+          </h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: '#0d0d1a' }}>
+            {caps.map((cap, i) => (
+              <div key={i} onClick={() => setExpanded(expanded === i ? null : i)}
+                style={{ background: expanded === i ? '#090918' : '#02020d', cursor: 'pointer', padding: '1.25rem 1.5rem', borderLeft: `2px solid ${expanded === i ? '#c8102e' : 'transparent'}`, transition: 'all 0.2s' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <span style={{ fontSize: '0.52rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif" }}>{cap.tag} / </span>
+                    <span style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.9rem', fontWeight: 700, color: '#fff' }}>{cap.title}</span>
+                  </div>
+                  <span style={{ color: '#333', fontSize: '0.9rem', flexShrink: 0, marginLeft: '1rem' }}>{expanded === i ? '−' : '+'}</span>
+                </div>
+                {expanded === i && <p style={{ margin: '0.85rem 0 0', fontSize: '0.82rem', color: '#6b7280', lineHeight: 1.75 }}>{cap.body}</p>}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TEAM MODAL
+───────────────────────────────────────────────────────────────*/
+function TeamModal({ member, onClose }: { member: TeamMember; onClose: () => void }) {
+  useEffect(() => {
+    const fn = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', fn)
+    return () => document.removeEventListener('keydown', fn)
+  }, [onClose])
+
+  return (
+    <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 8000, background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(14px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+      <div onClick={e => e.stopPropagation()} style={{ background: '#060614', border: '1px solid #1a1a2e', maxWidth: 620, width: '100%', padding: '2.5rem', position: 'relative' }}>
+        <button onClick={onClose} style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', background: 'none', border: 'none', cursor: 'pointer', color: '#333', fontSize: '0.58rem', letterSpacing: '0.2em', fontFamily: "'Inter',sans-serif" }}>ESC</button>
+
+        <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '2rem', alignItems: 'flex-start' }}>
+          {member.image && (
+            <img src={member.image} alt={member.name} style={{ width: 84, height: 84, objectFit: 'cover', objectPosition: 'top', border: '1px solid #1a1a2e', flexShrink: 0 }} />
+          )}
+          <div>
+            <div style={{ fontSize: '0.55rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '0.4rem' }}>
+              {member.isAdvisor ? 'ADVISORY BOARD' : 'CORE LEADERSHIP'}
+            </div>
+            <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.5rem', fontWeight: 700, color: '#fff', margin: '0 0 0.3rem' }}>{member.name}</h3>
+            <div style={{ fontSize: '0.75rem', color: '#4a4a5e', fontFamily: "'Inter',sans-serif" }}>{member.role}</div>
+          </div>
+        </div>
+
+        {member.bio && <p style={{ color: '#8a8aaa', lineHeight: 1.85, fontSize: '0.875rem', margin: '0 0 1.75rem' }}>{member.bio}</p>}
+
+        <div style={{ borderTop: '1px solid #131323', paddingTop: '1.5rem', marginBottom: member.linkedin ? '1.75rem' : 0 }}>
+          {member.creds.map((c, i) => (
+            <div key={i} style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.65rem', alignItems: 'flex-start' }}>
+              <div style={{ width: 4, height: 4, background: '#c8102e', borderRadius: '50%', marginTop: '0.45rem', flexShrink: 0 }} />
+              <div style={{ fontSize: '0.82rem', color: '#6b7280', lineHeight: 1.6 }}>{c}</div>
+            </div>
+          ))}
+        </div>
+
+        {member.linkedin && (
+          <a href={member.linkedin} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: '#4a4a5e', textDecoration: 'none', fontFamily: "'Inter',sans-serif", transition: 'color 0.2s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#4a4a5e')}
+          >VIEW LINKEDIN PROFILE →</a>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TEAM CARD
+───────────────────────────────────────────────────────────────*/
+function TeamCard({ member, onClick }: { member: TeamMember; onClick: () => void }) {
+  const [hov, setHov] = useState(false)
+  return (
+    <div onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+      style={{ background: hov ? '#090918' : '#02020d', border: '1px solid ' + (hov ? '#1a1a2e' : '#0d0d1a'), cursor: 'pointer', overflow: 'hidden', transition: 'all 0.2s' }}>
+      <div style={{ aspectRatio: '1/1', overflow: 'hidden', background: '#05050e', position: 'relative' }}>
+        {member.image
+          ? <img src={member.image} alt={member.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', transition: 'transform 0.4s, filter 0.3s', transform: hov ? 'scale(1.04)' : 'scale(1)', filter: hov ? 'none' : 'grayscale(20%)' }} />
+          : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div style={{ width: 60, height: 60, borderRadius: '50%', background: '#111' }} /></div>
+        }
+        {hov && (
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(200,16,46,0.06)', display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end', padding: '0.75rem' }}>
+            <span style={{ fontSize: '0.52rem', letterSpacing: '0.18em', color: '#c8102e', fontFamily: "'Inter',sans-serif" }}>VIEW BIO →</span>
+          </div>
+        )}
+      </div>
+      <div style={{ padding: '1.25rem' }}>
+        <div style={{ fontSize: '0.55rem', letterSpacing: '0.18em', color: '#c8102e', marginBottom: '0.35rem', fontFamily: "'Inter',sans-serif" }}>{member.role}</div>
+        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', fontWeight: 700, color: '#fff', marginBottom: '0.6rem' }}>{member.name}</div>
+        <div style={{ fontSize: '0.72rem', color: '#4a4a5e', lineHeight: 1.5 }}>{member.creds[0]}</div>
+      </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TEAM SECTION
+───────────────────────────────────────────────────────────────*/
+function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: TeamMember[] }) {
+  const [sel, setSel] = useState<TeamMember | null>(null)
+  return (
+    <>
+      {sel && <TeamModal member={sel} onClose={() => setSel(null)} />}
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem 5rem' }}>
+        <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>OUR TEAM</div>
+        <div style={{ width: 36, height: 1, background: '#1e1e30', marginBottom: '1.5rem' }} />
+        <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3.5vw,3rem)', fontWeight: 900, color: '#fff', margin: '0 0 0.75rem' }}>
+          Built by the People Who've Done It
+        </h2>
+        <p style={{ color: '#6b7280', fontSize: '0.88rem', maxWidth: 520, margin: '0 0 3.5rem', lineHeight: 1.75 }}>
+          Decades of experience from Lockheed Martin, the US Army, US Air Force, NRO, DARPA, and the world's leading aerospace research institutions.
+        </p>
+
+        <div style={{ fontSize: '0.56rem', letterSpacing: '0.22em', color: '#333', fontFamily: "'Inter',sans-serif", marginBottom: '1.25rem' }}>CORE LEADERSHIP</div>
+        <div className="vx-team-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(196px,1fr))', gap: '1px', background: '#0d0d1a', marginBottom: '3.5rem' }}>
+          {core.map(m => <TeamCard key={m.name} member={m} onClick={() => setSel(m)} />)}
+        </div>
+
+        <div style={{ fontSize: '0.56rem', letterSpacing: '0.22em', color: '#333', fontFamily: "'Inter',sans-serif", marginBottom: '1.25rem' }}>ADVISORY BOARD</div>
+        <div className="vx-team-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(196px,1fr))', gap: '1px', background: '#0d0d1a', marginBottom: '1.5rem' }}>
+          {advisors.map(m => <TeamCard key={m.name} member={m} onClick={() => setSel(m)} />)}
+        </div>
+
+        <div style={{ fontSize: '0.58rem', letterSpacing: '0.15em', color: '#222', fontFamily: "'Inter',sans-serif", textAlign: 'center' }}>CLICK ANY CARD TO VIEW FULL BIO</div>
+      </div>
+    </>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
+   NEWS SECTION
+───────────────────────────────────────────────────────────────*/
+function NewsSection({ news }: { news: NewsItem[] }) {
+  const featured = news[0]
+  const rest = news.slice(1)
+  return (
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem 5rem' }}>
+      <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>NEWS & PRESS</div>
+      <div style={{ width: 36, height: 1, background: '#1e1e30', marginBottom: '3.5rem' }} />
+
+      {/* Featured */}
+      {featured && (
+        <a href={featured.link || '#'} target={featured.link ? '_blank' : undefined} rel="noopener noreferrer"
+          onClick={!featured.link ? e => e.preventDefault() : undefined}
+          style={{ textDecoration: 'none', display: 'block', marginBottom: '2px' }}
+        >
+          <div className="vx-feat" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', border: '1px solid #131323', overflow: 'hidden', background: '#060614', transition: 'border-color 0.2s' }}
+            onMouseEnter={e => (e.currentTarget.style.borderColor = '#1a1a2e')}
+            onMouseLeave={e => (e.currentTarget.style.borderColor = '#131323')}
+          >
+            <div style={{ overflow: 'hidden', background: '#050512', maxHeight: 320 }}>
+              {featured.image
+                ? <img src={featured.image} alt={featured.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
+                    onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.04)')}
+                    onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
+                  />
+                : <div style={{ width: '100%', height: '100%', minHeight: 280, background: 'linear-gradient(135deg,#090918,#050512)' }} />
+              }
+            </div>
+            <div style={{ padding: '2.5rem' }}>
+              <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.52rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif" }}>FEATURED</span>
+                <span style={{ fontSize: '0.52rem', letterSpacing: '0.15em', color: '#333', fontFamily: "'Inter',sans-serif" }}>{featured.date}</span>
+                <span style={{ fontSize: '0.52rem', letterSpacing: '0.15em', color: '#2a2a3e', fontFamily: "'Inter',sans-serif" }}>{featured.source}</span>
+              </div>
+              <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.5rem', fontWeight: 700, color: '#fff', lineHeight: 1.25, margin: '0 0 1.25rem' }}>{featured.title}</h3>
+              <p style={{ color: '#6b7280', lineHeight: 1.85, fontSize: '0.875rem', margin: '0 0 1.5rem' }}>{featured.body}</p>
+              {featured.link && <span style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: '#4a4a5e', fontFamily: "'Inter',sans-serif" }}>READ MORE →</span>}
+            </div>
+          </div>
+        </a>
+      )}
+
+      {/* Grid */}
+      <div className="vx-news-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: '2px', background: '#0d0d1a' }}>
+        {rest.map((n, i) => (
+          <a key={i} href={n.link || '#'} target={n.link ? '_blank' : undefined} rel="noopener noreferrer"
+            onClick={!n.link ? e => e.preventDefault() : undefined}
+            style={{ textDecoration: 'none', display: 'block' }}
+          >
+            <div style={{ background: '#02020d', height: '100%', transition: 'background 0.2s' }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#090918')}
+              onMouseLeave={e => (e.currentTarget.style.background = '#02020d')}
+            >
+              <div style={{ aspectRatio: '16/9', overflow: 'hidden', background: '#050512' }}>
+                {n.image
+                  ? <img src={n.image} alt={n.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
+                      onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.05)')}
+                      onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
+                    />
+                  : <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg,#090918,#050512)' }} />
+                }
+              </div>
+              <div style={{ padding: '1.5rem' }}>
+                <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                  <span style={{ fontSize: '0.52rem', letterSpacing: '0.15em', color: '#333', fontFamily: "'Inter',sans-serif" }}>{n.date}</span>
+                  <span style={{ fontSize: '0.52rem', letterSpacing: '0.15em', color: '#222', fontFamily: "'Inter',sans-serif" }}>{n.source}</span>
+                </div>
+                <h4 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1rem', fontWeight: 700, color: '#fff', lineHeight: 1.35, margin: '0 0 0.85rem' }}>{n.title}</h4>
+                <p style={{ color: '#4a4a5e', lineHeight: 1.75, fontSize: '0.78rem', margin: '0 0 1rem' }}>{n.body}</p>
+                {n.link && <div style={{ fontSize: '0.55rem', letterSpacing: '0.15em', color: '#333', fontFamily: "'Inter',sans-serif" }}>READ MORE →</div>}
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
+   CONTACT SECTION
+───────────────────────────────────────────────────────────────*/
+function ContactSection() {
+  const [f, setF] = useState({ name: '', email: '', org: '', msg: '' })
+  const [sent, setSent] = useState(false)
+
+  const iStyle: React.CSSProperties = { width: '100%', background: '#060614', border: '1px solid #1a1a2e', color: '#fff', padding: '0.875rem 1rem', fontSize: '0.85rem', fontFamily: "'Inter',sans-serif", outline: 'none', boxSizing: 'border-box' }
+
+  return (
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem 5rem' }}>
+      <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>CONTACT</div>
+      <div style={{ width: 36, height: 1, background: '#1e1e30', marginBottom: '3.5rem' }} />
+
+      <div className="vx-contact-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5rem' }}>
+        <div>
+          <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 900, color: '#fff', margin: '0 0 1.5rem', lineHeight: 1.2 }}>
+            Partner With Vaxon Space
+          </h2>
+          <p style={{ color: '#6b7280', lineHeight: 1.85, fontSize: '0.9rem', marginBottom: '3rem' }}>
+            Defense contractors, investors, and commercial partners may submit inquiries below. All communications are handled with appropriate discretion.
+          </p>
+          {[
+            { l: 'GENERAL INQUIRIES', v: 'contact@vaxonspace.com' },
+            { l: 'BRIEFING REQUESTS', v: 'calendly.com/vaxonspace' },
+            { l: 'LOCATION', v: 'Boulder, Colorado' },
+          ].map((item, i) => (
+            <div key={i} style={{ borderTop: '1px solid #131323', padding: '1.25rem 0' }}>
+              <div style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: '#333', fontFamily: "'Inter',sans-serif", marginBottom: '0.35rem' }}>{item.l}</div>
+              <div style={{ fontSize: '0.9rem', color: '#fff', fontFamily: "'Inter',sans-serif" }}>{item.v}</div>
+            </div>
+          ))}
+        </div>
+
+        <div>
+          {sent ? (
+            <div style={{ border: '1px solid #1a1a2e', padding: '3rem', textAlign: 'center' }}>
+              <div style={{ fontSize: '0.58rem', letterSpacing: '0.25em', color: '#c8102e', marginBottom: '1rem', fontFamily: "'Inter',sans-serif" }}>MESSAGE RECEIVED</div>
+              <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>We'll be in touch within 48 hours.</p>
+            </div>
+          ) : (
+            <form onSubmit={e => { e.preventDefault(); setSent(true) }} style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: '#131323' }}>
+              <input type="text" placeholder="Full Name" required value={f.name} onChange={e => setF(p => ({ ...p, name: e.target.value }))} style={iStyle} />
+              <input type="email" placeholder="Email Address" required value={f.email} onChange={e => setF(p => ({ ...p, email: e.target.value }))} style={iStyle} />
+              <input type="text" placeholder="Organization" value={f.org} onChange={e => setF(p => ({ ...p, org: e.target.value }))} style={iStyle} />
+              <textarea placeholder="Message" rows={5} required value={f.msg} onChange={e => setF(p => ({ ...p, msg: e.target.value }))} style={{ ...iStyle, resize: 'vertical' }} />
+              <button type="submit" style={{ background: '#c8102e', color: '#fff', border: 'none', cursor: 'pointer', padding: '1rem', fontSize: '0.62rem', fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", transition: 'background 0.2s' }}
+                onMouseEnter={e => (e.currentTarget.style.background = '#a50d26')}
+                onMouseLeave={e => (e.currentTarget.style.background = '#c8102e')}
+              >SEND MESSAGE</button>
+            </form>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
+   LOGOS SECTION (Organizations + Universities)
+───────────────────────────────────────────────────────────────*/
+function LogosSection() {
+  const orgs = [
+    { src: '/vaxon/logos/nro.svg', alt: 'NRO' },
+    { src: '/vaxon/logos/army.svg', alt: 'US Army' },
+    { src: '/vaxon/logos/disa.svg', alt: 'DISA' },
+    { src: '/vaxon/logos/naval-research-lab.png', alt: 'Naval Research Lab' },
+    { src: '/vaxon/logos/naval-war-college.svg', alt: 'Naval War College' },
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Lockheed_Martin_logo.svg/600px-Lockheed_Martin_logo.svg.png', alt: 'Lockheed Martin' },
+  ]
+  const unis = [
+    { src: '/vaxon/logos/michigan.svg', alt: 'University of Michigan' },
+    { src: '/vaxon/logos/cu-boulder.svg', alt: 'CU Boulder' },
+    { src: '/vaxon/logos/ut-austin.png', alt: 'UT Austin' },
+    { src: '/vaxon/logos/west-point.svg', alt: 'West Point' },
+    { src: '/vaxon/logos/unc.svg', alt: 'UNC Chapel Hill' },
+    { src: '/vaxon/logos/bates.svg', alt: 'Bates College' },
+  ]
+
+  const Logo = ({ src, alt }: { src: string; alt: string }) => (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.25rem', opacity: 0.7, transition: 'opacity 0.2s' }}
+      onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
+      onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}
+    >
+      <img src={src} alt={alt} style={{ maxWidth: 100, maxHeight: 60, width: 'auto', height: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+    </div>
+  )
+
+  return (
+    <div style={{ borderTop: '1px solid #131323', padding: '3rem 2.5rem', maxWidth: 1200, margin: '0 auto' }}>
+      <div style={{ fontSize: '0.55rem', letterSpacing: '0.28em', color: '#333', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", textAlign: 'center', marginBottom: '2rem' }}>
+        OUR TEAM HAS WORKED AT
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', marginBottom: '1.5rem', borderTop: '1px solid #0d0d1a', borderLeft: '1px solid #0d0d1a' }}>
+        {orgs.map(o => <div key={o.alt} style={{ borderRight: '1px solid #0d0d1a', borderBottom: '1px solid #0d0d1a' }}><Logo {...o} /></div>)}
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', borderTop: '1px solid #0d0d1a', borderLeft: '1px solid #0d0d1a' }}>
+        {unis.map(u => <div key={u.alt} style={{ borderRight: '1px solid #0d0d1a', borderBottom: '1px solid #0d0d1a' }}><Logo {...u} /></div>)}
+      </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MAIN PAGE
+───────────────────────────────────────────────────────────────*/
+export default function VaxonPage() {
+  const [tab, setTab] = useState<Tab>('home')
+  const [loaded, setLoaded] = useState(false)
+  const [scrollPct, setScrollPct] = useState(0)
+  const [cmsNews, setCmsNews] = useState<NewsItem[] | null>(null)
+  const [cmsCoreTeam, setCmsCoreTeam] = useState<TeamMember[] | null>(null)
+  const [cmsAdvisors, setCmsAdvisors] = useState<TeamMember[] | null>(null)
+
+  useEffect(() => {
+    const t = setTimeout(() => setLoaded(true), 1400)
+    return () => clearTimeout(t)
+  }, [])
+
+  // Hash routing
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '') as Tab
+    const valid: Tab[] = ['home', 'about', 'technology', 'team', 'news', 'contact']
+    if (valid.includes(hash)) setTab(hash)
+  }, [])
+
+  useEffect(() => {
+    window.history.replaceState(null, '', tab === 'home' ? '/' : `#${tab}`)
+  }, [tab])
+
+  // Per-section scroll tracking for progress bar
+  useEffect(() => {
+    const el = document.getElementById(`vxs-${tab}`)
+    if (!el) return
+    const fn = () => {
+      const max = el.scrollHeight - el.clientHeight
+      setScrollPct(max > 0 ? (el.scrollTop / max) * 100 : 0)
+    }
+    el.addEventListener('scroll', fn, { passive: true })
+    return () => el.removeEventListener('scroll', fn)
+  }, [tab])
+
+  // CMS data
+  useEffect(() => {
+    fetch('/api/cms').then(r => r.json()).then(d => {
+      if (d.news?.length) setCmsNews(d.news)
+      if (d.team?.length) {
+        setCmsCoreTeam(d.team.filter((m: TeamMember) => !m.isAdvisor))
+        setCmsAdvisors(d.team.filter((m: TeamMember) => m.isAdvisor))
+      }
+    }).catch(() => {})
+  }, [])
+
+  const news     = cmsNews ?? NEWS
+  const core     = cmsCoreTeam ?? CORE_TEAM
+  const advisors = cmsAdvisors ?? ADVISORS
+
+  return (
+    <>
+      <style>{`
+        *, *::before, *::after { box-sizing: border-box; }
+        body { margin: 0; background: #02020d; color: #fff; overflow: hidden; font-family: 'Inter', sans-serif; }
+        @keyframes vx-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+        @keyframes vx-dot { 0%,100%{opacity:.2} 50%{opacity:1} }
+        @keyframes vx-skel { 0%,100%{opacity:.25} 50%{opacity:.55} }
+        @media (max-width: 768px) {
+          .vx-nav-tabs { display: none !important; }
+          .vx-login-lnk { display: none !important; }
+          .vx-burger { display: flex !important; }
+          .vx-about-grid { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
+          .vx-4col { grid-template-columns: 1fr 1fr !important; }
+          .vx-tech-grid { grid-template-columns: 1fr !important; }
+          .vx-team-grid { grid-template-columns: repeat(2,1fr) !important; }
+          .vx-contact-grid { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
+          .vx-feat { grid-template-columns: 1fr !important; }
+          .vx-news-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+
+      <LoadingScreen done={loaded} />
+      <StarField />
+
+      {/* Scroll progress bar */}
+      <div style={{ position: 'fixed', top: 0, left: 0, zIndex: 9998, height: 2, width: `${scrollPct}%`, background: '#c8102e', transition: 'width 0.1s linear', pointerEvents: 'none' }} />
+
+      <Nav active={tab} setActive={setTab} />
+
+      <Section id="home" active={tab} overflow="hidden">
+        <HomeSection onNav={setTab} />
+      </Section>
+
+      <Section id="about" active={tab}>
+        <AboutSection />
+        <LogosSection />
+      </Section>
+
+      <Section id="technology" active={tab}>
+        <TechnologySection />
+      </Section>
+
+      <Section id="team" active={tab}>
+        <TeamSection core={core} advisors={advisors} />
+      </Section>
+
+      <Section id="news" active={tab}>
+        <NewsSection news={news} />
+      </Section>
+
+      <Section id="contact" active={tab}>
+        <ContactSection />
+      </Section>
+
+      <Suspense fallback={null}>
+        <VaxonWidget />
+      </Suspense>
+    </>
+  )
+}
