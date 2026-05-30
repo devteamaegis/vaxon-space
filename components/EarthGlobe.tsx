@@ -108,7 +108,7 @@ export default function EarthGlobe() {
       scene.add(sat)
 
       // Satellite trail
-      const trailPoints: THREE.Vector3[] = []
+      const trailPoints: import('three').Vector3[] = []
       for (let i = 0; i < 30; i++) {
         const a = (i / 30) * Math.PI * 0.5
         trailPoints.push(new THREE.Vector3(Math.cos(a) * 1.032, 0, Math.sin(a) * 1.032))
