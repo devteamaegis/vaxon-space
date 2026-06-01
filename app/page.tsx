@@ -185,18 +185,21 @@ function StarField() {
 /* ─────────────────────────────────────────────────────────────
    NAV
 ───────────────────────────────────────────────────────────────*/
-function Nav({ active, setActive }: { active: Tab; setActive: (t: Tab) => void }) {
+function Nav({ active }: { active: Tab }) {
   const [dark, setDark] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
-    const el = document.getElementById('vxs-' + active)
-    const fn = () => setDark((el?.scrollTop ?? 0) > 30)
-    el?.addEventListener('scroll', fn, { passive: true })
-    return () => el?.removeEventListener('scroll', fn)
-  }, [active])
+    const fn = () => setDark(window.scrollY > 40)
+    window.addEventListener('scroll', fn, { passive: true })
+    return () => window.removeEventListener('scroll', fn)
+  }, [])
 
-  const go = (t: Tab) => { setActive(t); setMenuOpen(false) }
+  const go = (t: Tab) => {
+    setMenuOpen(false)
+    const el = document.getElementById('vxs-' + t)
+    if (el) el.scrollIntoView({ behavior: 'smooth' })
+  }
 
   return (
     <nav style={{
@@ -257,20 +260,11 @@ function Nav({ active, setActive }: { active: Tab; setActive: (t: Tab) => void }
 /* ─────────────────────────────────────────────────────────────
    SECTION WRAPPER
 ───────────────────────────────────────────────────────────────*/
-function Section({ id, active, children, overflow = 'auto' }: {
-  id: Tab; active: Tab; children: React.ReactNode; overflow?: string
-}) {
+function Section({ id, children }: { id: Tab; children: React.ReactNode }) {
   return (
-    <div id={`vxs-${id}`} style={{
-      position: 'fixed', inset: 0, top: 64,
-      overflowY: overflow as 'auto' | 'hidden',
-      opacity: active === id ? 1 : 0,
-      pointerEvents: active === id ? 'all' : 'none',
-      transition: 'opacity 0.45s ease',
-      zIndex: active === id ? 2 : 1,
-    }}>
+    <section id={`vxs-${id}`} style={{ position: 'relative' }}>
       {children}
-    </div>
+    </section>
   )
 }
 
@@ -306,7 +300,7 @@ function HomeSection({ onNav }: { onNav: (t: Tab) => void }) {
   return (
     <>
       {showStory && <VideoModal url={PITCH_URL} onClose={() => setShowStory(false)} />}
-      <div style={{ position: 'relative', height: '100%', overflow: 'hidden' }}>
+      <div style={{ position: 'relative', height: 'calc(100vh - 64px)', overflow: 'hidden' }}>
         {/* Video bg */}
         <video autoPlay muted loop playsInline onCanPlay={() => setVideoOk(true)}
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 1, opacity: videoOk ? 0.3 : 0, transition: 'opacity 2s ease' }}>
@@ -331,7 +325,7 @@ function HomeSection({ onNav }: { onNav: (t: Tab) => void }) {
           </p>
 
           <div style={{ display: 'flex', gap: '0.875rem', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '2.5rem' }}>
-            <button onClick={() => onNav('technology')} style={{ background: '#c8102e', color: '#fff', border: 'none', cursor: 'pointer', padding: '0.875rem 2.25rem', fontSize: '0.62rem', fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", transition: 'background 0.2s' }}
+            <button onClick={() => { const el = document.getElementById('vxs-technology'); if (el) el.scrollIntoView({ behavior: 'smooth' }) }} style={{ background: '#c8102e', color: '#fff', border: 'none', cursor: 'pointer', padding: '0.875rem 2.25rem', fontSize: '0.62rem', fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", transition: 'background 0.2s' }}
               onMouseEnter={e => (e.currentTarget.style.background = '#a50d26')}
               onMouseLeave={e => (e.currentTarget.style.background = '#c8102e')}
             >EXPLORE TECHNOLOGY</button>
@@ -575,23 +569,20 @@ function TeamCard({ member, onClick }: { member: TeamMember; onClick: () => void
   const [hov, setHov] = useState(false)
   return (
     <div onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ background: hov ? '#090918' : '#02020d', border: '1px solid ' + (hov ? '#1a1a2e' : '#0d0d1a'), cursor: 'pointer', overflow: 'hidden', transition: 'all 0.2s' }}>
-      <div style={{ aspectRatio: '1/1', overflow: 'hidden', background: '#05050e', position: 'relative' }}>
-        {member.image
-          ? <img src={member.image} alt={member.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', transition: 'transform 0.4s, filter 0.3s', transform: hov ? 'scale(1.04)' : 'scale(1)', filter: hov ? 'none' : 'grayscale(20%)' }} />
-          : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div style={{ width: 60, height: 60, borderRadius: '50%', background: '#111' }} /></div>
-        }
-        {hov && (
-          <div style={{ position: 'absolute', inset: 0, background: 'rgba(200,16,46,0.06)', display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end', padding: '0.75rem' }}>
-            <span style={{ fontSize: '0.52rem', letterSpacing: '0.18em', color: '#c8102e', fontFamily: "'Inter',sans-serif" }}>VIEW BIO →</span>
-          </div>
-        )}
+      style={{ background: hov ? '#090918' : '#02020d', border: '1px solid ' + (hov ? '#1a1a2e' : '#0d0d1a'), cursor: 'pointer', overflow: 'hidden', transition: 'all 0.2s', textAlign: 'center', padding: '1.75rem 1.25rem 1.25rem' }}>
+      {/* Circular photo */}
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+        <div style={{ width: 96, height: 96, borderRadius: '50%', overflow: 'hidden', border: `2px solid ${hov ? '#c8102e' : '#1a1a2e'}`, transition: 'border-color 0.2s', flexShrink: 0, background: '#05050e' }}>
+          {member.image
+            ? <img src={member.image} alt={member.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', transition: 'transform 0.4s, filter 0.3s', transform: hov ? 'scale(1.06)' : 'scale(1)', filter: hov ? 'none' : 'grayscale(15%)' }} />
+            : <div style={{ width: '100%', height: '100%', background: '#111' }} />
+          }
+        </div>
       </div>
-      <div style={{ padding: '1.25rem' }}>
-        <div style={{ fontSize: '0.55rem', letterSpacing: '0.18em', color: '#c8102e', marginBottom: '0.35rem', fontFamily: "'Inter',sans-serif" }}>{member.role}</div>
-        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', fontWeight: 700, color: '#fff', marginBottom: '0.6rem' }}>{member.name}</div>
-        <div style={{ fontSize: '0.72rem', color: '#4a4a5e', lineHeight: 1.5 }}>{member.creds[0]}</div>
-      </div>
+      <div style={{ fontSize: '0.55rem', letterSpacing: '0.18em', color: '#c8102e', marginBottom: '0.35rem', fontFamily: "'Inter',sans-serif" }}>{member.role}</div>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', fontWeight: 700, color: '#fff', marginBottom: '0.5rem' }}>{member.name}</div>
+      <div style={{ fontSize: '0.7rem', color: '#4a4a5e', lineHeight: 1.5, marginBottom: hov ? '0.5rem' : 0 }}>{member.creds[0]}</div>
+      {hov && <div style={{ fontSize: '0.52rem', letterSpacing: '0.18em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginTop: '0.5rem' }}>VIEW BIO →</div>}
     </div>
   )
 }
@@ -818,7 +809,7 @@ function LogosSection() {
    MAIN PAGE
 ───────────────────────────────────────────────────────────────*/
 export default function VaxonPage() {
-  const [tab, setTab] = useState<Tab>('home')
+  const [active, setActive] = useState<Tab>('home')
   const [loaded, setLoaded] = useState(false)
   const [scrollPct, setScrollPct] = useState(0)
   const [cmsNews, setCmsNews] = useState<NewsItem[] | null>(null)
@@ -830,28 +821,33 @@ export default function VaxonPage() {
     return () => clearTimeout(t)
   }, [])
 
-  // Hash routing
+  // Scroll-based section tracking + progress bar
+  useEffect(() => {
+    const ids: Tab[] = ['home', 'about', 'technology', 'team', 'news', 'contact']
+    const fn = () => {
+      const sy = window.scrollY
+      const max = document.documentElement.scrollHeight - window.innerHeight
+      setScrollPct(max > 0 ? (sy / max) * 100 : 0)
+
+      // Find active section
+      for (const id of [...ids].reverse()) {
+        const el = document.getElementById('vxs-' + id)
+        if (el && sy >= el.offsetTop - 120) { setActive(id); break }
+      }
+    }
+    window.addEventListener('scroll', fn, { passive: true })
+    return () => window.removeEventListener('scroll', fn)
+  }, [])
+
+  // Hash scroll on load
   useEffect(() => {
     const hash = window.location.hash.replace('#', '') as Tab
     const valid: Tab[] = ['home', 'about', 'technology', 'team', 'news', 'contact']
-    if (valid.includes(hash)) setTab(hash)
-  }, [])
-
-  useEffect(() => {
-    window.history.replaceState(null, '', tab === 'home' ? '/' : `#${tab}`)
-  }, [tab])
-
-  // Per-section scroll tracking for progress bar
-  useEffect(() => {
-    const el = document.getElementById(`vxs-${tab}`)
-    if (!el) return
-    const fn = () => {
-      const max = el.scrollHeight - el.clientHeight
-      setScrollPct(max > 0 ? (el.scrollTop / max) * 100 : 0)
+    if (valid.includes(hash)) {
+      const el = document.getElementById('vxs-' + hash)
+      if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 200)
     }
-    el.addEventListener('scroll', fn, { passive: true })
-    return () => el.removeEventListener('scroll', fn)
-  }, [tab])
+  }, [])
 
   // CMS data
   useEffect(() => {
@@ -872,7 +868,8 @@ export default function VaxonPage() {
     <>
       <style>{`
         *, *::before, *::after { box-sizing: border-box; }
-        body { margin: 0; background: #02020d; color: #fff; overflow: hidden; font-family: 'Inter', sans-serif; }
+        body { margin: 0; background: #02020d; color: #fff; overflow-x: hidden; font-family: 'Inter', sans-serif; }
+        html { scroll-behavior: smooth; }
         @keyframes vx-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
         @keyframes vx-dot { 0%,100%{opacity:.2} 50%{opacity:1} }
         @keyframes vx-skel { 0%,100%{opacity:.25} 50%{opacity:.55} }
@@ -896,32 +893,35 @@ export default function VaxonPage() {
       {/* Scroll progress bar */}
       <div style={{ position: 'fixed', top: 0, left: 0, zIndex: 9998, height: 2, width: `${scrollPct}%`, background: '#c8102e', transition: 'width 0.1s linear', pointerEvents: 'none' }} />
 
-      <Nav active={tab} setActive={setTab} />
+      <Nav active={active} />
 
-      <Section id="home" active={tab} overflow="hidden">
-        <HomeSection onNav={setTab} />
-      </Section>
+      {/* pt-16 to clear fixed nav */}
+      <div style={{ paddingTop: 64 }}>
+        <Section id="home">
+          <HomeSection onNav={() => {}} />
+        </Section>
 
-      <Section id="about" active={tab}>
-        <AboutSection />
-        <LogosSection />
-      </Section>
+        <Section id="about">
+          <AboutSection />
+          <LogosSection />
+        </Section>
 
-      <Section id="technology" active={tab}>
-        <TechnologySection />
-      </Section>
+        <Section id="technology">
+          <TechnologySection />
+        </Section>
 
-      <Section id="team" active={tab}>
-        <TeamSection core={core} advisors={advisors} />
-      </Section>
+        <Section id="team">
+          <TeamSection core={core} advisors={advisors} />
+        </Section>
 
-      <Section id="news" active={tab}>
-        <NewsSection news={news} />
-      </Section>
+        <Section id="news">
+          <NewsSection news={news} />
+        </Section>
 
-      <Section id="contact" active={tab}>
-        <ContactSection />
-      </Section>
+        <Section id="contact">
+          <ContactSection />
+        </Section>
+      </div>
 
       <Suspense fallback={null}>
         <VaxonWidget />
