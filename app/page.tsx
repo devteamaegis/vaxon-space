@@ -1,9 +1,48 @@
 'use client'
-import { useEffect, useRef, useState, lazy, Suspense } from 'react'
+import { useEffect, useRef, useState, lazy, Suspense, useCallback } from 'react'
 
 const SatelliteDiagram = lazy(() => import('@/components/SatelliteDiagram'))
-const EarthGlobe       = lazy(() => import('@/components/EarthGlobe'))
+const EarthGlobeV2     = lazy(() => import('@/components/EarthGlobeV2'))
 const VaxonWidget      = lazy(() => import('@/components/VaxonWidget'))
+
+/* ─────────────────────────────────────────────────────────────
+   SCROLL REVEAL HOOK
+───────────────────────────────────────────────────────────────*/
+function useReveal(threshold = 0.15) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [visible, setVisible] = useState(false)
+  useEffect(() => {
+    const el = ref.current; if (!el) return
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect() } },
+      { threshold }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [threshold])
+  return { ref, visible }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   COUNT-UP ANIMATION
+───────────────────────────────────────────────────────────────*/
+function CountUp({ target, suffix = '', duration = 1800, visible }: {
+  target: number; suffix?: string; duration?: number; visible: boolean
+}) {
+  const [val, setVal] = useState(0)
+  useEffect(() => {
+    if (!visible) return
+    const start = performance.now()
+    const tick = (now: number) => {
+      const p = Math.min((now - start) / duration, 1)
+      const ease = 1 - Math.pow(1 - p, 3)
+      setVal(Math.round(target * ease))
+      if (p < 1) requestAnimationFrame(tick)
+    }
+    requestAnimationFrame(tick)
+  }, [visible, target, duration])
+  return <>{val}{suffix}</>
+}
 
 /* ─────────────────────────────────────────────────────────────
    TYPES
@@ -364,6 +403,10 @@ function HomeSection() {
    ABOUT SECTION
 ───────────────────────────────────────────────────────────────*/
 export function AboutSection() {
+  const { ref: statsRef, visible: statsVisible } = useReveal()
+  const { ref: cardsRef, visible: cardsVisible } = useReveal()
+  const { ref: barsRef, visible: barsVisible } = useReveal()
+
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
       <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>ABOUT VAXON SPACE</div>
@@ -371,14 +414,14 @@ export function AboutSection() {
 
       {/* Globe + mission */}
       <div className="vx-about-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center', marginBottom: '5rem' }}>
-        {/* Left: globe */}
-        <div style={{ height: 440 }}>
+        {/* Left: hyper-realistic globe */}
+        <div style={{ height: 460 }}>
           <Suspense fallback={
             <div style={{ height: '100%', background: '#050512', border: '1px solid #131323', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <div style={{ fontSize: '0.6rem', letterSpacing: '0.2em', color: '#333', fontFamily: "'Inter',sans-serif" }}>LOADING EARTH MODEL…</div>
             </div>
           }>
-            <EarthGlobe />
+            <EarthGlobeV2 height={460} />
           </Suspense>
         </div>
 
@@ -400,8 +443,8 @@ export function AboutSection() {
         </div>
       </div>
 
-      {/* Advantage cards */}
-      <div style={{ borderTop: '1px solid #131323', paddingTop: '3.5rem', marginBottom: '4rem' }}>
+      {/* Advantage cards — scroll reveal */}
+      <div ref={cardsRef} style={{ borderTop: '1px solid #131323', paddingTop: '3.5rem', marginBottom: '4rem' }}>
         <div style={{ fontSize: '0.58rem', letterSpacing: '0.25em', color: '#333', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '2rem' }}>KEY ADVANTAGES</div>
         <div className="vx-4col" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1px', background: '#131323' }}>
           {[
@@ -410,7 +453,11 @@ export function AboutSection() {
             { tag: 'COVERAGE', h: 'Persistent ISR', b: 'Continuous surveillance of high-priority zones — not 4-hour revisit windows.' },
             { tag: 'PROPULSION', h: 'No Propellant Limit', b: 'ABEP harvests atmosphere as fuel. Unlimited mission duration with no propellant mass penalty.' },
           ].map((c, i) => (
-            <div key={i} style={{ background: '#02020d', padding: '2rem 1.5rem', transition: 'background 0.2s' }}
+            <div key={i} style={{
+              background: '#02020d', padding: '2rem 1.5rem', transition: 'background 0.2s, opacity 0.6s, transform 0.6s',
+              opacity: cardsVisible ? 1 : 0, transform: cardsVisible ? 'none' : 'translateY(20px)',
+              transitionDelay: cardsVisible ? `${i * 0.1}s` : '0s',
+            }}
               onMouseEnter={e => (e.currentTarget.style.background = '#090918')}
               onMouseLeave={e => (e.currentTarget.style.background = '#02020d')}
             >
@@ -422,8 +469,8 @@ export function AboutSection() {
         </div>
       </div>
 
-      {/* Altitude comparison */}
-      <div style={{ borderTop: '1px solid #131323', paddingTop: '3rem' }}>
+      {/* Altitude comparison — animated bars on scroll */}
+      <div ref={barsRef} style={{ borderTop: '1px solid #131323', paddingTop: '3rem' }}>
         <div style={{ fontSize: '0.58rem', letterSpacing: '0.25em', color: '#333', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '2rem' }}>ALTITUDE COMPARISON</div>
         {[
           { l: 'GEO', km: '35,786 km', pct: 100, note: 'Weather / Comms', hi: false },
@@ -431,10 +478,21 @@ export function AboutSection() {
           { l: 'LEO', km: '400–600 km', pct: 28, note: 'ISS / Starlink',   hi: false },
           { l: 'VLEO', km: '180–250 km', pct: 10, note: 'Vaxon Space ★',   hi: true },
         ].map((tier, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', marginBottom: '1.1rem' }}>
+          <div key={i} style={{
+            display: 'flex', alignItems: 'center', gap: '1.25rem', marginBottom: '1.1rem',
+            opacity: barsVisible ? 1 : 0, transform: barsVisible ? 'none' : 'translateX(-12px)',
+            transition: 'opacity 0.5s, transform 0.5s',
+            transitionDelay: barsVisible ? `${i * 0.12}s` : '0s',
+          }}>
             <div style={{ width: 48, fontSize: '0.58rem', letterSpacing: '0.12em', color: tier.hi ? '#fff' : '#4a4a5e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif" }}>{tier.l}</div>
             <div style={{ flex: 1, height: 2, background: '#131323', position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: `${tier.pct}%`, background: tier.hi ? '#c8102e' : '#1a1a2e' }} />
+              <div style={{
+                position: 'absolute', left: 0, top: 0, height: '100%',
+                width: barsVisible ? `${tier.pct}%` : '0%',
+                background: tier.hi ? '#c8102e' : '#1a1a2e',
+                transition: 'width 1.2s cubic-bezier(0.4,0,0.2,1)',
+                transitionDelay: barsVisible ? `${i * 0.15 + 0.2}s` : '0s',
+              }} />
             </div>
             <div style={{ width: 88, fontSize: '0.62rem', color: '#4a4a5e', fontFamily: "'Inter',sans-serif", textAlign: 'right' }}>{tier.km}</div>
             <div style={{ width: 130, fontSize: '0.6rem', color: tier.hi ? '#c8102e' : '#2a2a3e', fontFamily: "'Inter',sans-serif" }}>{tier.note}</div>
@@ -450,6 +508,8 @@ export function AboutSection() {
 ───────────────────────────────────────────────────────────────*/
 export function TechnologySection() {
   const [expanded, setExpanded] = useState<number | null>(null)
+  const [showFootprint, setShowFootprint] = useState(false)
+  const { ref: techRef, visible: techVisible } = useReveal()
   const caps = [
     { tag: 'ISR', title: 'Persistent Surveillance', body: 'Continuous, wide-area intelligence, surveillance, and reconnaissance at sub-30cm resolution. Revisit any target within minutes, not hours. Ideal for border security, contested zone monitoring, and real-time battle-space awareness.' },
     { tag: 'DEFENSE', title: 'Missile Defense', body: 'Ultra-low latency tracking enables real-time missile detection and intercept coordination. Compatible with Golden Dome architecture. The critical edge for kinetic and non-kinetic intercept decisions at machine speed.' },
@@ -465,18 +525,37 @@ export function TechnologySection() {
       <div style={{ width: 36, height: 1, background: '#1e1e30', marginBottom: '3.5rem' }} />
 
       <div className="vx-tech-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start' }}>
-        {/* 3D Satellite */}
+        {/* Globe + satellite — sticky on scroll */}
         <div style={{ position: 'sticky', top: 80 }}>
           <Suspense fallback={
-            <div style={{ height: 520, background: '#050512', border: '1px solid #131323', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
+            <div style={{ height: 460, background: '#050512', border: '1px solid #131323', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
               {[0,1,2,3].map(i => <div key={i} style={{ width: 160 - i*30, height: 6, background: '#111', borderRadius: 2, animation: 'vx-skel 1.5s ease infinite', animationDelay: `${i*0.2}s` }} />)}
-              <div style={{ fontSize: '0.58rem', letterSpacing: '0.2em', color: '#2a2a3e', fontFamily: "'Inter',sans-serif", marginTop: '0.5rem' }}>INITIALIZING 3D MODEL</div>
+              <div style={{ fontSize: '0.58rem', letterSpacing: '0.2em', color: '#2a2a3e', fontFamily: "'Inter',sans-serif", marginTop: '0.5rem' }}>LOADING ORBIT MODEL</div>
             </div>
           }>
-            <SatelliteDiagram />
+            <EarthGlobeV2 height={460} showFootprint={showFootprint} />
           </Suspense>
-          <div style={{ marginTop: '1rem', fontSize: '0.58rem', letterSpacing: '0.15em', color: '#333', fontFamily: "'Inter',sans-serif", textAlign: 'center' }}>
-            CLICK PARTS TO EXPLORE SYSTEM ARCHITECTURE
+
+          {/* Coverage footprint toggle */}
+          <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
+            <span style={{ fontSize: '0.55rem', letterSpacing: '0.15em', color: '#4a4a5e', fontFamily: "'Inter',sans-serif" }}>COVERAGE FOOTPRINT</span>
+            <button onClick={() => setShowFootprint(f => !f)} style={{
+              width: 40, height: 22, borderRadius: 11, border: 'none', cursor: 'pointer',
+              background: showFootprint ? '#c8102e' : '#131323',
+              position: 'relative', transition: 'background 0.2s',
+            }}>
+              <div style={{
+                position: 'absolute', top: 3, left: showFootprint ? 21 : 3,
+                width: 16, height: 16, borderRadius: '50%', background: '#fff',
+                transition: 'left 0.2s',
+              }} />
+            </button>
+            <span style={{ fontSize: '0.52rem', letterSpacing: '0.12em', color: showFootprint ? '#c8102e' : '#333', fontFamily: "'Inter',sans-serif" }}>
+              {showFootprint ? 'ON' : 'OFF'}
+            </span>
+          </div>
+          <div style={{ marginTop: '0.5rem', textAlign: 'center', fontSize: '0.55rem', letterSpacing: '0.15em', color: '#333', fontFamily: "'Inter',sans-serif" }}>
+            VLEO coverage area vs ISS / Starlink orbits
           </div>
         </div>
 
@@ -620,12 +699,24 @@ export function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: 
 
         <div style={{ fontSize: '0.56rem', letterSpacing: '0.22em', color: '#333', fontFamily: "'Inter',sans-serif", marginBottom: '1.25rem' }}>CORE LEADERSHIP</div>
         <div className="vx-team-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(196px,1fr))', gap: '1px', background: '#0d0d1a', marginBottom: '3.5rem' }}>
-          {core.map(m => <TeamCard key={m.name} member={m} onClick={() => setSel(m)} />)}
+          {core.map((m, i) => (
+            <div key={m.name} style={{
+              opacity: 1, transform: 'none',
+              animation: `vx-card-in 0.5s ease both`,
+              animationDelay: `${i * 0.08}s`,
+            }}>
+              <TeamCard member={m} onClick={() => setSel(m)} />
+            </div>
+          ))}
         </div>
 
         <div style={{ fontSize: '0.56rem', letterSpacing: '0.22em', color: '#333', fontFamily: "'Inter',sans-serif", marginBottom: '1.25rem' }}>ADVISORY BOARD</div>
         <div className="vx-team-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(196px,1fr))', gap: '1px', background: '#0d0d1a', marginBottom: '1.5rem' }}>
-          {advisors.map(m => <TeamCard key={m.name} member={m} onClick={() => setSel(m)} />)}
+          {advisors.map((m, i) => (
+            <div key={m.name} style={{ animation: `vx-card-in 0.5s ease both`, animationDelay: `${i * 0.1 + 0.3}s` }}>
+              <TeamCard member={m} onClick={() => setSel(m)} />
+            </div>
+          ))}
         </div>
 
         <div style={{ fontSize: '0.58rem', letterSpacing: '0.15em', color: '#222', fontFamily: "'Inter',sans-serif", textAlign: 'center' }}>CLICK ANY CARD TO VIEW FULL BIO</div>
@@ -828,6 +919,8 @@ export const VX_GLOBAL_STYLE = `
   @keyframes vx-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   @keyframes vx-dot { 0%,100%{opacity:.2} 50%{opacity:1} }
   @keyframes vx-skel { 0%,100%{opacity:.25} 50%{opacity:.55} }
+  @keyframes vx-card-in { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
+  @keyframes vx-slide-left { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:none; } }
   @media (max-width: 768px) {
     .vx-nav-tabs { display: none !important; }
     .vx-login-lnk { display: none !important; }
