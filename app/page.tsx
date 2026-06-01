@@ -10,11 +10,11 @@ const VaxonWidget      = lazy(() => import('@/components/VaxonWidget'))
 ───────────────────────────────────────────────────────────────*/
 type Tab = 'home' | 'about' | 'technology' | 'team' | 'news' | 'contact'
 
-type TeamMember = {
+export type TeamMember = {
   name: string; role: string; image?: string
   creds: string[]; linkedin?: string; bio?: string; isAdvisor?: boolean
 }
-type NewsItem = {
+export type NewsItem = {
   date: string; title: string; body: string
   source: string; link?: string; image?: string
 }
@@ -22,16 +22,7 @@ type NewsItem = {
 /* ─────────────────────────────────────────────────────────────
    DATA
 ───────────────────────────────────────────────────────────────*/
-const TABS: { id: Tab; label: string }[] = [
-  { id: 'home', label: 'HOME' },
-  { id: 'about', label: 'ABOUT' },
-  { id: 'technology', label: 'TECHNOLOGY' },
-  { id: 'team', label: 'TEAM' },
-  { id: 'news', label: 'NEWS' },
-  { id: 'contact', label: 'CONTACT' },
-]
-
-const CORE_TEAM: TeamMember[] = [
+export const CORE_TEAM: TeamMember[] = [
   {
     name: 'Dr. Steven P. Shepard', role: 'Co-Founder & CEO',
     image: '/vaxon/team-shepard.png',
@@ -69,7 +60,7 @@ const CORE_TEAM: TeamMember[] = [
   },
 ]
 
-const ADVISORS: TeamMember[] = [
+export const ADVISORS: TeamMember[] = [
   {
     name: 'Lt. Gen. Joseph Anderson', role: 'Advisory Board',
     image: '/vaxon/team-anderson.png',
@@ -87,7 +78,7 @@ const ADVISORS: TeamMember[] = [
   },
 ]
 
-const NEWS: NewsItem[] = [
+export const NEWS: NewsItem[] = [
   {
     date: 'APR 23 2026', title: 'UNIVITY Raises 27M EUR for VLEO 5G Connectivity',
     body: 'Paris-based UNIVITY secured Series A funding to advance VLEO 5G demonstration and commercial deployment by 2028, signaling strong investor confidence in the VLEO connectivity market that Vaxon is positioned to lead in the US defense and commercial sectors.',
@@ -153,7 +144,7 @@ function LoadingScreen({ done }: { done: boolean }) {
 /* ─────────────────────────────────────────────────────────────
    STARFIELD
 ───────────────────────────────────────────────────────────────*/
-function StarField() {
+export function StarField() {
   const ref = useRef<HTMLCanvasElement>(null)
   useEffect(() => {
     const c = ref.current; if (!c) return
@@ -183,9 +174,18 @@ function StarField() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   NAV
+   NAV — links to dedicated pages
 ───────────────────────────────────────────────────────────────*/
-function Nav({ active }: { active: Tab }) {
+const NAV_LINKS = [
+  { id: 'home',       label: 'HOME',       href: '/' },
+  { id: 'about',      label: 'ABOUT',      href: '/about' },
+  { id: 'technology', label: 'TECHNOLOGY', href: '/technology' },
+  { id: 'team',       label: 'TEAM',       href: '/team' },
+  { id: 'news',       label: 'NEWS',       href: '/news' },
+  { id: 'contact',    label: 'CONTACT',    href: '/contact' },
+]
+
+export function Nav({ active }: { active: Tab }) {
   const [dark, setDark] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -194,12 +194,6 @@ function Nav({ active }: { active: Tab }) {
     window.addEventListener('scroll', fn, { passive: true })
     return () => window.removeEventListener('scroll', fn)
   }, [])
-
-  const go = (t: Tab) => {
-    setMenuOpen(false)
-    const el = document.getElementById('vxs-' + t)
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
-  }
 
   return (
     <nav style={{
@@ -210,22 +204,23 @@ function Nav({ active }: { active: Tab }) {
       borderBottom: `1px solid ${dark ? '#131323' : 'transparent'}`,
       transition: 'background 0.3s, border-color 0.3s',
     }}>
-      {/* Logo */}
-      <button onClick={() => go('home')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center' }}>
+      {/* Logo → home */}
+      <a href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
         <img src="/vaxon/logo.png" alt="Vaxon Space" style={{ height: 30, width: 'auto' }} />
-      </button>
+      </a>
 
       {/* Desktop tabs */}
       <div className="vx-nav-tabs" style={{ margin: '0 auto', display: 'flex', gap: '0.15rem' }}>
-        {TABS.map(t => (
-          <button key={t.id} onClick={() => go(t.id)} style={{
-            background: 'none', border: 'none', cursor: 'pointer',
+        {NAV_LINKS.map(t => (
+          <a key={t.id} href={t.href} style={{
+            textDecoration: 'none',
+            display: 'inline-block',
             padding: '0.5rem 1.1rem',
             fontSize: '0.6rem', letterSpacing: '0.2em', fontFamily: "'Inter',sans-serif",
             color: active === t.id ? '#fff' : '#4a4a5e',
             borderBottom: active === t.id ? '1px solid #c8102e' : '1px solid transparent',
             transition: 'color 0.2s',
-          }}>{t.label}</button>
+          }}>{t.label}</a>
         ))}
       </div>
 
@@ -244,12 +239,12 @@ function Nav({ active }: { active: Tab }) {
       {/* Mobile overlay */}
       {menuOpen && (
         <div style={{ position: 'fixed', inset: 0, top: 64, background: 'rgba(2,2,13,0.98)', zIndex: 999, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '2.5rem' }}>
-          {TABS.map(t => (
-            <button key={t.id} onClick={() => go(t.id)} style={{
-              background: 'none', border: 'none', cursor: 'pointer',
+          {NAV_LINKS.map(t => (
+            <a key={t.id} href={t.href} onClick={() => setMenuOpen(false)} style={{
+              textDecoration: 'none',
               fontFamily: "'Bitter',Georgia,serif", fontSize: '1.8rem', fontWeight: 700,
               color: active === t.id ? '#fff' : '#333', letterSpacing: '0.05em',
-            }}>{t.label}</button>
+            }}>{t.label}</a>
           ))}
         </div>
       )}
@@ -291,10 +286,9 @@ function VideoModal({ url, onClose }: { url: string; onClose: () => void }) {
 /* ─────────────────────────────────────────────────────────────
    HOME SECTION
 ───────────────────────────────────────────────────────────────*/
-function HomeSection({ onNav }: { onNav: (t: Tab) => void }) {
+function HomeSection() {
   const [videoOk, setVideoOk] = useState(false)
   const [showStory, setShowStory] = useState(false)
-  // Update this URL once Dr. Shepard provides the actual 60-sec video link
   const PITCH_URL = 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0'
 
   return (
@@ -325,10 +319,10 @@ function HomeSection({ onNav }: { onNav: (t: Tab) => void }) {
           </p>
 
           <div style={{ display: 'flex', gap: '0.875rem', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '2.5rem' }}>
-            <button onClick={() => { const el = document.getElementById('vxs-technology'); if (el) el.scrollIntoView({ behavior: 'smooth' }) }} style={{ background: '#c8102e', color: '#fff', border: 'none', cursor: 'pointer', padding: '0.875rem 2.25rem', fontSize: '0.62rem', fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", transition: 'background 0.2s' }}
+            <a href="/technology" style={{ background: '#c8102e', color: '#fff', border: 'none', cursor: 'pointer', padding: '0.875rem 2.25rem', fontSize: '0.62rem', fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", transition: 'background 0.2s', textDecoration: 'none', display: 'inline-block' }}
               onMouseEnter={e => (e.currentTarget.style.background = '#a50d26')}
               onMouseLeave={e => (e.currentTarget.style.background = '#c8102e')}
-            >EXPLORE TECHNOLOGY</button>
+            >EXPLORE TECHNOLOGY</a>
             <a href="https://calendly.com/vaxonspace" target="_blank" rel="noopener noreferrer" style={{ background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.18)', cursor: 'pointer', padding: '0.875rem 2.25rem', fontSize: '0.62rem', fontWeight: 500, letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", textDecoration: 'none', display: 'inline-flex', alignItems: 'center', transition: 'border-color 0.2s' }}
               onMouseEnter={e => (e.currentTarget.style.borderColor = '#c8102e')}
               onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)')}
@@ -369,9 +363,9 @@ function HomeSection({ onNav }: { onNav: (t: Tab) => void }) {
 /* ─────────────────────────────────────────────────────────────
    ABOUT SECTION
 ───────────────────────────────────────────────────────────────*/
-function AboutSection() {
+export function AboutSection() {
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem 5rem' }}>
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
       <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>ABOUT VAXON SPACE</div>
       <div style={{ width: 36, height: 1, background: '#1e1e30', marginBottom: '3.5rem' }} />
 
@@ -454,7 +448,7 @@ function AboutSection() {
 /* ─────────────────────────────────────────────────────────────
    TECHNOLOGY SECTION
 ───────────────────────────────────────────────────────────────*/
-function TechnologySection() {
+export function TechnologySection() {
   const [expanded, setExpanded] = useState<number | null>(null)
   const caps = [
     { tag: 'ISR', title: 'Persistent Surveillance', body: 'Continuous, wide-area intelligence, surveillance, and reconnaissance at sub-30cm resolution. Revisit any target within minutes, not hours. Ideal for border security, contested zone monitoring, and real-time battle-space awareness.' },
@@ -466,13 +460,13 @@ function TechnologySection() {
   ]
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem 5rem' }}>
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
       <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>TECHNOLOGY</div>
       <div style={{ width: 36, height: 1, background: '#1e1e30', marginBottom: '3.5rem' }} />
 
       <div className="vx-tech-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start' }}>
         {/* 3D Satellite */}
-        <div style={{ position: 'sticky', top: 0 }}>
+        <div style={{ position: 'sticky', top: 80 }}>
           <Suspense fallback={
             <div style={{ height: 520, background: '#050512', border: '1px solid #131323', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
               {[0,1,2,3].map(i => <div key={i} style={{ width: 160 - i*30, height: 6, background: '#111', borderRadius: 2, animation: 'vx-skel 1.5s ease infinite', animationDelay: `${i*0.2}s` }} />)}
@@ -515,7 +509,7 @@ function TechnologySection() {
 /* ─────────────────────────────────────────────────────────────
    TEAM MODAL
 ───────────────────────────────────────────────────────────────*/
-function TeamModal({ member, onClose }: { member: TeamMember; onClose: () => void }) {
+export function TeamModal({ member, onClose }: { member: TeamMember; onClose: () => void }) {
   useEffect(() => {
     const fn = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
     document.addEventListener('keydown', fn)
@@ -529,7 +523,9 @@ function TeamModal({ member, onClose }: { member: TeamMember; onClose: () => voi
 
         <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '2rem', alignItems: 'flex-start' }}>
           {member.image && (
-            <img src={member.image} alt={member.name} style={{ width: 84, height: 84, objectFit: 'cover', objectPosition: 'top', border: '1px solid #1a1a2e', flexShrink: 0 }} />
+            <div style={{ width: 84, height: 84, borderRadius: '50%', overflow: 'hidden', flexShrink: 0, border: '1px solid #1a1a2e', background: '#05050e' }}>
+              <img src={member.image} alt={member.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }} />
+            </div>
           )}
           <div>
             <div style={{ fontSize: '0.55rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '0.4rem' }}>
@@ -565,16 +561,33 @@ function TeamModal({ member, onClose }: { member: TeamMember; onClose: () => voi
 /* ─────────────────────────────────────────────────────────────
    TEAM CARD
 ───────────────────────────────────────────────────────────────*/
-function TeamCard({ member, onClick }: { member: TeamMember; onClick: () => void }) {
+export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () => void }) {
   const [hov, setHov] = useState(false)
   return (
     <div onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
       style={{ background: hov ? '#090918' : '#02020d', border: '1px solid ' + (hov ? '#1a1a2e' : '#0d0d1a'), cursor: 'pointer', overflow: 'hidden', transition: 'all 0.2s', textAlign: 'center', padding: '1.75rem 1.25rem 1.25rem' }}>
       {/* Circular photo */}
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
-        <div style={{ width: 96, height: 96, borderRadius: '50%', overflow: 'hidden', border: `2px solid ${hov ? '#c8102e' : '#1a1a2e'}`, transition: 'border-color 0.2s', flexShrink: 0, background: '#05050e' }}>
+        <div style={{
+          width: 100, height: 100, borderRadius: '50%',
+          overflow: 'hidden', flexShrink: 0,
+          border: `2px solid ${hov ? '#c8102e' : '#1a1a2e'}`,
+          transition: 'border-color 0.2s',
+          background: '#05050e',
+        }}>
           {member.image
-            ? <img src={member.image} alt={member.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', transition: 'transform 0.4s, filter 0.3s', transform: hov ? 'scale(1.06)' : 'scale(1)', filter: hov ? 'none' : 'grayscale(15%)' }} />
+            ? <img
+                src={member.image}
+                alt={member.name}
+                style={{
+                  width: '100%', height: '100%',
+                  objectFit: 'cover', objectPosition: 'center top',
+                  display: 'block',
+                  transition: 'transform 0.4s, filter 0.3s',
+                  transform: hov ? 'scale(1.06)' : 'scale(1)',
+                  filter: hov ? 'none' : 'grayscale(15%)',
+                }}
+              />
             : <div style={{ width: '100%', height: '100%', background: '#111' }} />
           }
         </div>
@@ -590,12 +603,12 @@ function TeamCard({ member, onClick }: { member: TeamMember; onClick: () => void
 /* ─────────────────────────────────────────────────────────────
    TEAM SECTION
 ───────────────────────────────────────────────────────────────*/
-function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: TeamMember[] }) {
+export function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: TeamMember[] }) {
   const [sel, setSel] = useState<TeamMember | null>(null)
   return (
     <>
       {sel && <TeamModal member={sel} onClose={() => setSel(null)} />}
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem 5rem' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
         <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>OUR TEAM</div>
         <div style={{ width: 36, height: 1, background: '#1e1e30', marginBottom: '1.5rem' }} />
         <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3.5vw,3rem)', fontWeight: 900, color: '#fff', margin: '0 0 0.75rem' }}>
@@ -624,11 +637,11 @@ function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: TeamMem
 /* ─────────────────────────────────────────────────────────────
    NEWS SECTION
 ───────────────────────────────────────────────────────────────*/
-function NewsSection({ news }: { news: NewsItem[] }) {
+export function NewsSection({ news }: { news: NewsItem[] }) {
   const featured = news[0]
   const rest = news.slice(1)
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem 5rem' }}>
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
       <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>NEWS & PRESS</div>
       <div style={{ width: 36, height: 1, background: '#1e1e30', marginBottom: '3.5rem' }} />
 
@@ -705,14 +718,14 @@ function NewsSection({ news }: { news: NewsItem[] }) {
 /* ─────────────────────────────────────────────────────────────
    CONTACT SECTION
 ───────────────────────────────────────────────────────────────*/
-function ContactSection() {
+export function ContactSection() {
   const [f, setF] = useState({ name: '', email: '', org: '', msg: '' })
   const [sent, setSent] = useState(false)
 
   const iStyle: React.CSSProperties = { width: '100%', background: '#060614', border: '1px solid #1a1a2e', color: '#fff', padding: '0.875rem 1rem', fontSize: '0.85rem', fontFamily: "'Inter',sans-serif", outline: 'none', boxSizing: 'border-box' }
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem 5rem' }}>
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
       <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>CONTACT</div>
       <div style={{ width: 36, height: 1, background: '#1e1e30', marginBottom: '3.5rem' }} />
 
@@ -761,9 +774,9 @@ function ContactSection() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   LOGOS SECTION (Organizations + Universities)
+   LOGOS SECTION
 ───────────────────────────────────────────────────────────────*/
-function LogosSection() {
+export function LogosSection() {
   const orgs = [
     { src: '/vaxon/logos/nro.svg', alt: 'NRO' },
     { src: '/vaxon/logos/army.svg', alt: 'US Army' },
@@ -806,6 +819,30 @@ function LogosSection() {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   GLOBAL STYLES
+───────────────────────────────────────────────────────────────*/
+export const VX_GLOBAL_STYLE = `
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; background: #02020d; color: #fff; overflow-x: hidden; font-family: 'Inter', sans-serif; }
+  html { scroll-behavior: smooth; }
+  @keyframes vx-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes vx-dot { 0%,100%{opacity:.2} 50%{opacity:1} }
+  @keyframes vx-skel { 0%,100%{opacity:.25} 50%{opacity:.55} }
+  @media (max-width: 768px) {
+    .vx-nav-tabs { display: none !important; }
+    .vx-login-lnk { display: none !important; }
+    .vx-burger { display: flex !important; }
+    .vx-about-grid { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
+    .vx-4col { grid-template-columns: 1fr 1fr !important; }
+    .vx-tech-grid { grid-template-columns: 1fr !important; }
+    .vx-team-grid { grid-template-columns: repeat(2,1fr) !important; }
+    .vx-contact-grid { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
+    .vx-feat { grid-template-columns: 1fr !important; }
+    .vx-news-grid { grid-template-columns: 1fr !important; }
+  }
+`
+
+/* ─────────────────────────────────────────────────────────────
    MAIN PAGE
 ───────────────────────────────────────────────────────────────*/
 export default function VaxonPage() {
@@ -829,7 +866,6 @@ export default function VaxonPage() {
       const max = document.documentElement.scrollHeight - window.innerHeight
       setScrollPct(max > 0 ? (sy / max) * 100 : 0)
 
-      // Find active section
       for (const id of [...ids].reverse()) {
         const el = document.getElementById('vxs-' + id)
         if (el && sy >= el.offsetTop - 120) { setActive(id); break }
@@ -866,26 +902,7 @@ export default function VaxonPage() {
 
   return (
     <>
-      <style>{`
-        *, *::before, *::after { box-sizing: border-box; }
-        body { margin: 0; background: #02020d; color: #fff; overflow-x: hidden; font-family: 'Inter', sans-serif; }
-        html { scroll-behavior: smooth; }
-        @keyframes vx-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-        @keyframes vx-dot { 0%,100%{opacity:.2} 50%{opacity:1} }
-        @keyframes vx-skel { 0%,100%{opacity:.25} 50%{opacity:.55} }
-        @media (max-width: 768px) {
-          .vx-nav-tabs { display: none !important; }
-          .vx-login-lnk { display: none !important; }
-          .vx-burger { display: flex !important; }
-          .vx-about-grid { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
-          .vx-4col { grid-template-columns: 1fr 1fr !important; }
-          .vx-tech-grid { grid-template-columns: 1fr !important; }
-          .vx-team-grid { grid-template-columns: repeat(2,1fr) !important; }
-          .vx-contact-grid { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
-          .vx-feat { grid-template-columns: 1fr !important; }
-          .vx-news-grid { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
+      <style>{VX_GLOBAL_STYLE}</style>
 
       <LoadingScreen done={loaded} />
       <StarField />
@@ -898,7 +915,7 @@ export default function VaxonPage() {
       {/* pt-16 to clear fixed nav */}
       <div style={{ paddingTop: 64 }}>
         <Section id="home">
-          <HomeSection onNav={() => {}} />
+          <HomeSection />
         </Section>
 
         <Section id="about">
