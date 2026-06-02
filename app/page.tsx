@@ -349,60 +349,147 @@ function VideoModal({ url, onClose }: { url: string; onClose: () => void }) {
 function HomeSection() {
   const [videoOk, setVideoOk] = useState(false)
   const [showStory, setShowStory] = useState(false)
-  const PITCH_URL = 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0'
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const PITCH_URL = 'https://www.youtube.com/embed/piWj3lWfUEM?autoplay=1&rel=0'
+
+  // Ensure autoplay fires even if browser delays it
+  useEffect(() => {
+    const v = videoRef.current
+    if (!v) return
+    v.play().catch(() => {})
+  }, [])
 
   return (
     <>
       {showStory && <VideoModal url={PITCH_URL} onClose={() => setShowStory(false)} />}
-      <div style={{ position: 'relative', height: 'calc(100vh - 64px)', overflow: 'hidden' }}>
-        {/* Video bg */}
-        <video autoPlay muted loop playsInline onCanPlay={() => setVideoOk(true)}
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 1, opacity: videoOk ? 0.3 : 0, transition: 'opacity 2s ease' }}>
+      <div style={{ position: 'relative', height: 'calc(100vh - 64px)', overflow: 'hidden', background: '#02020d' }}>
+
+        {/* ── Cinematic background video ── */}
+        <video
+          ref={videoRef}
+          autoPlay muted loop playsInline
+          onCanPlay={() => setVideoOk(true)}
+          style={{
+            position: 'absolute', inset: 0,
+            width: '100%', height: '100%',
+            objectFit: 'cover', objectPosition: 'center center',
+            zIndex: 1,
+            opacity: videoOk ? 0.52 : 0,
+            transition: 'opacity 2.4s cubic-bezier(0.4,0,0.2,1)',
+            willChange: 'opacity',
+          }}
+        >
           <source src="/vaxon/hero-video.mp4" type="video/mp4" />
         </video>
 
-        {/* Gradient */}
-        <div style={{ position: 'absolute', inset: 0, zIndex: 2, background: 'linear-gradient(to bottom, rgba(2,2,13,0.5) 0%, rgba(2,2,13,0.15) 50%, rgba(2,2,13,0.85) 100%)' }} />
+        {/* ── Cinematic overlays ── */}
+        {/* Top vignette — keeps nav readable */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
+          background: 'linear-gradient(to bottom, rgba(2,2,13,0.72) 0%, rgba(2,2,13,0.08) 28%, rgba(2,2,13,0.0) 52%, rgba(2,2,13,0.55) 78%, rgba(2,2,13,0.96) 100%)' }} />
+        {/* Side vignettes — pull focus to center */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse 80% 100% at 50% 50%, transparent 50%, rgba(2,2,13,0.55) 100%)' }} />
+        {/* Subtle red tint at bottom — brand color bleed */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '30%', zIndex: 2, pointerEvents: 'none',
+          background: 'linear-gradient(to top, rgba(20,2,6,0.65) 0%, transparent 100%)' }} />
 
-        {/* Content */}
+        {/* ── Content ── */}
         <div style={{ position: 'relative', zIndex: 3, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 2rem 5rem' }}>
-          <div style={{ fontSize: '0.58rem', letterSpacing: '0.32em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '2rem' }}>
+
+          {/* Eyebrow */}
+          <div style={{
+            fontSize: '0.58rem', letterSpacing: '0.32em', color: '#c8102e',
+            fontFamily: "'Inter',sans-serif", marginBottom: '2rem',
+            opacity: videoOk ? 1 : 0, transform: videoOk ? 'none' : 'translateY(8px)',
+            transition: 'opacity 1s ease 0.6s, transform 1s ease 0.6s',
+          }}>
             VERY LOW EARTH ORBIT — 180–250KM ALTITUDE
           </div>
 
-          <h1 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2.2rem,5.5vw,4.8rem)', fontWeight: 900, lineHeight: 1.05, color: '#fff', margin: '0 0 1.5rem', maxWidth: 860, letterSpacing: '-0.01em' }}>
+          <h1 style={{
+            fontFamily: "'Bitter',Georgia,serif",
+            fontSize: 'clamp(2.4rem,5.8vw,5.2rem)',
+            fontWeight: 900, lineHeight: 1.04, color: '#fff',
+            margin: '0 0 1.5rem', maxWidth: 900, letterSpacing: '-0.02em',
+            textShadow: '0 2px 40px rgba(0,0,0,0.6)',
+            opacity: videoOk ? 1 : 0, transform: videoOk ? 'none' : 'translateY(12px)',
+            transition: 'opacity 1s ease 0.8s, transform 1s ease 0.8s',
+          }}>
             Real-Time Missile Defense<br />and Connectivity Today
           </h1>
 
-          <p style={{ fontFamily: "'Inter',sans-serif", fontSize: 'clamp(0.85rem,1.5vw,1.05rem)', color: '#6b7280', lineHeight: 1.75, maxWidth: 520, margin: '0 0 3rem', fontWeight: 300 }}>
-            Vaxon Space operates air-breathing satellites at 180–250km — 10× closer than traditional LEO, delivering unprecedented resolution, latency, and persistence.
+          <p style={{
+            fontFamily: "'Inter',sans-serif",
+            fontSize: 'clamp(0.85rem,1.5vw,1.05rem)',
+            color: 'rgba(255,255,255,0.62)', lineHeight: 1.8,
+            maxWidth: 520, margin: '0 0 3rem', fontWeight: 300,
+            textShadow: '0 1px 12px rgba(0,0,0,0.8)',
+            opacity: videoOk ? 1 : 0, transform: videoOk ? 'none' : 'translateY(8px)',
+            transition: 'opacity 1s ease 1s, transform 1s ease 1s',
+          }}>
+            Vaxon Space operates air-breathing satellites at 180–250km — 10× closer than traditional LEO,
+            delivering unprecedented resolution, latency, and persistence.
           </p>
 
-          <div style={{ display: 'flex', gap: '0.875rem', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '2.5rem' }}>
-            <a href="/technology" style={{ background: '#c8102e', color: '#fff', border: 'none', cursor: 'pointer', padding: '0.875rem 2.25rem', fontSize: '0.62rem', fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", transition: 'background 0.2s', textDecoration: 'none', display: 'inline-block' }}
-              onMouseEnter={e => (e.currentTarget.style.background = '#a50d26')}
-              onMouseLeave={e => (e.currentTarget.style.background = '#c8102e')}
+          <div style={{
+            display: 'flex', gap: '0.875rem', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '2.5rem',
+            opacity: videoOk ? 1 : 0, transform: videoOk ? 'none' : 'translateY(8px)',
+            transition: 'opacity 1s ease 1.2s, transform 1s ease 1.2s',
+          }}>
+            <a href="/technology" style={{
+              background: '#c8102e', color: '#fff', border: 'none', cursor: 'pointer',
+              padding: '0.9rem 2.5rem', fontSize: '0.62rem', fontWeight: 600,
+              letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif",
+              textDecoration: 'none', display: 'inline-block',
+              boxShadow: '0 0 32px rgba(200,16,46,0.35)',
+              transition: 'background 0.2s, box-shadow 0.2s',
+            }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background='#a50d26'; (e.currentTarget as HTMLAnchorElement).style.boxShadow='0 0 48px rgba(200,16,46,0.5)' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background='#c8102e'; (e.currentTarget as HTMLAnchorElement).style.boxShadow='0 0 32px rgba(200,16,46,0.35)' }}
             >EXPLORE TECHNOLOGY</a>
-            <a href="https://calendly.com/vaxonspace" target="_blank" rel="noopener noreferrer" style={{ background: 'transparent', color: '#fff', border: '1px solid rgba(255,255,255,0.18)', cursor: 'pointer', padding: '0.875rem 2.25rem', fontSize: '0.62rem', fontWeight: 500, letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", textDecoration: 'none', display: 'inline-flex', alignItems: 'center', transition: 'border-color 0.2s' }}
-              onMouseEnter={e => (e.currentTarget.style.borderColor = '#c8102e')}
-              onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)')}
+            <a href="https://calendly.com/stevenpshepard-vaxonspace/30-1" target="_blank" rel="noopener noreferrer" style={{
+              background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(8px)',
+              color: '#fff', border: '1px solid rgba(255,255,255,0.22)', cursor: 'pointer',
+              padding: '0.9rem 2.5rem', fontSize: '0.62rem', fontWeight: 500,
+              letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif",
+              textDecoration: 'none', display: 'inline-flex', alignItems: 'center',
+              transition: 'border-color 0.2s, background 0.2s',
+            }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor='#c8102e'; (e.currentTarget as HTMLAnchorElement).style.background='rgba(200,16,46,0.1)' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.borderColor='rgba(255,255,255,0.22)'; (e.currentTarget as HTMLAnchorElement).style.background='rgba(255,255,255,0.06)' }}
             >REQUEST A BRIEFING</a>
           </div>
 
-          {/* Watch Our Story */}
-          <button onClick={() => setShowStory(true)} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'rgba(255,255,255,0.5)', fontFamily: "'Inter',sans-serif", fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', transition: 'color 0.2s' }}
+          {/* Watch Our Story — now opens Dr. Shepard interview */}
+          <button onClick={() => setShowStory(true)} style={{
+            background: 'none', border: 'none', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: '0.75rem',
+            color: 'rgba(255,255,255,0.45)', fontFamily: "'Inter',sans-serif",
+            fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase',
+            transition: 'color 0.2s',
+            opacity: videoOk ? 1 : 0, transition2: 'opacity 1s ease 1.4s',
+          } as React.CSSProperties}
             onMouseEnter={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.9)')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.5)')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.45)')}
           >
-            <div style={{ width: 34, height: 34, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <div style={{ width: 0, height: 0, borderTop: '5px solid transparent', borderBottom: '5px solid transparent', borderLeft: '9px solid currentColor', marginLeft: 2 }} />
+            <div style={{
+              width: 38, height: 38, borderRadius: '50%',
+              border: '1px solid rgba(255,255,255,0.28)',
+              background: 'rgba(255,255,255,0.05)',
+              backdropFilter: 'blur(4px)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              transition: 'border-color 0.2s, background 0.2s',
+            }}>
+              <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12" style={{ marginLeft: 2 }}>
+                <path d="M8 5v14l11-7z"/>
+              </svg>
             </div>
-            WATCH OUR STORY
+            WATCH CEO INTERVIEW
           </button>
         </div>
 
-        {/* Stats strip */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 3, display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', background: 'rgba(2,2,13,0.85)', backdropFilter: 'blur(12px)', borderTop: '1px solid #131323' }}>
+        {/* Stats strip — glassmorphism */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 3, display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', background: 'rgba(2,2,13,0.7)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
           {[
             { v: '180–250km', l: 'Orbital Altitude' },
             { v: '<15ms',     l: 'Signal Latency' },
