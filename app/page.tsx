@@ -400,12 +400,71 @@ function HomeSection() {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   ALTITUDE BARS — standalone component with reliable animation
+───────────────────────────────────────────────────────────────*/
+const TIERS = [
+  { l: 'GEO',  km: '35,786 km',  pct: 100, note: 'Weather / Comms',    hi: false },
+  { l: 'MEO',  km: '8,000 km',   pct: 68,  note: 'GPS Constellation',  hi: false },
+  { l: 'LEO',  km: '400–600 km', pct: 38,  note: 'ISS / Starlink',     hi: false },
+  { l: 'VLEO', km: '180–250 km', pct: 10,  note: 'Vaxon Space ★',      hi: true  },
+]
+
+function AltitudeBars() {
+  const ref = useRef<HTMLDivElement>(null)
+  const [animated, setAnimated] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current; if (!el) return
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) {
+        obs.disconnect()
+        // Double rAF: guarantees 0% state is painted before transition fires
+        requestAnimationFrame(() => requestAnimationFrame(() => setAnimated(true)))
+      }
+    }, { threshold: 0.2 })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
+
+  return (
+    <div ref={ref} style={{ borderTop: '1px solid #131323', paddingTop: '3rem' }}>
+      <div style={{ fontSize: '0.58rem', letterSpacing: '0.25em', color: '#333', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '2.5rem' }}>
+        ALTITUDE COMPARISON — shorter bar = closer to Earth
+      </div>
+      {TIERS.map((tier, i) => (
+        <div key={i} style={{
+          display: 'flex', alignItems: 'center', gap: '1.25rem', marginBottom: '1.4rem',
+          opacity: animated ? 1 : 0,
+          transform: animated ? 'none' : 'translateX(-10px)',
+          transition: 'opacity 0.45s ease, transform 0.45s ease',
+          transitionDelay: `${i * 0.1}s`,
+        }}>
+          <div style={{ width: 44, fontSize: '0.58rem', letterSpacing: '0.12em', color: tier.hi ? '#fff' : '#4a4a5e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", flexShrink: 0 }}>
+            {tier.l}
+          </div>
+          <div style={{ flex: 1, height: tier.hi ? 3 : 2, background: '#0d0d1a', position: 'relative', borderRadius: 1 }}>
+            <div style={{
+              position: 'absolute', left: 0, top: 0, height: '100%', borderRadius: 1,
+              width: animated ? `${tier.pct}%` : '0%',
+              background: tier.hi ? '#c8102e' : '#1e2040',
+              transition: 'width 1.4s cubic-bezier(0.22, 1, 0.36, 1)',
+              transitionDelay: `${i * 0.12 + 0.1}s`,
+              boxShadow: tier.hi ? '0 0 8px rgba(200,16,46,0.4)' : 'none',
+            }} />
+          </div>
+          <div style={{ width: 92, fontSize: '0.6rem', color: '#4a4a5e', fontFamily: "'Inter',sans-serif", textAlign: 'right', flexShrink: 0 }}>{tier.km}</div>
+          <div style={{ width: 140, fontSize: '0.58rem', color: tier.hi ? '#c8102e' : '#2a2a3e', fontFamily: "'Inter',sans-serif", flexShrink: 0 }}>{tier.note}</div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
    ABOUT SECTION
 ───────────────────────────────────────────────────────────────*/
 export function AboutSection() {
-  const { ref: statsRef, visible: statsVisible } = useReveal()
   const { ref: cardsRef, visible: cardsVisible } = useReveal()
-  const { ref: barsRef, visible: barsVisible } = useReveal()
 
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
@@ -470,35 +529,7 @@ export function AboutSection() {
       </div>
 
       {/* Altitude comparison — animated bars on scroll */}
-      <div ref={barsRef} style={{ borderTop: '1px solid #131323', paddingTop: '3rem' }}>
-        <div style={{ fontSize: '0.58rem', letterSpacing: '0.25em', color: '#333', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '2rem' }}>ALTITUDE COMPARISON</div>
-        {[
-          { l: 'GEO', km: '35,786 km', pct: 100, note: 'Weather / Comms', hi: false },
-          { l: 'MEO', km: '8,000 km',  pct: 58,  note: 'GPS Constellation', hi: false },
-          { l: 'LEO', km: '400–600 km', pct: 28, note: 'ISS / Starlink',   hi: false },
-          { l: 'VLEO', km: '180–250 km', pct: 10, note: 'Vaxon Space ★',   hi: true },
-        ].map((tier, i) => (
-          <div key={i} style={{
-            display: 'flex', alignItems: 'center', gap: '1.25rem', marginBottom: '1.1rem',
-            opacity: barsVisible ? 1 : 0, transform: barsVisible ? 'none' : 'translateX(-12px)',
-            transition: 'opacity 0.5s, transform 0.5s',
-            transitionDelay: barsVisible ? `${i * 0.12}s` : '0s',
-          }}>
-            <div style={{ width: 48, fontSize: '0.58rem', letterSpacing: '0.12em', color: tier.hi ? '#fff' : '#4a4a5e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif" }}>{tier.l}</div>
-            <div style={{ flex: 1, height: 2, background: '#131323', position: 'relative', overflow: 'hidden' }}>
-              <div style={{
-                position: 'absolute', left: 0, top: 0, height: '100%',
-                width: barsVisible ? `${tier.pct}%` : '0%',
-                background: tier.hi ? '#c8102e' : '#1a1a2e',
-                transition: 'width 1.2s cubic-bezier(0.4,0,0.2,1)',
-                transitionDelay: barsVisible ? `${i * 0.15 + 0.2}s` : '0s',
-              }} />
-            </div>
-            <div style={{ width: 88, fontSize: '0.62rem', color: '#4a4a5e', fontFamily: "'Inter',sans-serif", textAlign: 'right' }}>{tier.km}</div>
-            <div style={{ width: 130, fontSize: '0.6rem', color: tier.hi ? '#c8102e' : '#2a2a3e', fontFamily: "'Inter',sans-serif" }}>{tier.note}</div>
-          </div>
-        ))}
-      </div>
+      <AltitudeBars />
     </div>
   )
 }
