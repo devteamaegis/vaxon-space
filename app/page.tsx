@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, lazy, Suspense, useCallback } from 'react'
 const SatelliteDiagram = lazy(() => import('@/components/SatelliteDiagram'))
 const EarthGlobeV2     = lazy(() => import('@/components/EarthGlobeV2'))
 const VaxonWidget      = lazy(() => import('@/components/VaxonWidget'))
+const SatelliteGlobe   = lazy(() => import('@/components/SatelliteGlobe'))
 
 /* ─────────────────────────────────────────────────────────────
    SCROLL REVEAL HOOK
@@ -117,45 +118,65 @@ export const ADVISORS: TeamMember[] = [
   },
 ]
 
+const WSIMG = 'https://img1.wsimg.com/isteam/ip/b6d77e34-40ce-4ade-86a8-3e868f7bc80c'
+
 export const NEWS: NewsItem[] = [
   {
-    date: 'APR 23 2026', title: 'UNIVITY Raises 27M EUR for VLEO 5G Connectivity',
+    date: 'APR 23 2026', title: 'UNIVITY Raises €27M for VLEO 5G Connectivity',
     body: 'Paris-based UNIVITY secured Series A funding to advance VLEO 5G demonstration and commercial deployment by 2028, signaling strong investor confidence in the VLEO connectivity market that Vaxon is positioned to lead in the US defense and commercial sectors.',
     source: 'EU STARTUPS',
-    image: 'https://img1.wsimg.com/isteam/ip/b6d77e34-40ce-4ade-86a8-3e868f7bc80c/UNIVITY.png',
+    image: `${WSIMG}/UNIVITY.png/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:800,cg:true`,
   },
   {
     date: 'MAR 16 2026', title: 'EDA Commits $17.9M to VLEO Military Research',
     body: 'The European Defence Agency launches a major initiative exploring VLEO for enhanced ISR and new mission architectures, validating the strategic importance of sub-200km satellite operations for modern defense applications worldwide.',
     source: 'VIA SATELLITE',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Sentinel-1_radar_vision.jpg/1280px-Sentinel-1_radar_vision.jpg',
+    image: `${WSIMG}/EDA-image.webp/:/cr=t:0%25,l:21.88%25,w:56.25%25,h:100%25/rs=w:800,h:400,cg:true`,
   },
   {
     date: 'FEB 25 2026', title: 'Vaxon Space CEO Discusses VLEO Momentum',
     body: 'Dr. Shepard joins Balerion Space Ventures to discuss ISR, missile defense sensing, and AI-enabled space capabilities. The conversation covers ABEP technology, the commercial satellite market, Vaxon\'s competitive advantages, and the company\'s near-term roadmap.',
     source: 'YOUTUBE',
-    link: 'https://www.youtube.com/@balerionspaceventures',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/ISS_and_Endeavour_seen_from_the_Soyuz_TMA-20_spacecraft_14.jpg/1280px-ISS_and_Endeavour_seen_from_the_Soyuz_TMA-20_spacecraft_14.jpg',
+    link: 'https://www.youtube.com/watch?v=piWj3lWfUEM',
+    image: 'https://img.youtube.com/vi/piWj3lWfUEM/maxresdefault.jpg',
   },
   {
     date: 'FEB 05 2026', title: 'Vaxon Joins Starburst / IAI Cohort 4',
     body: 'Selected for the IAI Catalyst cohort focused on autonomous systems, advanced sensing, AI computing, and VLEO satellites. Vaxon joins a prestigious group of defense-focused startups advancing next-generation space capabilities for US and allied forces.',
     source: 'LINKEDIN',
     link: 'https://www.linkedin.com/company/vaxon-space',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/The_Earth_seen_from_Apollo_17.jpg/1280px-The_Earth_seen_from_Apollo_17.jpg',
+    image: `${WSIMG}/IAI_Kickoff.jpg/:/cr=t:0%25,l:10.87%25,w:56.25%25,h:100%25/rs=w:800,h:400,cg:true`,
   },
   {
     date: 'JAN 14 2026', title: 'AIAA SciTech 2026 VLEO Panel',
     body: 'Dr. Shepard spoke on ABEP, emerging VLEO use cases, and growing alignment across academia, industry, and government. The panel highlighted the maturation of VLEO technology and its increasing relevance for both defense and commercial applications.',
     source: 'LINKEDIN',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Bluelight.jpg/1280px-Bluelight.jpg',
+    image: `${WSIMG}/AIAA%20ASCEND%202026.jpg/:/cr=t:0%25,l:12.07%25,w:75%25,h:100%25/rs=w:800,h:400,cg:true`,
   },
   {
     date: 'NOV 19 2025', title: 'Redwire Awarded $44M DARPA ABEP Contract',
     body: 'Redwire receives Phase 2 DARPA contract for air-breathing satellite development, validating ABEP as a defense priority. This contract confirms the maturation of air-breathing electric propulsion technology that forms the technical foundation of Vaxon\'s propulsion system.',
     source: 'SPACENEWS',
     link: 'https://spacenews.com',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Redwire_Space_logo.jpg/1280px-Redwire_Space_logo.jpg',
+    image: `${WSIMG}/Redwire.webp/:/cr=t:0%25,l:18.97%25,w:62.05%25,h:100%25/rs=w:800,h:400,cg:true`,
+  },
+  {
+    date: 'OCT 2025', title: "Why This Space Startup Flies Where Others Can't Survive",
+    body: 'Deep dive into how Vaxon Space harnesses atmospheric drag as a feature, operating where no other satellite can survive and delivering unprecedented ISR and connectivity from ultra-low orbit.',
+    source: 'VAXON SPACE',
+    image: `${WSIMG}/Vaxon.jpg/:/rs=w:800,h:400,cg:true,m/cr=w:800,h:400`,
+  },
+  {
+    date: 'SEP 2025', title: 'Spanish Startup Wins $9M for VLEO Satellite Tech',
+    body: 'Kreios Space raises funding to develop VLEO satellite technology, joining a growing global ecosystem of companies validating the commercial and defense case for sub-250km orbital operations.',
+    source: 'TECH CRUNCH',
+    image: `${WSIMG}/satellite_kreios.jpg/:/cr=t:0%25,l:8.47%25,w:64.97%25,h:100%25/rs=w:800,h:400,cg:true`,
+  },
+  {
+    date: 'AUG 2025', title: 'DeepSat Secures USAF $1.25M SBIR for VLEO Constellation',
+    body: 'DeepSat wins US Air Force Small Business Innovation Research contract to develop a VLEO constellation architecture, further confirming DoD interest in persistent low-altitude space-based intelligence assets.',
+    source: 'DEFENSE NEWS',
+    image: `${WSIMG}/Deepsat.jpg/:/cr=t:0%25,l:15.71%25,w:68.58%25,h:100%25/rs=w:800,h:400,cg:true`,
   },
 ]
 
@@ -591,7 +612,7 @@ export function TechnologySection() {
         </div>
 
         {/* Capabilities */}
-        <div>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
           <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.6rem,2.8vw,2.4rem)', fontWeight: 900, color: '#fff', lineHeight: 1.2, margin: '0 0 2.5rem' }}>
             Six Mission-Critical Capabilities
           </h2>
@@ -610,6 +631,34 @@ export function TechnologySection() {
               </div>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* Interactive constellation globe */}
+      <div style={{ marginTop: '4rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem', padding: '0 0 0.5rem', borderBottom: '1px solid #131323' }}>
+          <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif" }}>LIVE CONSTELLATION SIMULATION</div>
+        </div>
+        <p style={{ color: '#4a4a5e', fontSize: '0.78rem', lineHeight: 1.7, maxWidth: 560, marginBottom: '1.5rem', fontFamily: "'Inter',sans-serif" }}>
+          Interactive VLEO model. Toggle ISR coverage, Golden Dome intercept, debris environment, and mesh network architecture.
+        </p>
+        <Suspense fallback={<div style={{ height: 500, background: '#050512', border: '1px solid #131323', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div style={{ fontSize: '0.6rem', letterSpacing: '0.2em', color: '#333', fontFamily: "'Inter',sans-serif" }}>LOADING CONSTELLATION MODEL…</div></div>}>
+          <SatelliteGlobe />
+        </Suspense>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: '1px', background: '#0d0d1a', marginTop: '1px' }}>
+          {[
+            { l: 'ALTITUDE', v: '180–250 km VLEO' },
+            { l: 'ORBITAL PERIOD', v: '~88 minutes' },
+            { l: 'INCLINATION', v: '45°' },
+            { l: 'REVISIT TIME', v: '<2 hours' },
+            { l: 'RESOLUTION', v: '<30 cm GSD' },
+            { l: 'PROPULSION', v: 'ABEP — no propellant' },
+          ].map(s => (
+            <div key={s.l} style={{ background: '#02020d', padding: '1rem 1.25rem' }}>
+              <div style={{ fontSize: '0.5rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#444', marginBottom: '0.3rem', fontFamily: "'Inter',sans-serif" }}>{s.l}</div>
+              <div style={{ color: '#ccc', fontSize: '0.85rem', fontFamily: "'Bitter',Georgia,serif", fontWeight: 600 }}>{s.v}</div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -755,6 +804,48 @@ export function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: 
 }
 
 /* ─────────────────────────────────────────────────────────────
+   VIDEO EMBED (click-to-play YouTube thumbnail)
+───────────────────────────────────────────────────────────────*/
+function VideoEmbed({ videoId }: { videoId: string }) {
+  const [playing, setPlaying] = useState(false)
+  if (playing) {
+    return (
+      <div style={{ width: '100%', aspectRatio: '16/9', background: '#000' }}>
+        <iframe src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen style={{ width: '100%', height: '100%', border: 'none' }}
+          title="Dr. Steven Shepard – Vaxon Space VLEO Interview" />
+      </div>
+    )
+  }
+  return (
+    <div onClick={() => setPlaying(true)} style={{ position: 'relative', cursor: 'pointer', width: '100%', aspectRatio: '16/9', background: '#02020d', overflow: 'hidden' }}>
+      <img src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`} alt="Dr. Shepard VLEO Interview"
+        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', filter: 'brightness(0.72)' }}
+        onError={e => { (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` }}
+      />
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(2,2,13,0.7) 0%, transparent 50%)' }} />
+      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'rgba(2,2,13,0.85)', border: '2px solid rgba(255,255,255,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.2s' }}
+          onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'scale(1.1)' }}
+          onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'scale(1)' }}
+        >
+          <svg viewBox="0 0 24 24" fill="white" width="28" height="28" style={{ marginLeft: 4 }}>
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </div>
+      </div>
+      <div style={{ position: 'absolute', bottom: 16, left: 16 }}>
+        <div style={{ fontSize: '0.5rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', marginBottom: 4, fontFamily: "'Inter',sans-serif" }}>FEATURED INTERVIEW</div>
+        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', fontWeight: 700, color: '#fff', textShadow: '0 1px 6px rgba(0,0,0,0.9)' }}>
+          Dr. Steven Shepard — VLEO Mission + Strategy
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
    NEWS SECTION
 ───────────────────────────────────────────────────────────────*/
 export function NewsSection({ news }: { news: NewsItem[] }) {
@@ -764,6 +855,27 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
       <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>NEWS & PRESS</div>
       <div style={{ width: 36, height: 1, background: '#1e1e30', marginBottom: '3.5rem' }} />
+
+      {/* Dr. Shepard interview video — pinned above featured card */}
+      <div style={{ border: '1px solid #131323', marginBottom: '2px', overflow: 'hidden', display: 'grid', gridTemplateColumns: '1fr 1fr' }} className="vx-feat">
+        <div style={{ padding: '2.5rem', borderRight: '1px solid #131323', background: '#060614', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <div style={{ fontSize: '0.52rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>FEATURED INTERVIEW / FEB 2026</div>
+          <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.35rem', fontWeight: 700, color: '#fff', lineHeight: 1.25, margin: '0 0 1rem' }}>
+            CEO Dr. Steven Shepard on VLEO Momentum
+          </h3>
+          <p style={{ color: '#6b7280', fontSize: '0.875rem', lineHeight: 1.8, margin: '0 0 1.5rem' }}>
+            Dr. Shepard discusses VLEO mission use cases including ISR, missile defense sensing, Golden Dome potential, and AI-enabled space capabilities — the full strategic picture for Vaxon Space.
+          </p>
+          <a href="https://www.youtube.com/watch?v=piWj3lWfUEM" target="_blank" rel="noopener noreferrer"
+            style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: '#4a4a5e', textDecoration: 'none', fontFamily: "'Inter',sans-serif", transition: 'color 0.2s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#4a4a5e')}
+          >WATCH FULL INTERVIEW →</a>
+        </div>
+        <div style={{ background: '#02020d', overflow: 'hidden' }}>
+          <VideoEmbed videoId="piWj3lWfUEM" />
+        </div>
+      </div>
 
       {/* Featured */}
       {featured && (
@@ -833,6 +945,20 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
       </div>
     </div>
   )
+}
+
+/* ─────────────────────────────────────────────────────────────
+   CALENDLY SCRIPT LOADER
+───────────────────────────────────────────────────────────────*/
+function CalendlyScript() {
+  useEffect(() => {
+    if (document.querySelector('script[src*="calendly"]')) return
+    const s = document.createElement('script')
+    s.src = 'https://assets.calendly.com/assets/external/widget.js'
+    s.async = true
+    document.head.appendChild(s)
+  }, [])
+  return null
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -932,15 +1058,11 @@ export function ContactSection() {
               30 MIN · VIRTUAL
             </div>
           </div>
-          <div style={{ border: '1px solid #131323', overflow: 'hidden', background: '#fff', borderRadius: 2 }}>
-            <iframe
-              src="https://calendly.com/vaxonspace?embed_type=Inline&hide_gdpr_banner=1&background_color=ffffff&text_color=000000&primary_color=c8102e"
-              width="100%"
-              height="700"
-              frameBorder="0"
-              scrolling="no"
-              style={{ display: 'block' }}
-            />
+          <div style={{ border: '1px solid #131323', overflow: 'hidden', background: '#02020d', borderRadius: 2 }}>
+            <div className="calendly-inline-widget"
+              data-url="https://calendly.com/stevenpshepard-vaxonspace/30-1?background_color=02020d&text_color=ffffff&primary_color=c8102e&hide_gdpr_banner=1"
+              style={{ minWidth: 320, height: 700 }} />
+            <CalendlyScript />
           </div>
           <div style={{ marginTop: '1rem', fontSize: '0.55rem', letterSpacing: '0.15em', color: '#333', fontFamily: "'Inter',sans-serif", textAlign: 'center' }}>
             Powered by Calendly · All meetings handled with appropriate discretion
