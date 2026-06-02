@@ -48,7 +48,7 @@ function CountUp({ target, suffix = '', duration = 1800, visible }: {
 /* ─────────────────────────────────────────────────────────────
    TYPES
 ───────────────────────────────────────────────────────────────*/
-type Tab = 'home' | 'about' | 'technology' | 'team' | 'news' | 'contact'
+type Tab = 'home' | 'about' | 'technology' | 'team' | 'news' | 'contact' | 'vleo'
 
 export type TeamMember = {
   name: string; role: string; image?: string
@@ -240,6 +240,7 @@ const NAV_LINKS = [
   { id: 'home',       label: 'HOME',       href: '/' },
   { id: 'about',      label: 'ABOUT',      href: '/about' },
   { id: 'technology', label: 'TECHNOLOGY', href: '/technology' },
+  { id: 'vleo',       label: 'WHY VLEO',   href: '/vleo' },
   { id: 'team',       label: 'TEAM',       href: '/team' },
   { id: 'news',       label: 'NEWS',       href: '/news' },
   { id: 'contact',    label: 'CONTACT',    href: '/contact' },
@@ -756,15 +757,31 @@ export function TechnologySection() {
    TEAM MODAL
 ───────────────────────────────────────────────────────────────*/
 export function TeamModal({ member, onClose }: { member: TeamMember; onClose: () => void }) {
+  const [visible, setVisible] = useState(false)
+
   useEffect(() => {
+    // Stagger: backdrop first, then slide card in
+    const t = requestAnimationFrame(() => requestAnimationFrame(() => setVisible(true)))
     const fn = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
     document.addEventListener('keydown', fn)
-    return () => document.removeEventListener('keydown', fn)
+    return () => { cancelAnimationFrame(t); document.removeEventListener('keydown', fn) }
   }, [onClose])
 
   return (
-    <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 8000, background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(14px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-      <div onClick={e => e.stopPropagation()} style={{ background: '#060614', border: '1px solid #1a1a2e', maxWidth: 620, width: '100%', padding: '2.5rem', position: 'relative' }}>
+    <div onClick={onClose} style={{
+      position: 'fixed', inset: 0, zIndex: 8000,
+      background: visible ? 'rgba(0,0,0,0.88)' : 'rgba(0,0,0,0)',
+      backdropFilter: visible ? 'blur(14px)' : 'blur(0px)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem',
+      transition: 'background 0.35s ease, backdrop-filter 0.35s ease',
+    }}>
+      <div onClick={e => e.stopPropagation()} style={{
+        background: '#060614', border: '1px solid #1a1a2e',
+        maxWidth: 640, width: '100%', padding: '2.5rem', position: 'relative',
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0) scale(1)' : 'translateY(28px) scale(0.97)',
+        transition: 'opacity 0.4s cubic-bezier(0.22,1,0.36,1) 0.05s, transform 0.4s cubic-bezier(0.22,1,0.36,1) 0.05s',
+      }}>
         <button onClick={onClose} style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', background: 'none', border: 'none', cursor: 'pointer', color: '#333', fontSize: '0.58rem', letterSpacing: '0.2em', fontFamily: "'Inter',sans-serif" }}>ESC</button>
 
         <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '2rem', alignItems: 'flex-start' }}>
@@ -811,14 +828,23 @@ export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () 
   const [hov, setHov] = useState(false)
   return (
     <div onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ background: hov ? '#090918' : '#02020d', border: '1px solid ' + (hov ? '#1a1a2e' : '#0d0d1a'), cursor: 'pointer', overflow: 'hidden', transition: 'all 0.2s', textAlign: 'center', padding: '1.75rem 1.25rem 1.25rem', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      style={{
+        background: hov ? '#090918' : '#02020d',
+        border: '1px solid ' + (hov ? '#2a1a2e' : '#0d0d1a'),
+        cursor: 'pointer', overflow: 'hidden',
+        transition: 'background 0.3s, border-color 0.3s, transform 0.3s',
+        transform: hov ? 'translateY(-3px)' : 'translateY(0)',
+        textAlign: 'center', padding: '2.25rem 1.5rem 1.75rem',
+        height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center',
+      }}>
       {/* Circular photo */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.25rem' }}>
         <div style={{
-          width: 100, height: 100, borderRadius: '50%',
+          width: 120, height: 120, borderRadius: '50%',
           overflow: 'hidden', flexShrink: 0,
           border: `2px solid ${hov ? '#c8102e' : '#1a1a2e'}`,
-          transition: 'border-color 0.2s',
+          transition: 'border-color 0.3s, box-shadow 0.3s',
+          boxShadow: hov ? '0 0 24px rgba(200,16,46,0.25)' : 'none',
           background: '#05050e',
         }}>
           {member.image
@@ -829,19 +855,23 @@ export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () 
                   width: '100%', height: '100%',
                   objectFit: 'cover', objectPosition: 'center top',
                   display: 'block',
-                  transition: 'transform 0.4s, filter 0.3s',
-                  transform: hov ? 'scale(1.06)' : 'scale(1)',
-                  filter: hov ? 'none' : 'grayscale(15%)',
+                  transition: 'transform 0.5s cubic-bezier(0.22,1,0.36,1)',
+                  transform: hov ? 'scale(1.08)' : 'scale(1)',
                 }}
               />
             : <div style={{ width: '100%', height: '100%', background: '#111' }} />
           }
         </div>
       </div>
-      <div style={{ fontSize: '0.55rem', letterSpacing: '0.18em', color: '#c8102e', marginBottom: '0.35rem', fontFamily: "'Inter',sans-serif" }}>{member.role}</div>
-      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', fontWeight: 700, color: '#fff', marginBottom: '0.5rem' }}>{member.name}</div>
-      <div style={{ fontSize: '0.7rem', color: '#4a4a5e', lineHeight: 1.5, flexGrow: 1 }}>{member.creds[0]}</div>
-      <div style={{ fontSize: '0.52rem', letterSpacing: '0.18em', color: hov ? '#c8102e' : 'transparent', fontFamily: "'Inter',sans-serif", marginTop: '0.75rem', transition: 'color 0.2s' }}>VIEW BIO →</div>
+      <div style={{ fontSize: '0.55rem', letterSpacing: '0.18em', color: '#c8102e', marginBottom: '0.4rem', fontFamily: "'Inter',sans-serif" }}>{member.role}</div>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.05rem', fontWeight: 700, color: '#fff', marginBottom: '0.6rem', lineHeight: 1.2 }}>{member.name}</div>
+      <div style={{ fontSize: '0.72rem', color: '#4a4a5e', lineHeight: 1.6, flexGrow: 1 }}>{member.creds[0]}</div>
+      <div style={{
+        fontSize: '0.52rem', letterSpacing: '0.18em',
+        color: hov ? '#c8102e' : 'transparent',
+        fontFamily: "'Inter',sans-serif", marginTop: '1rem',
+        transition: 'color 0.3s',
+      }}>VIEW FULL BIO →</div>
     </div>
   )
 }
@@ -865,20 +895,19 @@ export function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: 
         </p>
 
         <div style={{ fontSize: '0.56rem', letterSpacing: '0.22em', color: '#333', fontFamily: "'Inter',sans-serif", marginBottom: '1.25rem' }}>CORE LEADERSHIP</div>
-        {/* Grid with 1px gap lines — background color shows as gaps */}
-        <div className="vx-team-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(196px,1fr))', gap: '1px', background: '#0d0d1a', marginBottom: '3.5rem', alignItems: 'stretch' }}>
+        <div className="vx-team-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: '1px', background: '#0d0d1a', marginBottom: '4rem', alignItems: 'stretch' }}>
           {core.map((m, i) => (
-            <div key={m.name} style={{ animation: `vx-card-in 0.5s ease both`, animationDelay: `${i * 0.08}s`, display: 'flex' }}>
+            <div key={m.name} style={{ animation: `vx-card-in 0.6s cubic-bezier(0.22,1,0.36,1) both`, animationDelay: `${i * 0.1}s`, display: 'flex' }}>
               <TeamCard member={m} onClick={() => setSel(m)} />
             </div>
           ))}
         </div>
 
         <div style={{ fontSize: '0.56rem', letterSpacing: '0.22em', color: '#333', fontFamily: "'Inter',sans-serif", marginBottom: '1.25rem' }}>ADVISORY BOARD</div>
-        {/* Advisors: centered, same card width as core team */}
-        <div style={{ display: 'flex', gap: '1px', marginBottom: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+        {/* Advisors: centered, fixed width so 2 cards sit cleanly together */}
+        <div style={{ display: 'flex', gap: '1px', marginBottom: '1.5rem', justifyContent: 'center' }}>
           {advisors.map((m, i) => (
-            <div key={m.name} style={{ animation: `vx-card-in 0.5s ease both`, animationDelay: `${i * 0.1 + 0.3}s`, display: 'flex', width: 'calc(20% - 1px)', minWidth: 196, maxWidth: 280, flex: '0 0 auto' }}>
+            <div key={m.name} style={{ animation: `vx-card-in 0.6s cubic-bezier(0.22,1,0.36,1) both`, animationDelay: `${i * 0.1 + 0.2}s`, display: 'flex', width: 260, flexShrink: 0 }}>
               <TeamCard member={m} onClick={() => setSel(m)} />
             </div>
           ))}
@@ -1162,38 +1191,66 @@ export function ContactSection() {
    LOGOS SECTION
 ───────────────────────────────────────────────────────────────*/
 export function LogosSection() {
+  // Use reliable online sources + local files
   const orgs = [
-    { src: '/vaxon/logos/nro.svg', alt: 'NRO' },
-    { src: '/vaxon/logos/army.svg', alt: 'US Army' },
-    { src: '/vaxon/logos/disa.svg', alt: 'DISA' },
-    { src: '/vaxon/logos/naval-research-lab.png', alt: 'Naval Research Lab' },
-    { src: '/vaxon/logos/naval-war-college.svg', alt: 'Naval War College' },
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Seal_of_the_United_States_National_Reconnaissance_Office.svg/200px-Seal_of_the_United_States_National_Reconnaissance_Office.svg.png', alt: 'NRO' },
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Emblem_of_the_United_States_Department_of_the_Army.svg/200px-Emblem_of_the_United_States_Department_of_the_Army.svg.png', alt: 'US Army' },
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Defense_Information_Systems_Agency_seal.svg/200px-Defense_Information_Systems_Agency_seal.svg.png', alt: 'DISA' },
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Seal_of_the_United_States_Naval_Research_Laboratory.svg/200px-Seal_of_the_United_States_Naval_Research_Laboratory.svg.png', alt: 'Naval Research Lab' },
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/US_Naval_War_College_seal.png/200px-US_Naval_War_College_seal.png', alt: 'Naval War College' },
     { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Lockheed_Martin_logo.svg/600px-Lockheed_Martin_logo.svg.png', alt: 'Lockheed Martin' },
   ]
   const unis = [
-    { src: '/vaxon/logos/michigan.svg', alt: 'University of Michigan' },
-    { src: '/vaxon/logos/cu-boulder.svg', alt: 'CU Boulder' },
-    { src: '/vaxon/logos/ut-austin.png', alt: 'UT Austin' },
-    { src: '/vaxon/logos/west-point.svg', alt: 'West Point' },
-    { src: '/vaxon/logos/unc.svg', alt: 'UNC Chapel Hill' },
-    { src: '/vaxon/logos/bates.svg', alt: 'Bates College' },
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/UM_logo-Hex.svg/200px-UM_logo-Hex.svg.png', alt: 'University of Michigan' },
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/University_of_Colorado_Boulder_seal.svg/200px-University_of_Colorado_Boulder_seal.svg.png', alt: 'CU Boulder' },
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/University_of_Texas_at_Austin_seal.svg/200px-University_of_Texas_at_Austin_seal.svg.png', alt: 'UT Austin' },
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/West_Point_crest.svg/200px-West_Point_crest.svg.png', alt: 'West Point' },
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/UNC_primary_logo.svg/200px-UNC_primary_logo.svg.png', alt: 'UNC Chapel Hill' },
+    { src: 'https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Bates_College_seal.svg/200px-Bates_College_seal.svg.png', alt: 'Bates College' },
   ]
 
-  const Logo = ({ src, alt }: { src: string; alt: string }) => (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.25rem', opacity: 0.7, transition: 'opacity 0.2s' }}
-      onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
-      onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}
-    >
-      <img src={src} alt={alt} style={{ maxWidth: 100, maxHeight: 60, width: 'auto', height: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
-    </div>
-  )
+  const Logo = ({ src, alt }: { src: string; alt: string }) => {
+    const [hov, setHov] = useState(false)
+    return (
+      <div
+        onMouseEnter={() => setHov(true)}
+        onMouseLeave={() => setHov(false)}
+        style={{
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          justifyContent: 'center', padding: '1.5rem 1rem', gap: '0.6rem',
+          transition: 'background 0.25s',
+          background: hov ? 'rgba(255,255,255,0.04)' : 'transparent',
+          cursor: 'default',
+        }}
+      >
+        <img
+          src={src} alt={alt}
+          style={{
+            maxWidth: 80, maxHeight: 80, width: 'auto', height: 'auto',
+            objectFit: 'contain',
+            filter: 'brightness(0) invert(1)',
+            opacity: hov ? 1 : 0.75,
+            transform: hov ? 'scale(1.12)' : 'scale(1)',
+            transition: 'opacity 0.3s, transform 0.35s cubic-bezier(0.22,1,0.36,1)',
+          }}
+          onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+        />
+        <div style={{
+          fontSize: '0.48rem', letterSpacing: '0.14em', textTransform: 'uppercase',
+          color: hov ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.22)',
+          fontFamily: "'Inter',sans-serif", textAlign: 'center', lineHeight: 1.4,
+          transition: 'color 0.3s',
+        }}>{alt}</div>
+      </div>
+    )
+  }
 
   return (
-    <div style={{ borderTop: '1px solid #131323', padding: '3rem 2.5rem', maxWidth: 1200, margin: '0 auto' }}>
-      <div style={{ fontSize: '0.55rem', letterSpacing: '0.28em', color: '#333', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", textAlign: 'center', marginBottom: '2rem' }}>
+    <div style={{ borderTop: '1px solid #131323', padding: '4rem 2.5rem', maxWidth: 1200, margin: '0 auto' }}>
+      <div style={{ fontSize: '0.55rem', letterSpacing: '0.28em', color: '#333', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", textAlign: 'center', marginBottom: '2.5rem' }}>
         OUR TEAM HAS WORKED AT
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', marginBottom: '1.5rem', borderTop: '1px solid #0d0d1a', borderLeft: '1px solid #0d0d1a' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', marginBottom: '1px', borderTop: '1px solid #0d0d1a', borderLeft: '1px solid #0d0d1a' }}>
         {orgs.map(o => <div key={o.alt} style={{ borderRight: '1px solid #0d0d1a', borderBottom: '1px solid #0d0d1a' }}><Logo {...o} /></div>)}
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', borderTop: '1px solid #0d0d1a', borderLeft: '1px solid #0d0d1a' }}>
