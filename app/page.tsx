@@ -1133,22 +1133,20 @@ export function ContactSection() {
 
       {/* Calendly embed */}
       <div id="calendly" style={{ background: '#02020d', borderTop: '1px solid #131323' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '4rem 2.5rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '2.5rem' }}>
-            <div>
-              <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.5rem' }}>SCHEDULE A BRIEFING</div>
-              <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.4rem,2.5vw,2rem)', fontWeight: 900, color: '#fff', margin: 0 }}>
-                Book Time with Dr. Shepard
-              </h3>
-            </div>
-            <div style={{ marginLeft: 'auto', fontSize: '0.6rem', letterSpacing: '0.15em', color: '#333', fontFamily: "'Inter',sans-serif" }}>
-              30 MIN · VIRTUAL
+        <div style={{ maxWidth: 900, margin: '0 auto', padding: '5rem 2.5rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>SCHEDULE A BRIEFING</div>
+            <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 900, color: '#fff', margin: '0 0 0.5rem' }}>
+              Book a Meeting with Vaxon Space
+            </h3>
+            <div style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: '#444', fontFamily: "'Inter',sans-serif" }}>
+              30 MIN · VIRTUAL · DR. STEVEN SHEPARD, CEO
             </div>
           </div>
-          <div style={{ border: '1px solid #131323', overflow: 'hidden', background: '#02020d', borderRadius: 2 }}>
+          <div style={{ border: '1px solid #1a1a2e', overflow: 'hidden', background: '#02020d', borderRadius: 2 }}>
             <div className="calendly-inline-widget"
               data-url="https://calendly.com/stevenpshepard-vaxonspace/30-1?background_color=02020d&text_color=ffffff&primary_color=c8102e&hide_gdpr_banner=1"
-              style={{ minWidth: 320, height: 700 }} />
+              style={{ minWidth: 320, height: 780 }} />
             <CalendlyScript />
           </div>
           <div style={{ marginTop: '1rem', fontSize: '0.55rem', letterSpacing: '0.15em', color: '#333', fontFamily: "'Inter',sans-serif", textAlign: 'center' }}>
