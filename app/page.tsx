@@ -644,7 +644,7 @@ export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () 
   const [hov, setHov] = useState(false)
   return (
     <div onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ background: hov ? '#090918' : '#02020d', border: '1px solid ' + (hov ? '#1a1a2e' : '#0d0d1a'), cursor: 'pointer', overflow: 'hidden', transition: 'all 0.2s', textAlign: 'center', padding: '1.75rem 1.25rem 1.25rem' }}>
+      style={{ background: hov ? '#090918' : '#02020d', border: '1px solid ' + (hov ? '#1a1a2e' : '#0d0d1a'), cursor: 'pointer', overflow: 'hidden', transition: 'all 0.2s', textAlign: 'center', padding: '1.75rem 1.25rem 1.25rem', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       {/* Circular photo */}
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
         <div style={{
@@ -673,8 +673,8 @@ export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () 
       </div>
       <div style={{ fontSize: '0.55rem', letterSpacing: '0.18em', color: '#c8102e', marginBottom: '0.35rem', fontFamily: "'Inter',sans-serif" }}>{member.role}</div>
       <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', fontWeight: 700, color: '#fff', marginBottom: '0.5rem' }}>{member.name}</div>
-      <div style={{ fontSize: '0.7rem', color: '#4a4a5e', lineHeight: 1.5, marginBottom: hov ? '0.5rem' : 0 }}>{member.creds[0]}</div>
-      {hov && <div style={{ fontSize: '0.52rem', letterSpacing: '0.18em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginTop: '0.5rem' }}>VIEW BIO →</div>}
+      <div style={{ fontSize: '0.7rem', color: '#4a4a5e', lineHeight: 1.5, flexGrow: 1 }}>{member.creds[0]}</div>
+      <div style={{ fontSize: '0.52rem', letterSpacing: '0.18em', color: hov ? '#c8102e' : 'transparent', fontFamily: "'Inter',sans-serif", marginTop: '0.75rem', transition: 'color 0.2s' }}>VIEW BIO →</div>
     </div>
   )
 }
@@ -698,22 +698,20 @@ export function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: 
         </p>
 
         <div style={{ fontSize: '0.56rem', letterSpacing: '0.22em', color: '#333', fontFamily: "'Inter',sans-serif", marginBottom: '1.25rem' }}>CORE LEADERSHIP</div>
-        <div className="vx-team-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(196px,1fr))', gap: '1px', background: '#0d0d1a', marginBottom: '3.5rem' }}>
+        {/* Grid with 1px gap lines — background color shows as gaps */}
+        <div className="vx-team-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(196px,1fr))', gap: '1px', background: '#0d0d1a', marginBottom: '3.5rem', alignItems: 'stretch' }}>
           {core.map((m, i) => (
-            <div key={m.name} style={{
-              opacity: 1, transform: 'none',
-              animation: `vx-card-in 0.5s ease both`,
-              animationDelay: `${i * 0.08}s`,
-            }}>
+            <div key={m.name} style={{ animation: `vx-card-in 0.5s ease both`, animationDelay: `${i * 0.08}s`, display: 'flex' }}>
               <TeamCard member={m} onClick={() => setSel(m)} />
             </div>
           ))}
         </div>
 
         <div style={{ fontSize: '0.56rem', letterSpacing: '0.22em', color: '#333', fontFamily: "'Inter',sans-serif", marginBottom: '1.25rem' }}>ADVISORY BOARD</div>
-        <div className="vx-team-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(196px,1fr))', gap: '1px', background: '#0d0d1a', marginBottom: '1.5rem' }}>
+        {/* Advisors: flex row centered so no empty cells appear */}
+        <div style={{ display: 'flex', gap: '1px', background: '#0d0d1a', marginBottom: '1.5rem', justifyContent: 'flex-start', flexWrap: 'wrap' }}>
           {advisors.map((m, i) => (
-            <div key={m.name} style={{ animation: `vx-card-in 0.5s ease both`, animationDelay: `${i * 0.1 + 0.3}s` }}>
+            <div key={m.name} style={{ animation: `vx-card-in 0.5s ease both`, animationDelay: `${i * 0.1 + 0.3}s`, display: 'flex', width: 'calc(20% - 1px)', minWidth: 196, flex: '0 0 auto' }}>
               <TeamCard member={m} onClick={() => setSel(m)} />
             </div>
           ))}
@@ -813,51 +811,109 @@ export function ContactSection() {
   const [f, setF] = useState({ name: '', email: '', org: '', msg: '' })
   const [sent, setSent] = useState(false)
 
-  const iStyle: React.CSSProperties = { width: '100%', background: '#060614', border: '1px solid #1a1a2e', color: '#fff', padding: '0.875rem 1rem', fontSize: '0.85rem', fontFamily: "'Inter',sans-serif", outline: 'none', boxSizing: 'border-box' }
+  const inp: React.CSSProperties = { width: '100%', background: 'rgba(255,255,255,0.04)', border: '1px solid #1a1a2e', color: '#fff', padding: '0.875rem 1rem', fontSize: '0.85rem', fontFamily: "'Inter',sans-serif", outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s' }
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
-      <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>CONTACT</div>
-      <div style={{ width: 36, height: 1, background: '#1e1e30', marginBottom: '3.5rem' }} />
-
-      <div className="vx-contact-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5rem' }}>
-        <div>
-          <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 900, color: '#fff', margin: '0 0 1.5rem', lineHeight: 1.2 }}>
-            Partner With Vaxon Space
-          </h2>
-          <p style={{ color: '#6b7280', lineHeight: 1.85, fontSize: '0.9rem', marginBottom: '3rem' }}>
-            Defense contractors, investors, and commercial partners may submit inquiries below. All communications are handled with appropriate discretion.
-          </p>
-          {[
-            { l: 'GENERAL INQUIRIES', v: 'contact@vaxonspace.com' },
-            { l: 'BRIEFING REQUESTS', v: 'calendly.com/vaxonspace' },
-            { l: 'LOCATION', v: 'Boulder, Colorado' },
-          ].map((item, i) => (
-            <div key={i} style={{ borderTop: '1px solid #131323', padding: '1.25rem 0' }}>
-              <div style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: '#333', fontFamily: "'Inter',sans-serif", marginBottom: '0.35rem' }}>{item.l}</div>
-              <div style={{ fontSize: '0.9rem', color: '#fff', fontFamily: "'Inter',sans-serif" }}>{item.v}</div>
+    <div>
+      {/* Hero banner */}
+      <div style={{ background: 'linear-gradient(135deg, #0a0005 0%, #02020d 40%, #0d0208 100%)', borderBottom: '1px solid #131323', padding: '5rem 2.5rem 4rem' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+          <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>CONTACT</div>
+          <div style={{ width: 36, height: 1, background: '#c8102e', marginBottom: '2.5rem', opacity: 0.4 }} />
+          <div className="vx-contact-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5rem', alignItems: 'start' }}>
+            {/* Left: info */}
+            <div>
+              <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2rem,3.5vw,3.2rem)', fontWeight: 900, color: '#fff', margin: '0 0 1.25rem', lineHeight: 1.1 }}>
+                Partner With<br />Vaxon Space
+              </h2>
+              <p style={{ color: '#6b7280', lineHeight: 1.9, fontSize: '0.9rem', margin: '0 0 2.5rem', maxWidth: 420 }}>
+                Defense contractors, investors, and commercial partners may submit inquiries below. All communications are handled with appropriate discretion.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                {[
+                  { l: 'GENERAL INQUIRIES', v: 'contact@vaxonspace.com', href: 'mailto:contact@vaxonspace.com' },
+                  { l: 'BRIEFING REQUESTS', v: 'Schedule via Calendly ↓', href: '#calendly' },
+                  { l: 'LOCATION', v: 'Boulder, Colorado', href: null },
+                ].map((item, i) => (
+                  <div key={i} style={{ borderTop: '1px solid #131323', padding: '1rem 0', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                    <div style={{ fontSize: '0.52rem', letterSpacing: '0.22em', color: '#444', fontFamily: "'Inter',sans-serif" }}>{item.l}</div>
+                    {item.href
+                      ? <a href={item.href} style={{ fontSize: '0.88rem', color: '#fff', fontFamily: "'Inter',sans-serif", textDecoration: 'none', transition: 'color 0.2s' }}
+                          onMouseEnter={e => (e.currentTarget.style.color = '#c8102e')}
+                          onMouseLeave={e => (e.currentTarget.style.color = '#fff')}
+                        >{item.v}</a>
+                      : <div style={{ fontSize: '0.88rem', color: '#fff', fontFamily: "'Inter',sans-serif" }}>{item.v}</div>
+                    }
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
+
+            {/* Right: contact form */}
+            <div>
+              {sent ? (
+                <div style={{ border: '1px solid #1a1a2e', padding: '3rem', textAlign: 'center', background: 'rgba(200,16,46,0.04)' }}>
+                  <div style={{ fontSize: '0.58rem', letterSpacing: '0.25em', color: '#c8102e', marginBottom: '1rem', fontFamily: "'Inter',sans-serif" }}>MESSAGE RECEIVED</div>
+                  <p style={{ color: '#6b7280', fontSize: '0.9rem', margin: 0 }}>We'll be in touch within 48 hours.</p>
+                </div>
+              ) : (
+                <form onSubmit={e => { e.preventDefault(); setSent(true) }} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <div style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '0.25rem' }}>SEND AN INQUIRY</div>
+                  <input type="text" placeholder="Full Name" required value={f.name} onChange={e => setF(p => ({ ...p, name: e.target.value }))} style={inp}
+                    onFocus={e => (e.currentTarget.style.borderColor = '#c8102e')}
+                    onBlur={e => (e.currentTarget.style.borderColor = '#1a1a2e')}
+                  />
+                  <input type="email" placeholder="Email Address" required value={f.email} onChange={e => setF(p => ({ ...p, email: e.target.value }))} style={inp}
+                    onFocus={e => (e.currentTarget.style.borderColor = '#c8102e')}
+                    onBlur={e => (e.currentTarget.style.borderColor = '#1a1a2e')}
+                  />
+                  <input type="text" placeholder="Organization" value={f.org} onChange={e => setF(p => ({ ...p, org: e.target.value }))} style={inp}
+                    onFocus={e => (e.currentTarget.style.borderColor = '#c8102e')}
+                    onBlur={e => (e.currentTarget.style.borderColor = '#1a1a2e')}
+                  />
+                  <textarea placeholder="Message" rows={4} required value={f.msg} onChange={e => setF(p => ({ ...p, msg: e.target.value }))}
+                    style={{ ...inp, resize: 'vertical' }}
+                    onFocus={e => (e.currentTarget.style.borderColor = '#c8102e')}
+                    onBlur={e => (e.currentTarget.style.borderColor = '#1a1a2e')}
+                  />
+                  <button type="submit" style={{ background: '#c8102e', color: '#fff', border: 'none', cursor: 'pointer', padding: '0.9rem 1rem', fontSize: '0.62rem', fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", transition: 'background 0.2s', marginTop: '0.25rem' }}
+                    onMouseEnter={e => (e.currentTarget.style.background = '#a50d26')}
+                    onMouseLeave={e => (e.currentTarget.style.background = '#c8102e')}
+                  >SEND MESSAGE</button>
+                </form>
+              )}
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div>
-          {sent ? (
-            <div style={{ border: '1px solid #1a1a2e', padding: '3rem', textAlign: 'center' }}>
-              <div style={{ fontSize: '0.58rem', letterSpacing: '0.25em', color: '#c8102e', marginBottom: '1rem', fontFamily: "'Inter',sans-serif" }}>MESSAGE RECEIVED</div>
-              <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>We'll be in touch within 48 hours.</p>
+      {/* Calendly embed */}
+      <div id="calendly" style={{ background: '#02020d', borderTop: '1px solid #131323' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '4rem 2.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '2.5rem' }}>
+            <div>
+              <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.5rem' }}>SCHEDULE A BRIEFING</div>
+              <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.4rem,2.5vw,2rem)', fontWeight: 900, color: '#fff', margin: 0 }}>
+                Book Time with Dr. Shepard
+              </h3>
             </div>
-          ) : (
-            <form onSubmit={e => { e.preventDefault(); setSent(true) }} style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: '#131323' }}>
-              <input type="text" placeholder="Full Name" required value={f.name} onChange={e => setF(p => ({ ...p, name: e.target.value }))} style={iStyle} />
-              <input type="email" placeholder="Email Address" required value={f.email} onChange={e => setF(p => ({ ...p, email: e.target.value }))} style={iStyle} />
-              <input type="text" placeholder="Organization" value={f.org} onChange={e => setF(p => ({ ...p, org: e.target.value }))} style={iStyle} />
-              <textarea placeholder="Message" rows={5} required value={f.msg} onChange={e => setF(p => ({ ...p, msg: e.target.value }))} style={{ ...iStyle, resize: 'vertical' }} />
-              <button type="submit" style={{ background: '#c8102e', color: '#fff', border: 'none', cursor: 'pointer', padding: '1rem', fontSize: '0.62rem', fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", transition: 'background 0.2s' }}
-                onMouseEnter={e => (e.currentTarget.style.background = '#a50d26')}
-                onMouseLeave={e => (e.currentTarget.style.background = '#c8102e')}
-              >SEND MESSAGE</button>
-            </form>
-          )}
+            <div style={{ marginLeft: 'auto', fontSize: '0.6rem', letterSpacing: '0.15em', color: '#333', fontFamily: "'Inter',sans-serif" }}>
+              30 MIN · VIRTUAL
+            </div>
+          </div>
+          <div style={{ border: '1px solid #131323', overflow: 'hidden', background: '#fff', borderRadius: 2 }}>
+            <iframe
+              src="https://calendly.com/vaxonspace?embed_type=Inline&hide_gdpr_banner=1&background_color=ffffff&text_color=000000&primary_color=c8102e"
+              width="100%"
+              height="700"
+              frameBorder="0"
+              scrolling="no"
+              style={{ display: 'block' }}
+            />
+          </div>
+          <div style={{ marginTop: '1rem', fontSize: '0.55rem', letterSpacing: '0.15em', color: '#333', fontFamily: "'Inter',sans-serif", textAlign: 'center' }}>
+            Powered by Calendly · All meetings handled with appropriate discretion
+          </div>
         </div>
       </div>
     </div>
