@@ -875,10 +875,10 @@ export function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: 
         </div>
 
         <div style={{ fontSize: '0.56rem', letterSpacing: '0.22em', color: '#333', fontFamily: "'Inter',sans-serif", marginBottom: '1.25rem' }}>ADVISORY BOARD</div>
-        {/* Advisors: flex row centered so no empty cells appear */}
-        <div style={{ display: 'flex', gap: '1px', background: '#0d0d1a', marginBottom: '1.5rem', justifyContent: 'flex-start', flexWrap: 'wrap' }}>
+        {/* Advisors: centered, same card width as core team */}
+        <div style={{ display: 'flex', gap: '1px', marginBottom: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           {advisors.map((m, i) => (
-            <div key={m.name} style={{ animation: `vx-card-in 0.5s ease both`, animationDelay: `${i * 0.1 + 0.3}s`, display: 'flex', width: 'calc(20% - 1px)', minWidth: 196, flex: '0 0 auto' }}>
+            <div key={m.name} style={{ animation: `vx-card-in 0.5s ease both`, animationDelay: `${i * 0.1 + 0.3}s`, display: 'flex', width: 'calc(20% - 1px)', minWidth: 196, maxWidth: 280, flex: '0 0 auto' }}>
               <TeamCard member={m} onClick={() => setSel(m)} />
             </div>
           ))}
