@@ -1191,22 +1191,28 @@ export function ContactSection() {
    LOGOS SECTION
 ───────────────────────────────────────────────────────────────*/
 export function LogosSection() {
-  // Use reliable online sources + local files
+  // Row 1 — Defense & Government
   const orgs = [
-    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Seal_of_the_United_States_National_Reconnaissance_Office.svg/200px-Seal_of_the_United_States_National_Reconnaissance_Office.svg.png', alt: 'NRO' },
-    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Emblem_of_the_United_States_Department_of_the_Army.svg/200px-Emblem_of_the_United_States_Department_of_the_Army.svg.png', alt: 'US Army' },
-    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Defense_Information_Systems_Agency_seal.svg/200px-Defense_Information_Systems_Agency_seal.svg.png', alt: 'DISA' },
-    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Seal_of_the_United_States_Naval_Research_Laboratory.svg/200px-Seal_of_the_United_States_Naval_Research_Laboratory.svg.png', alt: 'Naval Research Lab' },
-    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/US_Naval_War_College_seal.png/200px-US_Naval_War_College_seal.png', alt: 'Naval War College' },
-    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Lockheed_Martin_logo.svg/600px-Lockheed_Martin_logo.svg.png', alt: 'Lockheed Martin' },
+    { src: '/vaxon/logos/nro-color.png',              alt: 'NRO' },
+    { src: '/vaxon/logos/army-mark.png',              alt: 'US Army' },
+    { src: '/vaxon/logos/disa.svg',                   alt: 'DISA' },
+    { src: '/vaxon/logos/space-force.png',            alt: 'Space Force' },
+    { src: '/vaxon/logos/naval-research-lab.png',     alt: 'Naval Research Lab' },
+    { src: '/vaxon/logos/naval-war-college-color.webp', alt: 'Naval War College' },
+    { src: '/vaxon/logos/nasa-color.jpg',             alt: 'NASA' },
+    { src: '/vaxon/logos/dod.svg',                    alt: 'Dept of Defense' },
+    { src: '/vaxon/logos/lockheed.svg',               alt: 'Lockheed Martin' },
   ]
+  // Row 2 — Universities & Research Institutions
   const unis = [
-    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/UM_logo-Hex.svg/200px-UM_logo-Hex.svg.png', alt: 'University of Michigan' },
-    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/University_of_Colorado_Boulder_seal.svg/200px-University_of_Colorado_Boulder_seal.svg.png', alt: 'CU Boulder' },
-    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/University_of_Texas_at_Austin_seal.svg/200px-University_of_Texas_at_Austin_seal.svg.png', alt: 'UT Austin' },
-    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/West_Point_crest.svg/200px-West_Point_crest.svg.png', alt: 'West Point' },
-    { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/UNC_primary_logo.svg/200px-UNC_primary_logo.svg.png', alt: 'UNC Chapel Hill' },
-    { src: 'https://upload.wikimedia.org/wikipedia/en/thumb/3/37/Bates_College_seal.svg/200px-Bates_College_seal.svg.png', alt: 'Bates College' },
+    { src: '/vaxon/logos/michigan-seal.png',   alt: 'University of Michigan' },
+    { src: '/vaxon/logos/cu-boulder.svg',      alt: 'CU Boulder' },
+    { src: '/vaxon/logos/ut-austin.png',       alt: 'UT Austin' },
+    { src: '/vaxon/logos/west-point-logo.png', alt: 'West Point' },
+    { src: '/vaxon/logos/unc.svg',             alt: 'UNC Chapel Hill' },
+    { src: '/vaxon/logos/stanford-color.webp', alt: 'Stanford' },
+    { src: '/vaxon/logos/cornell-seal.png',    alt: 'Cornell' },
+    { src: '/vaxon/logos/bates-logo.jpg',      alt: 'Bates College' },
   ]
 
   const Logo = ({ src, alt }: { src: string; alt: string }) => {
@@ -1217,27 +1223,26 @@ export function LogosSection() {
         onMouseLeave={() => setHov(false)}
         style={{
           display: 'flex', flexDirection: 'column', alignItems: 'center',
-          justifyContent: 'center', padding: '1.5rem 1rem', gap: '0.6rem',
-          transition: 'background 0.25s',
-          background: hov ? 'rgba(255,255,255,0.04)' : 'transparent',
+          justifyContent: 'center', padding: '1.4rem 0.75rem', gap: '0.55rem',
+          background: hov ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.03)',
+          transition: 'background 0.3s',
           cursor: 'default',
         }}
       >
         <img
           src={src} alt={alt}
           style={{
-            maxWidth: 80, maxHeight: 80, width: 'auto', height: 'auto',
+            width: 68, height: 68,
             objectFit: 'contain',
-            filter: 'brightness(0) invert(1)',
-            opacity: hov ? 1 : 0.75,
-            transform: hov ? 'scale(1.12)' : 'scale(1)',
-            transition: 'opacity 0.3s, transform 0.35s cubic-bezier(0.22,1,0.36,1)',
+            opacity: hov ? 1 : 0.72,
+            transform: hov ? 'scale(1.14)' : 'scale(1)',
+            transition: 'opacity 0.3s, transform 0.4s cubic-bezier(0.22,1,0.36,1)',
           }}
           onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
         />
         <div style={{
-          fontSize: '0.48rem', letterSpacing: '0.14em', textTransform: 'uppercase',
-          color: hov ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.22)',
+          fontSize: '0.44rem', letterSpacing: '0.12em', textTransform: 'uppercase',
+          color: hov ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,0.28)',
           fontFamily: "'Inter',sans-serif", textAlign: 'center', lineHeight: 1.4,
           transition: 'color 0.3s',
         }}>{alt}</div>
@@ -1250,10 +1255,12 @@ export function LogosSection() {
       <div style={{ fontSize: '0.55rem', letterSpacing: '0.28em', color: '#333', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", textAlign: 'center', marginBottom: '2.5rem' }}>
         OUR TEAM HAS WORKED AT
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', marginBottom: '1px', borderTop: '1px solid #0d0d1a', borderLeft: '1px solid #0d0d1a' }}>
+      {/* Defense & Government */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(110px,1fr))', marginBottom: '1px', borderTop: '1px solid #0d0d1a', borderLeft: '1px solid #0d0d1a' }}>
         {orgs.map(o => <div key={o.alt} style={{ borderRight: '1px solid #0d0d1a', borderBottom: '1px solid #0d0d1a' }}><Logo {...o} /></div>)}
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', borderTop: '1px solid #0d0d1a', borderLeft: '1px solid #0d0d1a' }}>
+      {/* Universities */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(110px,1fr))', borderTop: '1px solid #0d0d1a', borderLeft: '1px solid #0d0d1a' }}>
         {unis.map(u => <div key={u.alt} style={{ borderRight: '1px solid #0d0d1a', borderBottom: '1px solid #0d0d1a' }}><Logo {...u} /></div>)}
       </div>
     </div>
