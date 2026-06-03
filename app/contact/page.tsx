@@ -1,5 +1,5 @@
 'use client'
-import { StarField, Nav, ContactSection, VX_GLOBAL_STYLE } from '../page'
+import { StarField, Nav, ContactSection, Footer, VX_GLOBAL_STYLE } from '../page'
 
 export default function ContactPage() {
   return (
@@ -9,6 +9,7 @@ export default function ContactPage() {
       <Nav active="contact" />
       <div style={{ paddingTop: 64, position: 'relative', zIndex: 1 }}>
         <ContactSection />
+        <Footer />
       </div>
     </>
   )

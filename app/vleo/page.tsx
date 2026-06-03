@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
-import { Nav, StarField, VX_GLOBAL_STYLE } from '../page'
+import { Nav, StarField, Footer, VX_GLOBAL_STYLE } from '../page'
 
 /* ── Animated count-up ── */
 function CountUp({ to, suffix = '', prefix = '' }: { to: number; suffix?: string; prefix?: string }) {
@@ -328,6 +328,7 @@ export default function VLEOPage() {
           </div>
         </section>
 
+        <Footer />
       </div>
     </>
   )

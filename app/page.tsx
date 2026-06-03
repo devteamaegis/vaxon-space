@@ -62,18 +62,18 @@ export type NewsItem = {
 ───────────────────────────────────────────────────────────────*/
 export const CORE_TEAM: TeamMember[] = [
   {
-    name: 'Dr. Charles Lipscomb', role: 'Co-Founder & Chief Scientist',
-    image: '/vaxon/team-lipscomb.png',
-    linkedin: 'https://www.linkedin.com/in/charleslipscomb88',
-    bio: 'Dr. Lipscomb is the technical architect of Vaxon\'s air-breathing propulsion system. His doctoral research at CU Boulder in plasmadynamics and electric propulsion and work on the COSMO satellite program provide the scientific foundation for sustained VLEO operations.',
-    creds: ['PhD Aerospace Engineering, University of Colorado Boulder', 'Satellite Systems Engineer on COSMO', 'Specialist in electric propulsion integration', 'Air-breathing propulsion and plasmadynamics modeling'],
-  },
-  {
     name: 'Dr. Steven P. Shepard', role: 'Co-Founder & CEO',
     image: '/vaxon/team-shepard.png',
     linkedin: 'https://www.linkedin.com/in/stevenpshepard/',
     bio: 'Dr. Shepard brings 21+ years of satellite design and advanced systems experience. As Senior R&D Program Manager at Lockheed Martin he managed a $30M portfolio and has advised Space Force, NASA, and DoD on next-generation space architectures.',
     creds: ['21+ years in satellite design and advanced systems', 'Sr. R+D Program Manager, Lockheed Martin -$30M budget', 'Advisor: Space Force, NASA, DoD, University of Michigan', 'Author: Vanquishing Cancer'],
+  },
+  {
+    name: 'Dr. Charles Lipscomb', role: 'Co-Founder & Chief Scientist',
+    image: '/vaxon/team-lipscomb.png',
+    linkedin: 'https://www.linkedin.com/in/charleslipscomb88',
+    bio: 'Dr. Lipscomb is the technical architect of Vaxon\'s air-breathing propulsion system. His doctoral research at CU Boulder in plasmadynamics and electric propulsion and work on the COSMO satellite program provide the scientific foundation for sustained VLEO operations.',
+    creds: ['PhD Aerospace Engineering, University of Colorado Boulder', 'Satellite Systems Engineer on COSMO', 'Specialist in electric propulsion integration', 'Air-breathing propulsion and plasmadynamics modeling'],
   },
   {
     name: 'Brandon Williamson', role: 'Head of Engineering',
@@ -403,7 +403,7 @@ function HomeSection() {
 
         {/* Hero headline - top left */}
         <div style={{
-          position: 'absolute', top: '2rem', left: '2.5rem', zIndex: 4,
+          position: 'absolute', top: '5.5rem', left: '2.5rem', zIndex: 4,
           fontSize: 'clamp(1.4rem,2.8vw,2.8rem)', color: '#fff',
           fontFamily: "'Bitter',Georgia,serif", fontWeight: 400,
           lineHeight: 1.15, maxWidth: 640,
@@ -854,14 +854,26 @@ export function TeamModal({ member, onClose }: { member: TeamMember; onClose: ()
 /* ─────────────────────────────────────────────────────────────
    TEAM CARD
 ───────────────────────────────────────────────────────────────*/
+// Per-headshot crop params (analyzed against the Shepard baseline) so every
+// face is centered and fills the circle consistently.
+const HEADSHOT_CROP: Record<string, { scale: number; pos: string; tx: string }> = {
+  'Shepard':    { scale: 1.45, pos: '50% 28%', tx: '7%' },
+  'Lipscomb':   { scale: 1.15, pos: '50% 22%', tx: '0%' },
+  'Williamson': { scale: 1.35, pos: '50% 24%', tx: '5%' },
+  'Anderson':   { scale: 1.0,  pos: '50% 30%', tx: '0%' },
+  'Pedreiro':   { scale: 1.25, pos: '50% 26%', tx: '3%' },
+  'Shah':       { scale: 1.4,  pos: '50% 22%', tx: '3%' },
+  'Boyd':       { scale: 1.05, pos: '50% 30%', tx: '0%' },
+}
+
 export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () => void }) {
   const [hov, setHov] = useState(false)
-  // Some source portraits frame the subject smaller/higher — zoom per-card so all heads match scale.
-  const isShepard = member.name.includes('Shepard')
-  const isWilliamson = member.name.includes('Williamson')
-  const imgPosition = isShepard ? '50% 28%' : (isWilliamson ? '50% 18%' : 'center top')
-  const baseTransform = isShepard ? 'scale(1.45) translateX(7%)' : (isWilliamson ? 'scale(1.32)' : 'scale(1)')
-  const hovTransform = isShepard ? 'scale(1.55) translateX(7%)' : (isWilliamson ? 'scale(1.4)' : 'scale(1.08)')
+  // Per-headshot crop so every face matches the Shepard baseline framing in the circle.
+  const key = Object.keys(HEADSHOT_CROP).find(k => member.name.includes(k))
+  const crop = key ? HEADSHOT_CROP[key] : { scale: 1, pos: 'center top', tx: '0%' }
+  const imgPosition = crop.pos
+  const baseTransform = `scale(${crop.scale}) translateX(${crop.tx})`
+  const hovTransform = `scale(${(crop.scale + 0.1).toFixed(2)}) translateX(${crop.tx})`
   return (
     <div onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
       style={{
@@ -898,8 +910,8 @@ export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () 
           }
         </div>
       </div>
-      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '1.4rem', letterSpacing: '0.1em', color: '#c8102e', marginBottom: '0.5rem', textTransform: 'uppercase' }}>{member.role}</div>
-      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.7rem', fontWeight: 700, color: '#fff', marginBottom: '0.6rem', lineHeight: 1.2 }}>{member.name}</div>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 400, fontSize: '1.4rem', letterSpacing: '0.1em', color: '#c8102e', marginBottom: '0.5rem', textTransform: 'uppercase' }}>{member.role}</div>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.7rem', fontWeight: 400, color: '#fff', marginBottom: '0.6rem', lineHeight: 1.2 }}>{member.name}</div>
       <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.6, flexGrow: 1, fontWeight: 400 }}>{member.creds[0]}</div>
       <div style={{
         fontSize: '0.52rem', letterSpacing: '0.18em',
@@ -1039,7 +1051,7 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
             onMouseEnter={e => (e.currentTarget.style.borderColor = '#1a1a2e')}
             onMouseLeave={e => (e.currentTarget.style.borderColor = '#131323')}
           >
-            <div style={{ overflow: 'hidden', background: '#050512', maxHeight: 320 }}>
+            <div style={{ overflow: 'hidden', background: '#050512', aspectRatio: '1/1' }}>
               {featured.image
                 ? <img src={featured.image} alt={featured.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
                     onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.04)')}
@@ -1236,7 +1248,7 @@ export function LogosSection() {
     { src: '/vaxon/logos/naval-war-college-color.webp', alt: 'Naval War College' },
     { src: '/vaxon/logos/nasa.svg',                      alt: 'NASA' },
     { src: '/vaxon/logos/dod.svg',                      alt: 'Dept of Defense' },
-    { src: '/vaxon/logos/lockheedmartin.jpg',             alt: 'Lockheed Martin' },
+    { src: '/vaxon/logos/lockheed-martin.png',            alt: 'Lockheed Martin' },
     { src: '/vaxon/logos/michigan-seal.png',            alt: 'University of Michigan' },
     { src: '/vaxon/logos/cu-boulder.svg',               alt: 'CU Boulder' },
     { src: '/vaxon/logos/ut-austin.png',                alt: 'UT Austin' },
@@ -1251,7 +1263,6 @@ export function LogosSection() {
     const [hov, setHov] = useState(false)
     const baseFilter = 'none'
     const hovFilter = 'drop-shadow(0 0 12px rgba(200,16,46,0.5))'
-    const needsBlendMode = alt === 'Lockheed Martin' // white background — multiply blends it into dark page
     return (
       <div
         onMouseEnter={() => setHov(true)}
@@ -1273,7 +1284,6 @@ export function LogosSection() {
             transform: hov ? 'scale(1.2)' : 'scale(1)',
             filter: hov ? hovFilter : baseFilter,
             transition: 'opacity 0.3s, transform 0.4s cubic-bezier(0.22,1,0.36,1), filter 0.3s',
-            ...(needsBlendMode ? { mixBlendMode: 'multiply' as const } : {}),
           }}
           onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
         />
@@ -1425,11 +1435,38 @@ export default function VaxonPage() {
         <Section id="contact">
           <ContactSection />
         </Section>
+
+        <Footer />
       </div>
 
       <Suspense fallback={null}>
         <VaxonWidget />
       </Suspense>
     </>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
+   FOOTER — mailing address (consistent across all pages)
+───────────────────────────────────────────────────────────────*/
+export function Footer() {
+  return (
+    <footer style={{ borderTop: '1px solid #131323', background: '#02020d', padding: '3rem 2.5rem' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: '2rem', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <img src="/vaxon/logo.png" alt="Vaxon Space" style={{ height: 44, width: 'auto' }} />
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', color: '#fff', marginBottom: '0.35rem' }}>Vaxon Space, Inc.</div>
+          <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.82rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.7 }}>
+            2066 N Capitol Ave #5009<br />
+            San Jose, CA 95132
+          </div>
+        </div>
+      </div>
+      <div style={{ maxWidth: 1200, margin: '2rem auto 0', paddingTop: '1.5rem', borderTop: '1px solid #0d0d1a', fontFamily: "'Inter',sans-serif", fontSize: '0.62rem', letterSpacing: '0.12em', color: '#444', textTransform: 'uppercase' }}>
+        © {2026} Vaxon Space, Inc. · All rights reserved.
+      </div>
+    </footer>
   )
 }

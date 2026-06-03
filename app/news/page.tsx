@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { StarField, Nav, NewsSection, NewsItem, NEWS, VX_GLOBAL_STYLE } from '../page'
+import { StarField, Nav, NewsSection, NewsItem, NEWS, Footer, VX_GLOBAL_STYLE } from '../page'
 
 export default function NewsPage() {
   const [cmsNews, setCmsNews] = useState<NewsItem[] | null>(null)
@@ -20,6 +20,7 @@ export default function NewsPage() {
       <Nav active="news" />
       <div style={{ paddingTop: 64, position: 'relative', zIndex: 1 }}>
         <NewsSection news={news} />
+        <Footer />
       </div>
     </>
   )
