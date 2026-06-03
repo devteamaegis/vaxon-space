@@ -141,7 +141,7 @@ export const NEWS: NewsItem[] = [
     body: "A new Bay Area Space Ecosystem map highlights the region's growing concentration of space startups, suppliers, investors, and research organizations. Vaxon Space is included among the companies contributing to this expanding ecosystem, reflecting continued momentum around next-generation satellite architectures, VLEO platforms, defense applications, connectivity, and commercial space infrastructure.",
     source: 'LINKEDIN / ADAM BARTON',
     link: 'https://www.linkedin.com/feed/update/urn:li:activity:7458376693133553664/',
-    image: '/vaxon/bay-area-space-map.jpg',
+    image: `${WSIMG}/Vaxon.jpg/:/rs=w:800,h:400,cg:true,m/cr=w:800,h:400`,
   },
   {
     date: 'MAR 16 2026', title: 'EDA Commits $17.9M to VLEO Military Research',
