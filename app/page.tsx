@@ -141,7 +141,7 @@ export const NEWS: NewsItem[] = [
     body: "A new Bay Area Space Ecosystem map highlights the region's growing concentration of space startups, suppliers, investors, and research organizations. Vaxon Space is included among the companies contributing to this expanding ecosystem, reflecting continued momentum around next-generation satellite architectures, VLEO platforms, defense applications, connectivity, and commercial space infrastructure.",
     source: 'LINKEDIN / ADAM BARTON',
     link: 'https://www.linkedin.com/feed/update/urn:li:activity:7458376693133553664/',
-    image: `${WSIMG}/Vaxon.jpg/:/rs=w:800,h:400,cg:true,m/cr=w:800,h:400`,
+    image: '/vaxon/bay-area-space-map.jpg',
   },
   {
     date: 'MAR 16 2026', title: 'EDA Commits $17.9M to VLEO Military Research',
@@ -1258,7 +1258,7 @@ export function LogosSection() {
     { src: '/vaxon/logos/naval-war-college-color.webp', alt: 'Naval War College' },
     { src: '/vaxon/logos/nasa.svg',                      alt: 'NASA' },
     { src: '/vaxon/logos/dod.svg',                      alt: 'Dept of Defense' },
-    { src: '/vaxon/logos/lockheed.svg',                  alt: 'Lockheed Martin' },
+    { src: '/vaxon/logos/lockheedmartin.jpg',             alt: 'Lockheed Martin' },
     { src: '/vaxon/logos/michigan-seal.png',            alt: 'University of Michigan' },
     { src: '/vaxon/logos/cu-boulder.svg',               alt: 'CU Boulder' },
     { src: '/vaxon/logos/ut-austin.png',                alt: 'UT Austin' },
@@ -1271,12 +1271,9 @@ export function LogosSection() {
 
   const Logo = ({ src, alt }: { src: string; alt: string }) => {
     const [hov, setHov] = useState(false)
-    // Lockheed SVG is dark blue on transparent — invert to white for dark page visibility
-    const needsInvert = alt === 'Lockheed Martin'
-    const baseFilter = needsInvert ? 'brightness(0) invert(1)' : 'none'
-    const hovFilter = needsInvert
-      ? 'brightness(0) invert(1) drop-shadow(0 0 12px rgba(200,16,46,0.6))'
-      : 'drop-shadow(0 0 12px rgba(200,16,46,0.5))'
+    const baseFilter = 'none'
+    const hovFilter = 'drop-shadow(0 0 12px rgba(200,16,46,0.5))'
+    const needsBlendMode = alt === 'Lockheed Martin' // white background — multiply blends it into dark page
     return (
       <div
         onMouseEnter={() => setHov(true)}
@@ -1298,6 +1295,7 @@ export function LogosSection() {
             transform: hov ? 'scale(1.2)' : 'scale(1)',
             filter: hov ? hovFilter : baseFilter,
             transition: 'opacity 0.3s, transform 0.4s cubic-bezier(0.22,1,0.36,1), filter 0.3s',
+            ...(needsBlendMode ? { mixBlendMode: 'multiply' as const } : {}),
           }}
           onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
         />
