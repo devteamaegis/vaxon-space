@@ -68,7 +68,7 @@ export const CORE_TEAM: TeamMember[] = [
     image: '/vaxon/team-shepard.png',
     linkedin: 'https://www.linkedin.com/in/stevenpshepard/',
     bio: 'Dr. Shepard brings 21+ years of satellite design and advanced systems experience. As Senior R&D Program Manager at Lockheed Martin he managed a $30M portfolio and has advised Space Force, NASA, and DoD on next-generation space architectures.',
-    creds: ['21+ years in satellite design and advanced systems', 'Sr. R+D Program Manager, Lockheed Martin — $30M budget', 'Advisor: Space Force, NASA, DoD, University of Michigan', 'Author: Vanquishing Cancer'],
+    creds: ['21+ years in satellite design and advanced systems', 'Sr. R+D Program Manager, Lockheed Martin -$30M budget', 'Advisor: Space Force, NASA, DoD, University of Michigan', 'Author: Vanquishing Cancer'],
   },
   {
     name: 'Dr. Charles Lipscomb', role: 'Co-Founder & Chief Scientist',
@@ -83,20 +83,6 @@ export const CORE_TEAM: TeamMember[] = [
     linkedin: 'https://www.linkedin.com/in/brandon-williamson-83b0191ba/',
     bio: 'Brandon leads Vaxon\'s engineering team, overseeing all aspects of system design, analysis, testing, and integration. His plasma research background from the University of Michigan makes him uniquely qualified to advance VLEO satellite hardware.',
     creds: ['Aerospace engineering and plasma research background', 'University of Michigan aerospace training', 'Design, analysis, testing and system integration for VLEO'],
-  },
-  {
-    name: 'Lt. Col. Anand Shah', role: 'Sr. Advisor, Defense',
-    image: '/vaxon/team-shah.jpg',
-    linkedin: 'https://www.linkedin.com/in/ananddineshshah/',
-    bio: 'A retired USAF Program Manager with deep experience in military satellite systems, Lt. Col. Shah guided major SATCOM and AEHF programs and served as Chief of Flight Sciences and Payload Analysis at the NRO.',
-    creds: ['Retired USAF Program Manager', 'Deputy PM for SATCOM and AEHF', 'Chief of Flight Sciences and Payload Analysis at NRO'],
-  },
-  {
-    name: 'Dr. Iain Boyd', role: 'Sr. Advisor, VLEO',
-    image: '/vaxon/team-boyd.png',
-    linkedin: 'https://www.linkedin.com/in/iain-boyd/',
-    bio: 'With 30+ years in hypersonics and space plasma physics and 200+ peer-reviewed publications, Dr. Boyd directs the Center for National Security Initiatives at CU Boulder and is among the world\'s foremost VLEO propulsion experts.',
-    creds: ['30+ years in hypersonics and space plasma physics', 'Professor, Aerospace Engineering Sciences, CU Boulder', 'Director, Center for National Security Initiatives', '200+ peer-reviewed publications'],
   },
 ]
 
@@ -116,6 +102,22 @@ export const ADVISORS: TeamMember[] = [
     creds: ['28 years at Lockheed Martin', 'Former VP + Chief Engineer of Space', 'PhD Aerospace Engineering, Stanford University', 'National Academy of Engineering member'],
     isAdvisor: true,
   },
+  {
+    name: 'Lt. Col. Anand Shah', role: 'Advisory Board',
+    image: '/vaxon/team-shah.jpg',
+    linkedin: 'https://www.linkedin.com/in/ananddineshshah/',
+    bio: 'A retired USAF Program Manager with deep experience in military satellite systems, Lt. Col. Shah guided major SATCOM and AEHF programs and served as Chief of Flight Sciences and Payload Analysis at the NRO.',
+    creds: ['Retired USAF Program Manager', 'Deputy PM for SATCOM and AEHF', 'Chief of Flight Sciences and Payload Analysis at NRO'],
+    isAdvisor: true,
+  },
+  {
+    name: 'Dr. Iain Boyd', role: 'Advisory Board',
+    image: '/vaxon/team-boyd.png',
+    linkedin: 'https://www.linkedin.com/in/iain-boyd/',
+    bio: 'With 30+ years in hypersonics and space plasma physics and 200+ peer-reviewed publications, Dr. Boyd directs the Center for National Security Initiatives at CU Boulder and is among the world\'s foremost VLEO propulsion experts.',
+    creds: ['30+ years in hypersonics and space plasma physics', 'Professor, Aerospace Engineering Sciences, CU Boulder', 'Director, Center for National Security Initiatives', '200+ peer-reviewed publications'],
+    isAdvisor: true,
+  },
 ]
 
 const WSIMG = 'https://img1.wsimg.com/isteam/ip/b6d77e34-40ce-4ade-86a8-3e868f7bc80c'
@@ -128,17 +130,24 @@ export const NEWS: NewsItem[] = [
     image: `${WSIMG}/UNIVITY.png/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:800,cg:true`,
   },
   {
+    date: 'MAY 20 2026', title: 'ASCEND 2026 Panel Explores Next-Generation Operations in VLEO',
+    body: 'Dr. Steven P. Shepard participated in the ASCEND 2026 panel "Racing to vLEO: Next-Generation Operations in Very Low Earth Orbit," joining Brian Cameron of The Aerospace Corporation, Dr. Gillian Bussey of the US Space Force, and Spence Wise of Redwire. The discussion covered recent technological advancements, military and commercial applications, and where the VLEO ecosystem is headed over the coming decade.',
+    source: 'LINKEDIN / AIAA',
+    link: 'https://www.linkedin.com/posts/stevenpshepard_aiaaascend26-vleo-spacetech-activity-7463033959719788544-W-uy',
+    image: '/vaxon/ascend-2026.jpg',
+  },
+  {
+    date: 'MAY 13 2026', title: 'Bay Area Space Ecosystem Map Highlights Regional Growth',
+    body: "A new Bay Area Space Ecosystem map highlights the region's growing concentration of space startups, suppliers, investors, and research organizations. Vaxon Space is included among the companies contributing to this expanding ecosystem, reflecting continued momentum around next-generation satellite architectures, VLEO platforms, defense applications, connectivity, and commercial space infrastructure.",
+    source: 'LINKEDIN / ADAM BARTON',
+    link: 'https://www.linkedin.com/feed/update/urn:li:activity:7458376693133553664/',
+    image: '/vaxon/bay-area-space-map.jpg',
+  },
+  {
     date: 'MAR 16 2026', title: 'EDA Commits $17.9M to VLEO Military Research',
     body: 'The European Defence Agency launches a major initiative exploring VLEO for enhanced ISR and new mission architectures, validating the strategic importance of sub-200km satellite operations for modern defense applications worldwide.',
     source: 'VIA SATELLITE',
     image: `${WSIMG}/EDA-image.webp/:/cr=t:0%25,l:21.88%25,w:56.25%25,h:100%25/rs=w:800,h:400,cg:true`,
-  },
-  {
-    date: 'FEB 25 2026', title: 'Vaxon Space CEO Discusses VLEO Momentum',
-    body: 'Dr. Shepard joins Balerion Space Ventures to discuss ISR, missile defense sensing, and AI-enabled space capabilities. The conversation covers ABEP technology, the commercial satellite market, Vaxon\'s competitive advantages, and the company\'s near-term roadmap.',
-    source: 'YOUTUBE',
-    link: 'https://www.youtube.com/watch?v=piWj3lWfUEM',
-    image: 'https://img.youtube.com/vi/piWj3lWfUEM/maxresdefault.jpg',
   },
   {
     date: 'FEB 05 2026', title: 'Vaxon Joins Starburst / IAI Cohort 4',
@@ -234,7 +243,7 @@ export function StarField() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   NAV — links to dedicated pages
+   NAV -links to dedicated pages
 ───────────────────────────────────────────────────────────────*/
 const NAV_LINKS = [
   { id: 'home',       label: 'HOME',       href: '/' },
@@ -384,28 +393,29 @@ function HomeSection() {
         </video>
 
         {/* ── Cinematic overlays ── */}
-        {/* Top vignette — keeps nav readable */}
+        {/* Top vignette -keeps nav readable */}
         <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
           background: 'linear-gradient(to bottom, rgba(2,2,13,0.72) 0%, rgba(2,2,13,0.08) 28%, rgba(2,2,13,0.0) 52%, rgba(2,2,13,0.55) 78%, rgba(2,2,13,0.96) 100%)' }} />
-        {/* Side vignettes — pull focus to center */}
+        {/* Side vignettes -pull focus to center */}
         <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
           background: 'radial-gradient(ellipse 80% 100% at 50% 50%, transparent 50%, rgba(2,2,13,0.55) 100%)' }} />
-        {/* Subtle red tint at bottom — brand color bleed */}
+        {/* Subtle red tint at bottom -brand color bleed */}
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '30%', zIndex: 2, pointerEvents: 'none',
           background: 'linear-gradient(to top, rgba(20,2,6,0.65) 0%, transparent 100%)' }} />
 
-        {/* ── Content ── */}
-        <div style={{ position: 'relative', zIndex: 3, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 2rem 5rem' }}>
+        {/* VLEO label -top left */}
+        <div style={{
+          position: 'absolute', top: '2rem', left: '2.5rem', zIndex: 4,
+          fontSize: '0.9rem', letterSpacing: '0.12em', color: '#c8102e',
+          fontFamily: "'Bitter',Georgia,serif", fontWeight: 400,
+          opacity: videoOk ? 1 : 0,
+          transition: 'opacity 1s ease 0.6s',
+        }}>
+          VERY LOW EARTH ORBIT
+        </div>
 
-          {/* Eyebrow */}
-          <div style={{
-            fontSize: '0.58rem', letterSpacing: '0.32em', color: '#c8102e',
-            fontFamily: "'Inter',sans-serif", marginBottom: '2rem',
-            opacity: videoOk ? 1 : 0, transform: videoOk ? 'none' : 'translateY(8px)',
-            transition: 'opacity 1s ease 0.6s, transform 1s ease 0.6s',
-          }}>
-            VERY LOW EARTH ORBIT — 180–250KM ALTITUDE
-          </div>
+        {/* ── (hero text removed -video shown clean) ── */}
+        <div style={{ display: 'none' }}>
 
           <h1 style={{
             fontFamily: "'Bitter',Georgia,serif",
@@ -428,7 +438,7 @@ function HomeSection() {
             opacity: videoOk ? 1 : 0, transform: videoOk ? 'none' : 'translateY(8px)',
             transition: 'opacity 1s ease 1s, transform 1s ease 1s',
           }}>
-            Vaxon Space operates air-breathing satellites at 180–250km — 10× closer than traditional LEO,
+            Vaxon Space operates air-breathing satellites at 180–250km -10× closer than traditional LEO,
             delivering unprecedented resolution, latency, and persistence.
           </p>
 
@@ -461,7 +471,7 @@ function HomeSection() {
             >REQUEST A BRIEFING</a>
           </div>
 
-          {/* Watch Our Story — now opens Dr. Shepard interview */}
+          {/* Watch Our Story -now opens Dr. Shepard interview */}
           <button onClick={() => setShowStory(true)} style={{
             background: 'none', border: 'none', cursor: 'pointer',
             display: 'flex', alignItems: 'center', gap: '0.75rem',
@@ -496,24 +506,48 @@ function HomeSection() {
 
 function StatsStrip() {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', background: '#02020d', borderTop: '1px solid #131323', borderBottom: '1px solid #131323' }}>
-      {[
-        { v: '180–250km', l: 'Orbital Altitude' },
-        { v: '<15ms',     l: 'Signal Latency' },
-        { v: '10×',      l: 'Closer Than LEO' },
-        { v: '24/7',     l: 'Persistent Coverage' },
-      ].map((s, i) => (
-        <div key={i} style={{ padding: '1.5rem 1rem', textAlign: 'center', borderRight: i < 3 ? '1px solid #131323' : 'none' }}>
-          <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.1rem,2.5vw,1.75rem)', fontWeight: 900, color: '#fff' }}>{s.v}</div>
-          <div style={{ fontSize: '0.55rem', letterSpacing: '0.15em', color: '#4a4a5e', textTransform: 'uppercase', marginTop: '0.25rem', fontFamily: "'Inter',sans-serif" }}>{s.l}</div>
-        </div>
-      ))}
-    </div>
+    <>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', background: 'rgba(2,2,13,0.72)', backdropFilter: 'blur(12px)', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        {[
+          { v: '180-250km', l: 'Orbital Altitude' },
+          { v: '<15ms',     l: 'Signal Latency' },
+          { v: '10x',       l: 'Closer Than LEO' },
+          { v: '24/7',      l: 'Persistent Coverage' },
+        ].map((s, i) => (
+          <div key={i} style={{ padding: '1.5rem 1rem', textAlign: 'center', borderRight: i < 3 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}>
+            <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.1rem,2.5vw,1.75rem)', fontWeight: 900, color: '#fff' }}>{s.v}</div>
+            <div style={{ fontSize: '0.55rem', letterSpacing: '0.15em', color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', marginTop: '0.25rem', fontFamily: "'Inter',sans-serif" }}>{s.l}</div>
+          </div>
+        ))}
+      </div>
+      {/* Hero subtext + CTA */}
+      <div style={{ background: '#02020d', padding: '3rem 2.5rem', textAlign: 'center', borderBottom: '1px solid #131323' }}>
+        <p style={{
+          fontFamily: "'Inter',sans-serif", fontSize: 'clamp(0.9rem,1.5vw,1.1rem)',
+          color: 'rgba(255,255,255,0.65)', lineHeight: 1.8,
+          maxWidth: 580, margin: '0 auto 2rem', fontWeight: 300,
+        }}>
+          Vaxon Space operates air-breathing satellites at 180-250km, 10x closer than traditional LEO,
+          delivering unprecedented resolution, latency, and persistence.
+        </p>
+        <a href="/technology"
+          style={{
+            display: 'inline-block',
+            background: 'transparent', color: '#fff', border: '1px solid #c8102e',
+            padding: '0.85rem 2.5rem', fontSize: '0.72rem', fontWeight: 600,
+            letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif",
+            textDecoration: 'none', transition: 'background 0.2s',
+          }}
+          onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.background = '#c8102e')}
+          onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => (e.currentTarget.style.background = 'transparent')}
+        >EXPLORE TECHNOLOGY</a>
+      </div>
+    </>
   )
 }
 
 /* ─────────────────────────────────────────────────────────────
-   ALTITUDE BARS — standalone component with reliable animation
+   ALTITUDE BARS -standalone component with reliable animation
 ───────────────────────────────────────────────────────────────*/
 const TIERS = [
   { l: 'GEO',  km: '35,786 km',  pct: 100, note: 'Weather / Comms',    hi: false },
@@ -541,32 +575,32 @@ function AltitudeBars() {
 
   return (
     <div ref={ref} style={{ borderTop: '1px solid #131323', paddingTop: '3rem' }}>
-      <div style={{ fontSize: '0.58rem', letterSpacing: '0.25em', color: '#333', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '2.5rem' }}>
-        ALTITUDE COMPARISON — shorter bar = closer to Earth
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.2rem,2vw,1.6rem)', fontWeight: 700, color: '#fff', marginBottom: '2.5rem' }}>
+        ALTITUDE COMPARISON
       </div>
       {TIERS.map((tier, i) => (
         <div key={i} style={{
-          display: 'flex', alignItems: 'center', gap: '1.25rem', marginBottom: '1.4rem',
+          display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem',
           opacity: animated ? 1 : 0,
           transform: animated ? 'none' : 'translateX(-10px)',
           transition: 'opacity 0.45s ease, transform 0.45s ease',
           transitionDelay: `${i * 0.1}s`,
         }}>
-          <div style={{ width: 44, fontSize: '0.58rem', letterSpacing: '0.12em', color: tier.hi ? '#fff' : '#4a4a5e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", flexShrink: 0 }}>
+          <div style={{ width: 56, fontSize: '0.85rem', letterSpacing: '0.08em', color: tier.hi ? '#fff' : 'rgba(255,255,255,0.45)', textTransform: 'uppercase', fontFamily: "'Bitter',Georgia,serif", fontWeight: tier.hi ? 700 : 400, flexShrink: 0 }}>
             {tier.l}
           </div>
-          <div style={{ flex: 1, height: tier.hi ? 3 : 2, background: '#0d0d1a', position: 'relative', borderRadius: 1 }}>
+          <div style={{ flex: 1, height: tier.hi ? 14 : 10, background: '#0d0d1a', position: 'relative', borderRadius: 3 }}>
             <div style={{
-              position: 'absolute', left: 0, top: 0, height: '100%', borderRadius: 1,
+              position: 'absolute', left: 0, top: 0, height: '100%', borderRadius: 3,
               width: animated ? `${tier.pct}%` : '0%',
               background: tier.hi ? '#c8102e' : '#1e2040',
               transition: 'width 1.4s cubic-bezier(0.22, 1, 0.36, 1)',
               transitionDelay: `${i * 0.12 + 0.1}s`,
-              boxShadow: tier.hi ? '0 0 8px rgba(200,16,46,0.4)' : 'none',
+              boxShadow: tier.hi ? '0 0 12px rgba(200,16,46,0.5)' : 'none',
             }} />
           </div>
-          <div style={{ width: 92, fontSize: '0.6rem', color: '#4a4a5e', fontFamily: "'Inter',sans-serif", textAlign: 'right', flexShrink: 0 }}>{tier.km}</div>
-          <div style={{ width: 140, fontSize: '0.58rem', color: tier.hi ? '#c8102e' : '#2a2a3e', fontFamily: "'Inter',sans-serif", flexShrink: 0 }}>{tier.note}</div>
+          <div style={{ width: 110, fontSize: '0.82rem', color: 'rgba(255,255,255,0.6)', fontFamily: "'Inter',sans-serif", textAlign: 'right', flexShrink: 0 }}>{tier.km}</div>
+          <div style={{ width: 160, fontSize: '0.78rem', color: tier.hi ? '#c8102e' : 'rgba(255,255,255,0.3)', fontFamily: "'Inter',sans-serif", flexShrink: 0 }}>{tier.note}</div>
         </div>
       ))}
     </div>
@@ -603,45 +637,46 @@ export function AboutSection() {
             The Physics Advantage in Low-Altitude Orbit
           </h2>
           <p style={{ color: '#6b7280', lineHeight: 1.85, fontSize: '0.9rem', margin: '0 0 1.5rem' }}>
-            Traditional LEO satellites orbit at 400–600km. Vaxon operates at 180–250km — the Very Low Earth Orbit. This is a physics-driven step-change in what satellites can see, hear, and respond to.
+            Traditional LEO satellites orbit at 400–600km. Vaxon operates at 180–250km -the Very Low Earth Orbit. This is a physics-driven step-change in what satellites can see, hear, and respond to.
           </p>
           <p style={{ color: '#6b7280', lineHeight: 1.85, fontSize: '0.9rem', margin: '0 0 2.5rem' }}>
-            Our Air-Breathing Electric Propulsion (ABEP) system harvests atmospheric molecules as propellant, enabling unlimited orbital endurance without carrying fuel — solving the fundamental challenge of sustained VLEO operations.
+            Our Air-Breathing Electric Propulsion (ABEP) system harvests atmospheric molecules as propellant, enabling unlimited orbital endurance without carrying fuel -solving the fundamental challenge of sustained VLEO operations.
           </p>
           <div style={{ fontSize: '0.6rem', letterSpacing: '0.18em', color: '#333', fontFamily: "'Inter',sans-serif", display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#c8102e' }} />
-            EST. 2021 — BOULDER, COLORADO
+            EST. 2021 -BOULDER, COLORADO
           </div>
         </div>
       </div>
 
-      {/* Advantage cards — scroll reveal */}
+      {/* Advantage cards -scroll reveal */}
       <div ref={cardsRef} style={{ borderTop: '1px solid #131323', paddingTop: '3.5rem', marginBottom: '4rem' }}>
-        <div style={{ fontSize: '0.58rem', letterSpacing: '0.25em', color: '#333', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '2rem' }}>KEY ADVANTAGES</div>
+        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.4rem,2.5vw,2rem)', fontWeight: 700, color: '#fff', marginBottom: '2.5rem', textAlign: 'center' }}>KEY ADVANTAGES</div>
         <div className="vx-4col" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1px', background: '#131323' }}>
           {[
-            { tag: 'IMAGERY', h: '<30cm Resolution', b: '5× sharper than standard LEO. Sub-decimeter imagery enabling target identification at orbital speed.' },
+            { tag: 'IMAGERY', h: '<30cm Resolution', b: '5x sharper than standard LEO. Sub-decimeter imagery enabling target identification at orbital speed.' },
             { tag: 'LATENCY', h: '<15ms Signal', b: 'Near-ground-speed communications for real-time missile defense coordination and C2 networks.' },
-            { tag: 'COVERAGE', h: 'Persistent ISR', b: 'Continuous surveillance of high-priority zones — not 4-hour revisit windows.' },
+            { tag: 'COVERAGE', h: 'Persistent ISR', b: 'Continuous surveillance of high-priority zones. Not 4-hour revisit windows.' },
             { tag: 'PROPULSION', h: 'No Propellant Limit', b: 'ABEP harvests atmosphere as fuel. Unlimited mission duration with no propellant mass penalty.' },
           ].map((c, i) => (
             <div key={i} style={{
-              background: '#02020d', padding: '2rem 1.5rem', transition: 'background 0.2s, opacity 0.6s, transform 0.6s',
+              background: '#02020d', padding: '2.5rem 2rem', textAlign: 'center',
+              transition: 'background 0.2s, opacity 0.6s, transform 0.6s',
               opacity: cardsVisible ? 1 : 0, transform: cardsVisible ? 'none' : 'translateY(20px)',
               transitionDelay: cardsVisible ? `${i * 0.1}s` : '0s',
             }}
               onMouseEnter={e => (e.currentTarget.style.background = '#090918')}
               onMouseLeave={e => (e.currentTarget.style.background = '#02020d')}
             >
-              <div style={{ fontSize: '0.55rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '0.6rem' }}>{c.tag}</div>
-              <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', fontWeight: 700, color: '#fff', marginBottom: '0.6rem', lineHeight: 1.3 }}>{c.h}</div>
-              <div style={{ fontSize: '0.78rem', color: '#4a4a5e', lineHeight: 1.65 }}>{c.b}</div>
+              <div style={{ fontSize: '0.6rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem', textAlign: 'center' }}>{c.tag}</div>
+              <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.35rem', fontWeight: 700, color: '#fff', marginBottom: '0.75rem', lineHeight: 1.2, textAlign: 'center' }}>{c.h}</div>
+              <div style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.75)', lineHeight: 1.7, textAlign: 'center' }}>{c.b}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Altitude comparison — animated bars on scroll */}
+      {/* Altitude comparison -animated bars on scroll */}
       <AltitudeBars />
     </div>
   )
@@ -669,7 +704,7 @@ export function TechnologySection() {
       <div style={{ width: 36, height: 1, background: '#1e1e30', marginBottom: '3.5rem' }} />
 
       <div className="vx-tech-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start' }}>
-        {/* Globe + satellite — sticky on scroll */}
+        {/* Globe + satellite -sticky on scroll */}
         <div style={{ position: 'sticky', top: 80 }}>
           <Suspense fallback={
             <div style={{ height: 460, background: '#050512', border: '1px solid #131323', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
@@ -744,7 +779,7 @@ export function TechnologySection() {
             { l: 'INCLINATION', v: '45°' },
             { l: 'REVISIT TIME', v: '<2 hours' },
             { l: 'RESOLUTION', v: '<30 cm GSD' },
-            { l: 'PROPULSION', v: 'ABEP — no propellant' },
+            { l: 'PROPULSION', v: 'ABEP -no propellant' },
           ].map(s => (
             <div key={s.l} style={{ background: '#02020d', padding: '1rem 1.25rem' }}>
               <div style={{ fontSize: '0.5rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#444', marginBottom: '0.3rem', fontFamily: "'Inter',sans-serif" }}>{s.l}</div>
@@ -844,7 +879,7 @@ export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () 
       {/* Circular photo */}
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.25rem' }}>
         <div style={{
-          width: 120, height: 120, borderRadius: '50%',
+          width: 190, height: 190, borderRadius: '50%',
           overflow: 'hidden', flexShrink: 0,
           border: `2px solid ${hov ? '#c8102e' : '#1a1a2e'}`,
           transition: 'border-color 0.3s, box-shadow 0.3s',
@@ -868,8 +903,8 @@ export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () 
         </div>
       </div>
       <div style={{ fontSize: '0.55rem', letterSpacing: '0.18em', color: '#c8102e', marginBottom: '0.4rem', fontFamily: "'Inter',sans-serif" }}>{member.role}</div>
-      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.05rem', fontWeight: 700, color: '#fff', marginBottom: '0.6rem', lineHeight: 1.2 }}>{member.name}</div>
-      <div style={{ fontSize: '0.72rem', color: '#4a4a5e', lineHeight: 1.6, flexGrow: 1 }}>{member.creds[0]}</div>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.4rem', fontWeight: 700, color: '#fff', marginBottom: '0.6rem', lineHeight: 1.2 }}>{member.name}</div>
+      <div style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.8)', lineHeight: 1.6, flexGrow: 1 }}>{member.creds[0]}</div>
       <div style={{
         fontSize: '0.52rem', letterSpacing: '0.18em',
         color: hov ? '#c8102e' : 'transparent',
@@ -898,20 +933,19 @@ export function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: 
           Decades of experience from Lockheed Martin, the US Army, US Air Force, NRO, DARPA, and the world's leading aerospace research institutions.
         </p>
 
-        <div style={{ fontSize: '0.56rem', letterSpacing: '0.22em', color: '#333', fontFamily: "'Inter',sans-serif", marginBottom: '1.25rem' }}>CORE LEADERSHIP</div>
-        <div className="vx-team-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(220px,1fr))', gap: '1px', background: '#0d0d1a', marginBottom: '4rem', alignItems: 'stretch' }}>
+        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.4rem,2.5vw,2rem)', fontWeight: 900, color: '#fff', textAlign: 'center', marginBottom: '2rem' }}>Core Leadership</div>
+        <div style={{ display: 'flex', flexWrap: 'wrap' as const, justifyContent: 'center', gap: '1px', background: '#0d0d1a', marginBottom: '4rem' }}>
           {core.map((m, i) => (
-            <div key={m.name} style={{ animation: `vx-card-in 0.6s cubic-bezier(0.22,1,0.36,1) both`, animationDelay: `${i * 0.1}s`, display: 'flex' }}>
+            <div key={m.name} style={{ animation: `vx-card-in 0.6s cubic-bezier(0.22,1,0.36,1) both`, animationDelay: `${i * 0.1}s`, display: 'flex', width: 280, flexShrink: 0 }}>
               <TeamCard member={m} onClick={() => setSel(m)} />
             </div>
           ))}
         </div>
 
-        <div style={{ fontSize: '0.56rem', letterSpacing: '0.22em', color: '#333', fontFamily: "'Inter',sans-serif", marginBottom: '1.25rem' }}>ADVISORY BOARD</div>
-        {/* Advisors: centered, fixed width so 2 cards sit cleanly together */}
-        <div style={{ display: 'flex', gap: '1px', marginBottom: '1.5rem', justifyContent: 'center' }}>
+        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.4rem,2.5vw,2rem)', fontWeight: 900, color: '#fff', textAlign: 'center', marginBottom: '2rem' }}>Advisory Board</div>
+        <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '1px', marginBottom: '1.5rem', justifyContent: 'center' }}>
           {advisors.map((m, i) => (
-            <div key={m.name} style={{ animation: `vx-card-in 0.6s cubic-bezier(0.22,1,0.36,1) both`, animationDelay: `${i * 0.1 + 0.2}s`, display: 'flex', width: 260, flexShrink: 0 }}>
+            <div key={m.name} style={{ animation: `vx-card-in 0.6s cubic-bezier(0.22,1,0.36,1) both`, animationDelay: `${i * 0.1 + 0.2}s`, display: 'flex', width: 280, flexShrink: 0 }}>
               <TeamCard member={m} onClick={() => setSel(m)} />
             </div>
           ))}
@@ -958,7 +992,7 @@ function VideoEmbed({ videoId }: { videoId: string }) {
       <div style={{ position: 'absolute', bottom: 16, left: 16 }}>
         <div style={{ fontSize: '0.5rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', marginBottom: 4, fontFamily: "'Inter',sans-serif" }}>FEATURED INTERVIEW</div>
         <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', fontWeight: 700, color: '#fff', textShadow: '0 1px 6px rgba(0,0,0,0.9)' }}>
-          Dr. Steven Shepard — VLEO Mission + Strategy
+          Dr. Steven Shepard -VLEO Mission + Strategy
         </div>
       </div>
     </div>
@@ -976,7 +1010,7 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
       <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>NEWS & PRESS</div>
       <div style={{ width: 36, height: 1, background: '#1e1e30', marginBottom: '3.5rem' }} />
 
-      {/* Dr. Shepard interview video — pinned above featured card */}
+      {/* Dr. Shepard interview video -pinned above featured card */}
       <div style={{ border: '1px solid #131323', marginBottom: '2px', overflow: 'hidden', display: 'grid', gridTemplateColumns: '1fr 1fr' }} className="vx-feat">
         <div style={{ padding: '2.5rem', borderRight: '1px solid #131323', background: '#060614', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <div style={{ fontSize: '0.52rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>FEATURED INTERVIEW / FEB 2026</div>
@@ -984,7 +1018,7 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
             CEO Dr. Steven Shepard on VLEO Momentum
           </h3>
           <p style={{ color: '#6b7280', fontSize: '0.875rem', lineHeight: 1.8, margin: '0 0 1.5rem' }}>
-            Dr. Shepard discusses VLEO mission use cases including ISR, missile defense sensing, Golden Dome potential, and AI-enabled space capabilities — the full strategic picture for Vaxon Space.
+            Dr. Shepard discusses VLEO mission use cases including ISR, missile defense sensing, Golden Dome potential, and AI-enabled space capabilities -the full strategic picture for Vaxon Space.
           </p>
           <a href="https://www.youtube.com/watch?v=piWj3lWfUEM" target="_blank" rel="noopener noreferrer"
             style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: '#4a4a5e', textDecoration: 'none', fontFamily: "'Inter',sans-serif", transition: 'color 0.2s' }}
@@ -1195,39 +1229,36 @@ export function ContactSection() {
    LOGOS SECTION
 ───────────────────────────────────────────────────────────────*/
 export function LogosSection() {
-  // Row 1 — Defense & Government
-  const orgs = [
-    { src: '/vaxon/logos/nro-color.png',              alt: 'NRO' },
-    { src: '/vaxon/logos/army-mark.png',              alt: 'US Army' },
-    { src: '/vaxon/logos/disa.svg',                   alt: 'DISA' },
-    { src: '/vaxon/logos/space-force.png',            alt: 'Space Force' },
-    { src: '/vaxon/logos/naval-research-lab.png',     alt: 'Naval Research Lab' },
+  const all = [
+    { src: '/vaxon/logos/nro-color.png',                alt: 'NRO' },
+    { src: '/vaxon/logos/army-mark.png',                alt: 'US Army' },
+    { src: '/vaxon/logos/disa.svg',                     alt: 'DISA' },
+    { src: '/vaxon/logos/space-force.png',              alt: 'Space Force' },
+    { src: '/vaxon/logos/naval-research-lab.png',       alt: 'Naval Research Lab' },
     { src: '/vaxon/logos/naval-war-college-color.webp', alt: 'Naval War College' },
-    { src: '/vaxon/logos/nasa-color.jpg',             alt: 'NASA' },
-    { src: '/vaxon/logos/dod.svg',                    alt: 'Dept of Defense' },
-    { src: '/vaxon/logos/lockheed.svg',               alt: 'Lockheed Martin' },
-  ]
-  // Row 2 — Universities & Research Institutions
-  const unis = [
-    { src: '/vaxon/logos/michigan-seal.png',   alt: 'University of Michigan' },
-    { src: '/vaxon/logos/cu-boulder.svg',      alt: 'CU Boulder' },
-    { src: '/vaxon/logos/ut-austin.png',       alt: 'UT Austin' },
-    { src: '/vaxon/logos/west-point-logo.png', alt: 'West Point' },
-    { src: '/vaxon/logos/unc.svg',             alt: 'UNC Chapel Hill' },
-    { src: '/vaxon/logos/stanford-color.webp', alt: 'Stanford' },
-    { src: '/vaxon/logos/cornell-seal.png',    alt: 'Cornell' },
-    { src: '/vaxon/logos/bates-logo.jpg',      alt: 'Bates College' },
+    { src: '/vaxon/logos/nasa-color.jpg',               alt: 'NASA' },
+    { src: '/vaxon/logos/dod.svg',                      alt: 'Dept of Defense' },
+    { src: '/vaxon/logos/lockheed.svg',                 alt: 'Lockheed Martin' },
+    { src: '/vaxon/logos/michigan-seal.png',            alt: 'University of Michigan' },
+    { src: '/vaxon/logos/cu-boulder.svg',               alt: 'CU Boulder' },
+    { src: '/vaxon/logos/ut-austin.png',                alt: 'UT Austin' },
+    { src: '/vaxon/logos/west-point-logo.png',          alt: 'West Point' },
+    { src: '/vaxon/logos/unc.svg',                      alt: 'UNC Chapel Hill' },
+    { src: '/vaxon/logos/stanford-color.webp',          alt: 'Stanford' },
+    { src: '/vaxon/logos/cornell-seal.png',             alt: 'Cornell' },
+    { src: '/vaxon/logos/bates-logo.jpg',               alt: 'Bates College' },
   ]
 
   const Logo = ({ src, alt }: { src: string; alt: string }) => {
     const [hov, setHov] = useState(false)
+    const needsBlend = alt === 'Stanford' || alt === 'NASA'
     return (
       <div
         onMouseEnter={() => setHov(true)}
         onMouseLeave={() => setHov(false)}
         style={{
           display: 'flex', flexDirection: 'column', alignItems: 'center',
-          justifyContent: 'center', padding: '1.4rem 0.75rem', gap: '0.55rem',
+          justifyContent: 'center', padding: '1.8rem 1rem', gap: '0.75rem',
           background: hov ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.03)',
           transition: 'background 0.3s',
           cursor: 'default',
@@ -1236,17 +1267,19 @@ export function LogosSection() {
         <img
           src={src} alt={alt}
           style={{
-            width: 68, height: 68,
+            width: 100, height: 100,
             objectFit: 'contain',
-            opacity: hov ? 1 : 0.72,
-            transform: hov ? 'scale(1.14)' : 'scale(1)',
-            transition: 'opacity 0.3s, transform 0.4s cubic-bezier(0.22,1,0.36,1)',
+            opacity: hov ? 1 : 0.8,
+            transform: hov ? 'scale(1.2)' : 'scale(1)',
+            filter: hov ? 'drop-shadow(0 0 12px rgba(200,16,46,0.5))' : 'none',
+            transition: 'opacity 0.3s, transform 0.4s cubic-bezier(0.22,1,0.36,1), filter 0.3s',
+            ...(needsBlend ? { mixBlendMode: 'screen' as const } : {}),
           }}
           onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
         />
         <div style={{
-          fontSize: '0.44rem', letterSpacing: '0.12em', textTransform: 'uppercase',
-          color: hov ? 'rgba(255,255,255,0.65)' : 'rgba(255,255,255,0.28)',
+          fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase',
+          color: hov ? '#fff' : 'rgba(255,255,255,0.5)',
           fontFamily: "'Inter',sans-serif", textAlign: 'center', lineHeight: 1.4,
           transition: 'color 0.3s',
         }}>{alt}</div>
@@ -1256,16 +1289,15 @@ export function LogosSection() {
 
   return (
     <div style={{ borderTop: '1px solid #131323', padding: '4rem 2.5rem', maxWidth: 1200, margin: '0 auto' }}>
-      <div style={{ fontSize: '0.55rem', letterSpacing: '0.28em', color: '#333', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", textAlign: 'center', marginBottom: '2.5rem' }}>
-        OUR TEAM HAS WORKED AT
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 900, color: '#fff', textAlign: 'center', marginBottom: '3rem' }}>
+        Our Team Has Worked At
       </div>
-      {/* Defense & Government */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(110px,1fr))', marginBottom: '1px', borderTop: '1px solid #0d0d1a', borderLeft: '1px solid #0d0d1a' }}>
-        {orgs.map(o => <div key={o.alt} style={{ borderRight: '1px solid #0d0d1a', borderBottom: '1px solid #0d0d1a' }}><Logo {...o} /></div>)}
-      </div>
-      {/* Universities */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(110px,1fr))', borderTop: '1px solid #0d0d1a', borderLeft: '1px solid #0d0d1a' }}>
-        {unis.map(u => <div key={u.alt} style={{ borderRight: '1px solid #0d0d1a', borderBottom: '1px solid #0d0d1a' }}><Logo {...u} /></div>)}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', borderTop: '1px solid #0d0d1a', borderLeft: '1px solid #0d0d1a' }}>
+        {all.map(o => (
+          <div key={o.alt} style={{ borderRight: '1px solid #0d0d1a', borderBottom: '1px solid #0d0d1a' }}>
+            <Logo {...o} />
+          </div>
+        ))}
       </div>
     </div>
   )
