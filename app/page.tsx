@@ -1248,7 +1248,7 @@ export function LogosSection() {
     { src: '/vaxon/logos/naval-war-college-color.webp', alt: 'Naval War College' },
     { src: '/vaxon/logos/nasa.svg',                      alt: 'NASA' },
     { src: '/vaxon/logos/dod.svg',                      alt: 'Dept of Defense' },
-    { src: '/vaxon/logos/lockheed-martin.png',            alt: 'Lockheed Martin' },
+    { src: '/vaxon/lockheed-martin.jpg',                  alt: 'Lockheed Martin' },
     { src: '/vaxon/logos/michigan-seal.png',            alt: 'University of Michigan' },
     { src: '/vaxon/logos/cu-boulder.svg',               alt: 'CU Boulder' },
     { src: '/vaxon/logos/ut-austin.png',                alt: 'UT Austin' },
