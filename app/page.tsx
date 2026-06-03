@@ -489,22 +489,26 @@ function HomeSection() {
           </button>
         </div>
 
-        {/* Stats strip — glassmorphism */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 3, display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', background: 'rgba(2,2,13,0.7)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-          {[
-            { v: '180–250km', l: 'Orbital Altitude' },
-            { v: '<15ms',     l: 'Signal Latency' },
-            { v: '10×',      l: 'Closer Than LEO' },
-            { v: '24/7',     l: 'Persistent Coverage' },
-          ].map((s, i) => (
-            <div key={i} style={{ padding: '1.25rem 1rem', textAlign: 'center', borderRight: i < 3 ? '1px solid #131323' : 'none' }}>
-              <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.1rem,2.5vw,1.75rem)', fontWeight: 900, color: '#fff' }}>{s.v}</div>
-              <div style={{ fontSize: '0.55rem', letterSpacing: '0.15em', color: '#4a4a5e', textTransform: 'uppercase', marginTop: '0.25rem', fontFamily: "'Inter',sans-serif" }}>{s.l}</div>
-            </div>
-          ))}
-        </div>
       </div>
     </>
+  )
+}
+
+function StatsStrip() {
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', background: '#02020d', borderTop: '1px solid #131323', borderBottom: '1px solid #131323' }}>
+      {[
+        { v: '180–250km', l: 'Orbital Altitude' },
+        { v: '<15ms',     l: 'Signal Latency' },
+        { v: '10×',      l: 'Closer Than LEO' },
+        { v: '24/7',     l: 'Persistent Coverage' },
+      ].map((s, i) => (
+        <div key={i} style={{ padding: '1.5rem 1rem', textAlign: 'center', borderRight: i < 3 ? '1px solid #131323' : 'none' }}>
+          <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.1rem,2.5vw,1.75rem)', fontWeight: 900, color: '#fff' }}>{s.v}</div>
+          <div style={{ fontSize: '0.55rem', letterSpacing: '0.15em', color: '#4a4a5e', textTransform: 'uppercase', marginTop: '0.25rem', fontFamily: "'Inter',sans-serif" }}>{s.l}</div>
+        </div>
+      ))}
+    </div>
   )
 }
 
@@ -1368,6 +1372,8 @@ export default function VaxonPage() {
         <Section id="home">
           <HomeSection />
         </Section>
+
+        <StatsStrip />
 
         <Section id="about">
           <AboutSection />
