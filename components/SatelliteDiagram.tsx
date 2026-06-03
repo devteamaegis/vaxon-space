@@ -27,7 +27,7 @@ const PARTS: Record<PartId, PartInfo> = {
   inlet: {
     name: 'HIGH EFFICIENCY INLET',
     tag: '03 / AIR CAPTURE SYSTEM',
-    body: 'A novel air capture design along with AO-resistant materials produces an intake system with increased collection and capture efficiencies. This allows Vaxon satellites to operate across a wide VLEO altitude range, converting atmospheric molecules directly into propellant at no consumable cost.',
+    body: 'A novel air capture design along with AO-resistant materials produces an inlet system with increased collection and capture efficiencies. This allows Vaxon satellites to operate across a wide VLEO altitude range, converting atmospheric molecules directly into propellant at no consumable cost.',
     accentColor: 0xc8102e,
   },
   thruster: {

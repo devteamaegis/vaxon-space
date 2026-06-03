@@ -122,12 +122,6 @@ const WSIMG = 'https://img1.wsimg.com/isteam/ip/b6d77e34-40ce-4ade-86a8-3e868f7b
 
 export const NEWS: NewsItem[] = [
   {
-    date: 'APR 23 2026', title: 'UNIVITY Raises €27M for VLEO 5G Connectivity',
-    body: 'Paris-based UNIVITY secured Series A funding to advance VLEO 5G demonstration and commercial deployment by 2028, signaling strong investor confidence in the VLEO connectivity market that Vaxon is positioned to lead in the US defense and commercial sectors.',
-    source: 'EU STARTUPS',
-    image: `${WSIMG}/UNIVITY.png/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:800,cg:true`,
-  },
-  {
     date: 'MAY 20 2026', title: 'ASCEND 2026 Panel Explores Next-Generation Operations in VLEO',
     body: 'Dr. Steven P. Shepard participated in the ASCEND 2026 panel "Racing to vLEO: Next-Generation Operations in Very Low Earth Orbit," joining Brian Cameron of The Aerospace Corporation, Dr. Gillian Bussey of the US Space Force, and Spence Wise of Redwire. The discussion covered recent technological advancements, military and commercial applications, and where the VLEO ecosystem is headed over the coming decade.',
     source: 'LINKEDIN / AIAA',
@@ -140,6 +134,12 @@ export const NEWS: NewsItem[] = [
     source: 'LINKEDIN / ADAM BARTON',
     link: 'https://www.linkedin.com/feed/update/urn:li:activity:7458376693133553664/',
     image: '/vaxon/bay-area-space-map.jpg',
+  },
+  {
+    date: 'APR 23 2026', title: 'UNIVITY Raises €27M for VLEO 5G Connectivity',
+    body: 'Paris-based UNIVITY secured Series A funding to advance VLEO 5G demonstration and commercial deployment by 2028, signaling strong investor confidence in the VLEO connectivity market that Vaxon is positioned to lead in the US defense and commercial sectors.',
+    source: 'EU STARTUPS',
+    image: `${WSIMG}/UNIVITY.png/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:800,cg:true`,
   },
   {
     date: 'MAR 16 2026', title: 'EDA Commits $17.9M to VLEO Military Research',
@@ -274,7 +274,7 @@ export function Nav({ active }: { active: Tab }) {
     }}>
       {/* Logo → home */}
       <a href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-        <img src="/vaxon/logo.png" alt="Vaxon Space" style={{ height: 30, width: 'auto' }} />
+        <img src="/vaxon/logo.png" alt="Vaxon Space" style={{ height: 60, width: 'auto' }} />
       </a>
 
       {/* Desktop tabs */}
@@ -419,7 +419,7 @@ function HomeSection() {
           <h1 style={{
             fontFamily: "'Bitter',Georgia,serif",
             fontSize: 'clamp(2.4rem,5.8vw,5.2rem)',
-            fontWeight: 900, lineHeight: 1.04, color: '#fff',
+            fontWeight: 400, lineHeight: 1.04, color: '#fff',
             margin: '0 0 1.5rem', maxWidth: 900, letterSpacing: '-0.02em',
             textShadow: '0 2px 40px rgba(0,0,0,0.6)',
             opacity: videoOk ? 1 : 0, transform: videoOk ? 'none' : 'translateY(12px)',
@@ -532,7 +532,7 @@ function StatsStrip() {
           { v: '24/7',      l: 'Persistent Coverage',  d: 600 },
         ].map((s, i) => (
           <div key={i} style={{ padding: '1.5rem 1rem', textAlign: 'center', borderRight: i < 3 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}>
-            <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.1rem,2.5vw,1.75rem)', fontWeight: 900, color: '#fff', minHeight: '2rem' }}>
+            <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.1rem,2.5vw,1.75rem)', fontWeight: 400, color: '#fff', minHeight: '2rem' }}>
               {visible ? <TypeOut text={s.v} delay={s.d} /> : ' '}
             </div>
             <div style={{ fontSize: '0.55rem', letterSpacing: '0.15em', color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', marginTop: '0.25rem', fontFamily: "'Inter',sans-serif" }}>{s.l}</div>
@@ -634,7 +634,7 @@ export function AboutSection() {
 
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
-      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 900, color: '#fff', marginBottom: '0.5rem' }}>About Vaxon Space</div>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', marginBottom: '0.5rem' }}>About Vaxon Space</div>
       <div style={{ width: 48, height: 2, background: '#c8102e', marginBottom: '3.5rem' }} />
 
       {/* Globe + mission */}
@@ -652,7 +652,7 @@ export function AboutSection() {
 
         {/* Right: mission text */}
         <div>
-          <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 900, color: '#fff', lineHeight: 1.15, margin: '0 0 1.75rem' }}>
+          <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 400, color: '#fff', lineHeight: 1.15, margin: '0 0 1.75rem' }}>
             Vaxon Space operates where no other satellite can survive.
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.72)', lineHeight: 1.85, fontSize: '1rem', margin: '0 0 1.5rem' }}>
@@ -661,7 +661,7 @@ export function AboutSection() {
           <p style={{ color: 'rgba(255,255,255,0.55)', lineHeight: 1.85, fontSize: '0.92rem', margin: '0 0 2.5rem' }}>
             Our Air-Breathing Electric Propulsion system harvests atmospheric molecules as propellant, enabling unlimited mission duration with no propellant mass penalty.
           </p>
-          <div style={{ fontSize: '0.6rem', letterSpacing: '0.18em', color: '#c8102e', fontFamily: "'Inter',sans-serif", display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ fontSize: '1.2rem', letterSpacing: '0.18em', color: '#c8102e', fontFamily: "'Inter',sans-serif", display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#c8102e' }} />
             EST. 2021 - BOULDER, COLORADO
           </div>
@@ -687,7 +687,7 @@ export function AboutSection() {
               onMouseEnter={e => (e.currentTarget.style.background = '#090918')}
               onMouseLeave={e => (e.currentTarget.style.background = '#02020d')}
             >
-              <div style={{ fontSize: '0.6rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem', textAlign: 'center' }}>{c.tag}</div>
+              <div style={{ fontSize: '1.2rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem', textAlign: 'center' }}>{c.tag}</div>
               <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.35rem', fontWeight: 700, color: '#fff', marginBottom: '0.75rem', lineHeight: 1.2, textAlign: 'center' }}>{c.h}</div>
               <div style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.75)', lineHeight: 1.7, textAlign: 'center' }}>{c.b}</div>
             </div>
@@ -719,7 +719,7 @@ export function TechnologySection() {
 
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
-      <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>TECHNOLOGY</div>
+      <div style={{ fontSize: '1.15rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>TECHNOLOGY</div>
       <div style={{ width: 36, height: 1, background: '#1e1e30', marginBottom: '3.5rem' }} />
 
       <div className="vx-tech-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start' }}>
@@ -759,7 +759,7 @@ export function TechnologySection() {
 
         {/* Capabilities */}
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.6rem,2.8vw,2.4rem)', fontWeight: 900, color: '#fff', lineHeight: 1.2, margin: '0 0 2.5rem' }}>
+          <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.6rem,2.8vw,2.4rem)', fontWeight: 400, color: '#fff', lineHeight: 1.2, margin: '0 0 2.5rem' }}>
             Six Mission-Critical Capabilities
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: '#0d0d1a' }}>
@@ -768,7 +768,7 @@ export function TechnologySection() {
                 style={{ background: expanded === i ? '#090918' : '#02020d', cursor: 'pointer', padding: '1.25rem 1.5rem', borderLeft: `2px solid ${expanded === i ? '#c8102e' : 'transparent'}`, transition: 'all 0.2s' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <span style={{ fontSize: '0.52rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif" }}>{cap.tag} / </span>
+                    <span style={{ fontSize: '1.05rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif" }}>{cap.tag} / </span>
                     <span style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.9rem', fontWeight: 700, color: '#fff' }}>{cap.title}</span>
                   </div>
                   <span style={{ color: '#333', fontSize: '0.9rem', flexShrink: 0, marginLeft: '1rem' }}>{expanded === i ? '−' : '+'}</span>
@@ -821,7 +821,7 @@ export function TeamModal({ member, onClose }: { member: TeamMember; onClose: ()
             </div>
           )}
           <div>
-            <div style={{ fontSize: '0.55rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '0.4rem' }}>
+            <div style={{ fontSize: '1.1rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '0.4rem' }}>
               {member.isAdvisor ? 'ADVISORY BOARD' : 'CORE LEADERSHIP'}
             </div>
             <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.5rem', fontWeight: 700, color: '#fff', margin: '0 0 0.3rem' }}>{member.name}</h3>
@@ -856,11 +856,12 @@ export function TeamModal({ member, onClose }: { member: TeamMember; onClose: ()
 ───────────────────────────────────────────────────────────────*/
 export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () => void }) {
   const [hov, setHov] = useState(false)
-  // Shepard's source portrait frames him small/high and left-of-center — zoom + nudge his face to center.
+  // Some source portraits frame the subject smaller/higher — zoom per-card so all heads match scale.
   const isShepard = member.name.includes('Shepard')
-  const imgPosition = isShepard ? '50% 28%' : 'center top'
-  const baseTransform = isShepard ? 'scale(1.45) translateX(7%)' : 'scale(1)'
-  const hovTransform = isShepard ? 'scale(1.55) translateX(7%)' : 'scale(1.08)'
+  const isWilliamson = member.name.includes('Williamson')
+  const imgPosition = isShepard ? '50% 28%' : (isWilliamson ? '50% 18%' : 'center top')
+  const baseTransform = isShepard ? 'scale(1.45) translateX(7%)' : (isWilliamson ? 'scale(1.32)' : 'scale(1)')
+  const hovTransform = isShepard ? 'scale(1.55) translateX(7%)' : (isWilliamson ? 'scale(1.4)' : 'scale(1.08)')
   return (
     <div onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
       style={{
@@ -897,7 +898,7 @@ export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () 
           }
         </div>
       </div>
-      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '1rem', letterSpacing: '0.1em', color: '#c8102e', marginBottom: '0.5rem', textTransform: 'uppercase' }}>{member.role}</div>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '1.4rem', letterSpacing: '0.1em', color: '#c8102e', marginBottom: '0.5rem', textTransform: 'uppercase' }}>{member.role}</div>
       <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.7rem', fontWeight: 700, color: '#fff', marginBottom: '0.6rem', lineHeight: 1.2 }}>{member.name}</div>
       <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.6, flexGrow: 1, fontWeight: 400 }}>{member.creds[0]}</div>
       <div style={{
@@ -920,9 +921,9 @@ export function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: 
       {sel && <TeamModal member={sel} onClose={() => setSel(null)} />}
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
         <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-          <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 900, color: '#fff', marginBottom: '0.5rem' }}>Our Team</div>
+          <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', marginBottom: '0.5rem' }}>Our Team</div>
           <div style={{ width: 48, height: 2, background: '#c8102e', margin: '0 auto 1.5rem' }} />
-          <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3.5vw,3rem)', fontWeight: 900, color: '#fff', margin: '0 0 0.75rem' }}>
+          <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3.5vw,3rem)', fontWeight: 400, color: '#fff', margin: '0 0 0.75rem' }}>
             Built by the People Who've Done It
           </h2>
           <p style={{ color: '#fff', fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1rem,1.5vw,1.15rem)', maxWidth: 640, margin: '0 auto', lineHeight: 1.75, fontWeight: 400 }}>
@@ -930,7 +931,7 @@ export function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: 
           </p>
         </div>
 
-        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.4rem,2.5vw,2rem)', fontWeight: 900, color: '#fff', textAlign: 'center', marginBottom: '2rem' }}>Core Leadership</div>
+        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.4rem,2.5vw,2rem)', fontWeight: 400, color: '#fff', textAlign: 'center', marginBottom: '2rem' }}>Core Leadership</div>
         <div style={{ display: 'flex', flexWrap: 'wrap' as const, justifyContent: 'center', gap: '0', marginBottom: '4rem' }}>
           {core.map((m, i) => (
             <div key={m.name} style={{ animation: `vx-card-in 0.6s cubic-bezier(0.22,1,0.36,1) both`, animationDelay: `${i * 0.1}s`, display: 'flex', width: 280, flexShrink: 0 }}>
@@ -939,7 +940,7 @@ export function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: 
           ))}
         </div>
 
-        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.4rem,2.5vw,2rem)', fontWeight: 900, color: '#fff', textAlign: 'center', marginBottom: '2rem' }}>Advisory Board</div>
+        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.4rem,2.5vw,2rem)', fontWeight: 400, color: '#fff', textAlign: 'center', marginBottom: '2rem' }}>Advisory Board</div>
         <div style={{ display: 'flex', flexWrap: 'nowrap' as const, gap: '0', marginBottom: '1.5rem', justifyContent: 'center' }}>
           {advisors.map((m, i) => (
             <div key={m.name} style={{ animation: `vx-card-in 0.6s cubic-bezier(0.22,1,0.36,1) both`, animationDelay: `${i * 0.1 + 0.2}s`, display: 'flex', width: 260, flexShrink: 0 }}>
@@ -1004,13 +1005,13 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
   const rest = news.slice(1)
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
-      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 900, color: '#fff', marginBottom: '0.5rem' }}>News &amp; Press</div>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', marginBottom: '0.5rem' }}>News &amp; Press</div>
       <div style={{ width: 48, height: 2, background: '#c8102e', marginBottom: '3.5rem' }} />
 
       {/* Dr. Shepard interview video -pinned above featured card */}
       <div style={{ border: '1px solid #131323', marginBottom: '2px', overflow: 'hidden', display: 'grid', gridTemplateColumns: '1fr 1fr' }} className="vx-feat">
         <div style={{ padding: '2.5rem', borderRight: '1px solid #131323', background: '#060614', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <div style={{ fontSize: '0.62rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, marginBottom: '0.75rem' }}>FEATURED INTERVIEW / FEB 2026</div>
+          <div style={{ fontSize: '1.2rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, marginBottom: '0.75rem' }}>FEATURED INTERVIEW / FEB 2026</div>
           <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.5rem', fontWeight: 700, color: '#fff', lineHeight: 1.25, margin: '0 0 1rem' }}>
             CEO Dr. Steven Shepard on VLEO Momentum
           </h3>
@@ -1049,7 +1050,7 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
             </div>
             <div style={{ padding: '2.5rem' }}>
               <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '0.62rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 700 }}>FEATURED</span>
+                <span style={{ fontSize: '1.2rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 700 }}>FEATURED</span>
                 <span style={{ fontSize: '0.62rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif" }}>{featured.date}</span>
                 <span style={{ fontSize: '0.62rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif" }}>{featured.source}</span>
               </div>
@@ -1072,7 +1073,7 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
               onMouseEnter={e => (e.currentTarget.style.background = '#090918')}
               onMouseLeave={e => (e.currentTarget.style.background = '#02020d')}
             >
-              <div style={{ aspectRatio: '16/9', overflow: 'hidden', background: '#050512' }}>
+              <div style={{ aspectRatio: '1/1', overflow: 'hidden', background: '#050512' }}>
                 {n.image
                   ? <img src={n.image} alt={n.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
                       onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.05)')}
@@ -1084,7 +1085,7 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
               <div style={{ padding: '1.5rem' }}>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem' }}>
                   <span style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif" }}>{n.date}</span>
-                  <span style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 700 }}>{n.source}</span>
+                  <span style={{ fontSize: '1.2rem', letterSpacing: '0.15em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 700 }}>{n.source}</span>
                 </div>
                 <h4 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.2rem', fontWeight: 700, color: '#fff', lineHeight: 1.35, margin: '0 0 0.85rem' }}>{n.title}</h4>
                 <p style={{ color: '#fff', fontFamily: "'Bitter',Georgia,serif", lineHeight: 1.75, fontSize: '0.92rem', margin: '0 0 1rem', fontWeight: 400 }}>{n.body}</p>
@@ -1126,12 +1127,12 @@ export function ContactSection() {
       {/* Hero banner */}
       <div style={{ background: 'linear-gradient(135deg, #0a0005 0%, #02020d 40%, #0d0208 100%)', borderBottom: '1px solid #131323', padding: '5rem 2.5rem 4rem' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>CONTACT</div>
+          <div style={{ fontSize: '1.15rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>CONTACT</div>
           <div style={{ width: 36, height: 1, background: '#c8102e', marginBottom: '2.5rem', opacity: 0.4 }} />
           <div className="vx-contact-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5rem', alignItems: 'start' }}>
             {/* Left: info */}
             <div>
-              <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2rem,3.5vw,3.2rem)', fontWeight: 900, color: '#fff', margin: '0 0 1.25rem', lineHeight: 1.1 }}>
+              <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2rem,3.5vw,3.2rem)', fontWeight: 400, color: '#fff', margin: '0 0 1.25rem', lineHeight: 1.1 }}>
                 Partner With<br />Vaxon Space
               </h2>
               <p style={{ color: '#6b7280', lineHeight: 1.9, fontSize: '0.9rem', margin: '0 0 2.5rem', maxWidth: 420 }}>
@@ -1161,12 +1162,12 @@ export function ContactSection() {
             <div>
               {sent ? (
                 <div style={{ border: '1px solid #1a1a2e', padding: '3rem', textAlign: 'center', background: 'rgba(200,16,46,0.04)' }}>
-                  <div style={{ fontSize: '0.58rem', letterSpacing: '0.25em', color: '#c8102e', marginBottom: '1rem', fontFamily: "'Inter',sans-serif" }}>MESSAGE RECEIVED</div>
+                  <div style={{ fontSize: '1.15rem', letterSpacing: '0.25em', color: '#c8102e', marginBottom: '1rem', fontFamily: "'Inter',sans-serif" }}>MESSAGE RECEIVED</div>
                   <p style={{ color: '#6b7280', fontSize: '0.9rem', margin: 0 }}>We'll be in touch within 48 hours.</p>
                 </div>
               ) : (
                 <form onSubmit={e => { e.preventDefault(); setSent(true) }} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                  <div style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '0.25rem' }}>SEND AN INQUIRY</div>
+                  <div style={{ fontSize: '1.1rem', letterSpacing: '0.2em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '0.25rem' }}>SEND AN INQUIRY</div>
                   <input type="text" placeholder="Full Name" required value={f.name} onChange={e => setF(p => ({ ...p, name: e.target.value }))} style={inp}
                     onFocus={e => (e.currentTarget.style.borderColor = '#c8102e')}
                     onBlur={e => (e.currentTarget.style.borderColor = '#1a1a2e')}
@@ -1199,8 +1200,8 @@ export function ContactSection() {
       <div id="calendly" style={{ background: '#02020d', borderTop: '1px solid #131323' }}>
         <div style={{ maxWidth: 900, margin: '0 auto', padding: '5rem 2.5rem' }}>
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-            <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>SCHEDULE A BRIEFING</div>
-            <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 900, color: '#fff', margin: '0 0 0.5rem' }}>
+            <div style={{ fontSize: '1.15rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>SCHEDULE A BRIEFING</div>
+            <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 400, color: '#fff', margin: '0 0 0.5rem' }}>
               Book a Meeting with Vaxon Space
             </h3>
             <div style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: '#444', fontFamily: "'Inter',sans-serif" }}>
@@ -1288,7 +1289,7 @@ export function LogosSection() {
 
   return (
     <div style={{ borderTop: '1px solid #131323', padding: '4rem 2.5rem', maxWidth: 1200, margin: '0 auto' }}>
-      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 900, color: '#fff', textAlign: 'center', marginBottom: '3rem' }}>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', textAlign: 'center', marginBottom: '3rem' }}>
         Our Team Has Worked At
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)' }}>

@@ -179,8 +179,8 @@ export default function ABEPDiagram() {
             </filter>
           </defs>
 
-          {/* ══ SATELLITE BODY ══ */}
-          <rect x="168" y="44" width="726" height="356" rx="26" ry="26"
+          {/* ══ SATELLITE BODY (extended left to encompass the inlet) ══ */}
+          <rect x="22" y="44" width="872" height="356" rx="26" ry="26"
             fill="rgba(5,10,28,0.6)" stroke="#1a2a4a" strokeWidth="2" />
 
           {/* ══ TOP SUBSYSTEMS ══ */}
@@ -232,7 +232,7 @@ export default function ABEPDiagram() {
 
           {/* ══ INTAKE ARROWS / PARTICLES ══ */}
           <text x="40" y="218" fill="#cce8ff" fontSize="14" fontFamily="'Bitter',Georgia,serif" fontWeight="600">
-            Intake
+            Inlet
           </text>
 
           {/* Static intake stream lines */}
@@ -412,7 +412,7 @@ export default function ABEPDiagram() {
           </div>
           <div style={{ width: 32, height: 1, background: '#0088ff22', marginBottom: '1.25rem' }} />
           <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.9rem', lineHeight: 1.8, margin: 0, fontFamily: "'Inter',sans-serif" }}>
-            A novel air capture design along with AO resistant materials produces an intake system with increased collection and capture efficiencies that allows Vaxon satellites to operate in a wide VLEO altitude range.
+            A novel air capture design along with AO resistant materials produces an inlet system with increased collection and capture efficiencies that allows Vaxon satellites to operate in a wide VLEO altitude range.
           </p>
         </div>
       </div>

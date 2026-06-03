@@ -58,10 +58,10 @@ export default function VLEOPage() {
         {/* ── HERO ── */}
         <div style={{ position: 'relative', padding: '6rem 2.5rem 5rem', background: 'linear-gradient(to bottom, #02020d 0%, #06020f 100%)', borderBottom: '1px solid #131323', overflow: 'hidden' }}>
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-            <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '1rem' }}>
+            <div style={{ fontSize: '1.15rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '1rem' }}>
               VERY LOW EARTH ORBIT — 180–250 KM
             </div>
-            <h1 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2.4rem,5vw,4.5rem)', fontWeight: 900, lineHeight: 1.06, color: '#fff', margin: '0 0 1.5rem', maxWidth: 800, letterSpacing: '-0.02em' }}>
+            <h1 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2.4rem,5vw,4.5rem)', fontWeight: 400, lineHeight: 1.06, color: '#fff', margin: '0 0 1.5rem', maxWidth: 800, letterSpacing: '-0.02em' }}>
               Why VLEO Changes<br />Everything
             </h1>
             <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 'clamp(0.9rem,1.5vw,1.1rem)', maxWidth: 560, lineHeight: 1.8, margin: 0 }}>
@@ -84,8 +84,8 @@ export default function VLEOPage() {
         <section style={{ padding: '5rem 2.5rem', background: '#02020d', borderBottom: '1px solid #131323' }}>
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
             <Fade>
-              <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '0.85rem', letterSpacing: '0.22em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '0.75rem' }}>THE ALTITUDE GAP</div>
-              <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2.2rem,3.6vw,3.2rem)', fontWeight: 900, color: '#fff', margin: '0 0 3.5rem' }}>
+              <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '1.5rem', letterSpacing: '0.22em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '0.75rem' }}>THE ALTITUDE GAP</div>
+              <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2.2rem,3.6vw,3.2rem)', fontWeight: 400, color: '#fff', margin: '0 0 3.5rem' }}>
                 The Physics Behind VLEO Superiority
               </h2>
             </Fade>
@@ -115,12 +115,12 @@ export default function VLEOPage() {
               ].map((c, i) => (
                 <Fade key={c.tag} delay={i * 80}>
                   <div style={{ background: '#02020d', padding: '2.25rem 2rem' }}>
-                    <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '0.7rem', letterSpacing: '0.22em', color: '#c8102e', marginBottom: '0.5rem' }}>{c.tag}</div>
-                    <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '2.8rem', fontWeight: 900, color: '#fff', lineHeight: 1, marginBottom: '0.25rem' }}>{c.metric}</div>
+                    <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '1.2rem', letterSpacing: '0.22em', color: '#c8102e', marginBottom: '0.5rem' }}>{c.tag}</div>
+                    <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '2.8rem', fontWeight: 400, color: '#fff', lineHeight: 1, marginBottom: '0.25rem' }}>{c.metric}</div>
                     <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.9rem', color: '#fff', marginBottom: '1rem', letterSpacing: '0.04em', fontWeight: 600 }}>{c.unit}</div>
                     <p style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', color: '#fff', lineHeight: 1.75, margin: '0 0 1rem', fontWeight: 400 }}>{c.body}</p>
                     <details>
-                      <summary style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '0.7rem', letterSpacing: '0.14em', color: '#c8102e', cursor: 'pointer', textTransform: 'uppercase', outline: 'none' }}>
+                      <summary style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '1.2rem', letterSpacing: '0.14em', color: '#c8102e', cursor: 'pointer', textTransform: 'uppercase', outline: 'none' }}>
                         PHYSICS DETAIL →
                       </summary>
                       <p style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.85rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, margin: '0.75rem 0 0', borderTop: '1px solid #131323', paddingTop: '0.75rem', fontWeight: 400 }}>{c.detail}</p>
@@ -136,8 +136,8 @@ export default function VLEOPage() {
         <section style={{ padding: '5rem 2.5rem', background: '#050510', borderBottom: '1px solid #131323' }}>
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
             <Fade>
-              <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '0.85rem', letterSpacing: '0.22em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '0.75rem' }}>MISSION CRITICAL</div>
-              <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2.2rem,3.6vw,3.2rem)', fontWeight: 900, color: '#fff', margin: '0 0 1rem' }}>
+              <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '1.5rem', letterSpacing: '0.22em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '0.75rem' }}>MISSION CRITICAL</div>
+              <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2.2rem,3.6vw,3.2rem)', fontWeight: 400, color: '#fff', margin: '0 0 1rem' }}>
                 Missile Defense: The VLEO Advantage
               </h2>
               <p style={{ color: '#fff', fontFamily: "'Bitter',Georgia,serif", fontSize: '1.05rem', maxWidth: 680, lineHeight: 1.8, marginBottom: '3.5rem', fontWeight: 400 }}>
@@ -157,7 +157,7 @@ export default function VLEOPage() {
                     <Fade key={p.phase} delay={i * 100}>
                       <div style={{ borderLeft: '2px solid #c8102e', paddingLeft: '1.25rem', marginBottom: '2rem' }}>
                         <div style={{ display: 'flex', gap: '1rem', alignItems: 'baseline', marginBottom: '0.4rem' }}>
-                          <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '0.8rem', letterSpacing: '0.18em', color: '#c8102e' }}>{p.phase}</div>
+                          <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '1.4rem', letterSpacing: '0.18em', color: '#c8102e' }}>{p.phase}</div>
                           <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.7rem', letterSpacing: '0.08em', color: '#fff' }}>WINDOW: {p.window}</div>
                         </div>
                         <p style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', color: '#fff', lineHeight: 1.7, margin: '0 0 0.75rem', fontWeight: 400 }}>{p.desc}</p>
@@ -177,7 +177,7 @@ export default function VLEOPage() {
 
               <Fade delay={150}>
                 <div style={{ background: '#02020d', border: '1px solid #131323', padding: '2rem' }}>
-                  <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '0.75rem', letterSpacing: '0.18em', color: '#c8102e', marginBottom: '1.5rem' }}>GOLDEN DOME ARCHITECTURE ALIGNMENT</div>
+                  <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '1.3rem', letterSpacing: '0.18em', color: '#c8102e', marginBottom: '1.5rem' }}>GOLDEN DOME ARCHITECTURE ALIGNMENT</div>
                   {[
                     { req: 'Persistent hypersonic tracking', vaxon: 'VLEO 45° inclination constellation provides continuous mid-latitude coverage' },
                     { req: 'Boost-phase sensor geometry', vaxon: '180–250km altitude provides optimal off-nadir tracking angles for boost-phase IR' },
@@ -209,7 +209,7 @@ export default function VLEOPage() {
               ].map((s, i) => (
                 <Fade key={s.label} delay={i * 60}>
                   <div style={{ background: '#02020d', padding: '2rem 1.5rem', textAlign: 'center' }}>
-                    <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 900, color: '#fff', marginBottom: '0.25rem' }}>
+                    <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', marginBottom: '0.25rem' }}>
                       {s.pre}<CountUp to={s.n} suffix={s.suf} />
                     </div>
                     <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.7rem', letterSpacing: '0.12em', color: '#fff', textTransform: 'uppercase', marginBottom: '0.3rem', fontWeight: 700 }}>{s.label}</div>
@@ -225,8 +225,8 @@ export default function VLEOPage() {
         <section style={{ padding: '5rem 2.5rem', background: '#02020d', borderBottom: '1px solid #131323' }}>
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
             <Fade>
-              <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '0.5rem' }}>COMPETITIVE LANDSCAPE</div>
-              <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 900, color: '#fff', margin: '0 0 0.75rem' }}>
+              <div style={{ fontSize: '1.15rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '0.5rem' }}>COMPETITIVE LANDSCAPE</div>
+              <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 400, color: '#fff', margin: '0 0 0.75rem' }}>
                 How Vaxon Compares
               </h2>
               <p style={{ color: '#6b7280', fontSize: '0.88rem', maxWidth: 540, margin: '0 0 3rem', lineHeight: 1.75 }}>
@@ -273,8 +273,8 @@ export default function VLEOPage() {
         <section style={{ padding: '5rem 2.5rem', background: '#050510' }}>
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
             <Fade>
-              <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '0.5rem' }}>USE CASES</div>
-              <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 900, color: '#fff', margin: '0 0 3.5rem' }}>
+              <div style={{ fontSize: '1.15rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '0.5rem' }}>USE CASES</div>
+              <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 400, color: '#fff', margin: '0 0 3.5rem' }}>
                 What VLEO Enables
               </h2>
             </Fade>
@@ -292,7 +292,7 @@ export default function VLEOPage() {
                     onMouseEnter={e => (e.currentTarget.style.background = '#060618')}
                     onMouseLeave={e => (e.currentTarget.style.background = '#02020d')}
                   >
-                    <div style={{ fontSize: '0.52rem', letterSpacing: '0.22em', color: '#c8102e', marginBottom: '0.6rem' }}>{u.tag}</div>
+                    <div style={{ fontSize: '1.05rem', letterSpacing: '0.22em', color: '#c8102e', marginBottom: '0.6rem' }}>{u.tag}</div>
                     <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1rem', fontWeight: 700, color: '#fff', margin: '0 0 0.75rem', lineHeight: 1.3 }}>{u.title}</h3>
                     <p style={{ fontSize: '0.82rem', color: '#4a4a5e', lineHeight: 1.75, margin: 0 }}>{u.body}</p>
                   </div>
@@ -306,8 +306,8 @@ export default function VLEOPage() {
         <section style={{ padding: '5rem 2.5rem', background: '#02020d', textAlign: 'center', borderTop: '1px solid #131323' }}>
           <div style={{ maxWidth: 600, margin: '0 auto' }}>
             <Fade>
-              <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '1rem' }}>READY TO ENGAGE</div>
-              <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 900, color: '#fff', margin: '0 0 1.25rem' }}>
+              <div style={{ fontSize: '1.15rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '1rem' }}>READY TO ENGAGE</div>
+              <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 400, color: '#fff', margin: '0 0 1.25rem' }}>
                 Schedule a Technical Briefing
               </h2>
               <p style={{ color: '#6b7280', fontSize: '0.9rem', lineHeight: 1.8, marginBottom: '2.5rem' }}>

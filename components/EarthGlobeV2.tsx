@@ -436,18 +436,18 @@ export default function EarthGlobeV2({ showFootprint = false, height = 500 }: { 
         </div>
       )}
       {!loading && (
-        <div style={{ position: 'absolute', bottom: '0.75rem', left: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+        <div style={{ position: 'absolute', bottom: '1rem', left: '1rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
           {[
             { col: '#ff2d4b', label: 'VLEO 180–250km (VAXON)' },
             { col: '#4aa3ff', label: 'ISS ~408km' },
             { col: '#35d07f', label: 'Starlink ~550km' },
           ].map(({ col, label }) => (
-            <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div style={{ width: 16, height: 2, background: col, boxShadow: `0 0 8px ${col}` }} />
-              <span style={{ fontSize: '0.55rem', letterSpacing: '0.13em', color: col, fontFamily: "'Inter',sans-serif" }}>{label}</span>
+            <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <div style={{ width: 28, height: 3, background: col, boxShadow: `0 0 8px ${col}` }} />
+              <span style={{ fontSize: '0.95rem', letterSpacing: '0.08em', color: col, fontFamily: "'Bitter',Georgia,serif", fontWeight: 600 }}>{label}</span>
             </div>
           ))}
-          <div style={{ fontSize: '0.45rem', letterSpacing: '0.1em', color: '#444', fontFamily: "'Inter',sans-serif", marginTop: '0.2rem', maxWidth: 180 }}>
+          <div style={{ fontSize: '0.72rem', letterSpacing: '0.08em', color: '#888', fontFamily: "'Bitter',Georgia,serif", marginTop: '0.35rem', maxWidth: 280 }}>
             ALTITUDE EXAGGERATED FOR CLARITY · TRUE RATIOS PRESERVED
           </div>
         </div>
