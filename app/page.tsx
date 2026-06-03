@@ -856,11 +856,11 @@ export function TeamModal({ member, onClose }: { member: TeamMember; onClose: ()
 ───────────────────────────────────────────────────────────────*/
 export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () => void }) {
   const [hov, setHov] = useState(false)
-  // Shepard's source portrait frames him small/high — zoom into the face and recenter.
+  // Shepard's source portrait frames him small/high and left-of-center — zoom + nudge his face to center.
   const isShepard = member.name.includes('Shepard')
-  const imgPosition = isShepard ? '38% 28%' : 'center top'
-  const baseScale = isShepard ? 1.45 : 1
-  const hovScale = isShepard ? 1.55 : 1.08
+  const imgPosition = isShepard ? '50% 28%' : 'center top'
+  const baseTransform = isShepard ? 'scale(1.45) translateX(7%)' : 'scale(1)'
+  const hovTransform = isShepard ? 'scale(1.55) translateX(7%)' : 'scale(1.08)'
   return (
     <div onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
       style={{
@@ -890,7 +890,7 @@ export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () 
                   objectFit: 'cover', objectPosition: imgPosition,
                   display: 'block',
                   transition: 'transform 0.5s cubic-bezier(0.22,1,0.36,1)',
-                  transform: hov ? `scale(${hovScale})` : `scale(${baseScale})`,
+                  transform: hov ? hovTransform : baseTransform,
                 }}
               />
             : <div style={{ width: '100%', height: '100%', background: '#111' }} />
