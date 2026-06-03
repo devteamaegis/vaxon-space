@@ -1,11 +1,8 @@
 'use client'
 import { useEffect, useRef, useState, lazy, Suspense, useCallback } from 'react'
 
-const SatelliteDiagram = lazy(() => import('@/components/SatelliteDiagram'))
 const EarthGlobeV2     = lazy(() => import('@/components/EarthGlobeV2'))
-const ABEPDiagram      = lazy(() => import('@/components/ABEPDiagram'))
 const VaxonWidget      = lazy(() => import('@/components/VaxonWidget'))
-const SatelliteGlobe   = lazy(() => import('@/components/SatelliteGlobe'))
 
 /* ─────────────────────────────────────────────────────────────
    SCROLL REVEAL HOOK
@@ -782,34 +779,6 @@ export function TechnologySection() {
           </div>
         </div>
       </div>
-
-      {/* Interactive constellation globe */}
-      <div style={{ marginTop: '4rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem', padding: '0 0 0.5rem', borderBottom: '1px solid #131323' }}>
-          <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif" }}>LIVE CONSTELLATION SIMULATION</div>
-        </div>
-        <p style={{ color: '#4a4a5e', fontSize: '0.78rem', lineHeight: 1.7, maxWidth: 560, marginBottom: '1.5rem', fontFamily: "'Inter',sans-serif" }}>
-          Interactive VLEO model. Toggle ISR coverage, Golden Dome intercept, debris environment, and mesh network architecture.
-        </p>
-        <Suspense fallback={<div style={{ height: 500, background: '#050512', border: '1px solid #131323', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div style={{ fontSize: '0.6rem', letterSpacing: '0.2em', color: '#333', fontFamily: "'Inter',sans-serif" }}>LOADING CONSTELLATION MODEL…</div></div>}>
-          <SatelliteGlobe />
-        </Suspense>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: '1px', background: '#0d0d1a', marginTop: '1px' }}>
-          {[
-            { l: 'ALTITUDE', v: '180–250 km VLEO' },
-            { l: 'ORBITAL PERIOD', v: '~88 minutes' },
-            { l: 'INCLINATION', v: '45°' },
-            { l: 'REVISIT TIME', v: '<2 hours' },
-            { l: 'RESOLUTION', v: '<30 cm GSD' },
-            { l: 'PROPULSION', v: 'ABEP -no propellant' },
-          ].map(s => (
-            <div key={s.l} style={{ background: '#02020d', padding: '1rem 1.25rem' }}>
-              <div style={{ fontSize: '0.5rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#444', marginBottom: '0.3rem', fontFamily: "'Inter',sans-serif" }}>{s.l}</div>
-              <div style={{ color: '#ccc', fontSize: '0.85rem', fontFamily: "'Bitter',Georgia,serif", fontWeight: 600 }}>{s.v}</div>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   )
 }
@@ -945,14 +914,16 @@ export function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: 
     <>
       {sel && <TeamModal member={sel} onClose={() => setSel(null)} />}
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
-        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 900, color: '#fff', marginBottom: '0.5rem' }}>Our Team</div>
-        <div style={{ width: 48, height: 2, background: '#c8102e', marginBottom: '1.5rem' }} />
-        <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3.5vw,3rem)', fontWeight: 900, color: '#fff', margin: '0 0 0.75rem' }}>
-          Built by the People Who've Done It
-        </h2>
-        <p style={{ color: '#fff', fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1rem,1.5vw,1.15rem)', maxWidth: 640, margin: '0 0 3.5rem', lineHeight: 1.75, fontWeight: 400 }}>
-          Decades of experience from Lockheed Martin, the US Army, US Air Force, NRO, DARPA, and the world's leading aerospace research institutions.
-        </p>
+        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+          <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 900, color: '#fff', marginBottom: '0.5rem' }}>Our Team</div>
+          <div style={{ width: 48, height: 2, background: '#c8102e', margin: '0 auto 1.5rem' }} />
+          <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3.5vw,3rem)', fontWeight: 900, color: '#fff', margin: '0 0 0.75rem' }}>
+            Built by the People Who've Done It
+          </h2>
+          <p style={{ color: '#fff', fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1rem,1.5vw,1.15rem)', maxWidth: 640, margin: '0 auto', lineHeight: 1.75, fontWeight: 400 }}>
+            Decades of experience from Lockheed Martin, the US Army, US Air Force, NRO, DARPA, and the world's leading aerospace research institutions.
+          </p>
+        </div>
 
         <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.4rem,2.5vw,2rem)', fontWeight: 900, color: '#fff', textAlign: 'center', marginBottom: '2rem' }}>Core Leadership</div>
         <div style={{ display: 'flex', flexWrap: 'wrap' as const, justifyContent: 'center', gap: '0', marginBottom: '4rem' }}>
@@ -1011,9 +982,9 @@ function VideoEmbed({ videoId }: { videoId: string }) {
         </div>
       </div>
       <div style={{ position: 'absolute', bottom: 16, left: 16 }}>
-        <div style={{ fontSize: '0.5rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', marginBottom: 4, fontFamily: "'Inter',sans-serif" }}>FEATURED INTERVIEW</div>
-        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', fontWeight: 700, color: '#fff', textShadow: '0 1px 6px rgba(0,0,0,0.9)' }}>
-          Dr. Steven Shepard -VLEO Mission + Strategy
+        <div style={{ fontSize: '0.6rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.75)', textTransform: 'uppercase', marginBottom: 4, fontFamily: "'Bitter',Georgia,serif", fontWeight: 700 }}>FEATURED INTERVIEW</div>
+        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.05rem', fontWeight: 700, color: '#fff', textShadow: '0 1px 6px rgba(0,0,0,0.9)' }}>
+          Dr. Steven Shepard - VLEO Mission + Strategy
         </div>
       </div>
     </div>
@@ -1028,23 +999,23 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
   const rest = news.slice(1)
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
-      <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>NEWS & PRESS</div>
-      <div style={{ width: 36, height: 1, background: '#1e1e30', marginBottom: '3.5rem' }} />
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 900, color: '#fff', marginBottom: '0.5rem' }}>News &amp; Press</div>
+      <div style={{ width: 48, height: 2, background: '#c8102e', marginBottom: '3.5rem' }} />
 
       {/* Dr. Shepard interview video -pinned above featured card */}
       <div style={{ border: '1px solid #131323', marginBottom: '2px', overflow: 'hidden', display: 'grid', gridTemplateColumns: '1fr 1fr' }} className="vx-feat">
         <div style={{ padding: '2.5rem', borderRight: '1px solid #131323', background: '#060614', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <div style={{ fontSize: '0.52rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>FEATURED INTERVIEW / FEB 2026</div>
-          <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.35rem', fontWeight: 700, color: '#fff', lineHeight: 1.25, margin: '0 0 1rem' }}>
+          <div style={{ fontSize: '0.62rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, marginBottom: '0.75rem' }}>FEATURED INTERVIEW / FEB 2026</div>
+          <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.5rem', fontWeight: 700, color: '#fff', lineHeight: 1.25, margin: '0 0 1rem' }}>
             CEO Dr. Steven Shepard on VLEO Momentum
           </h3>
-          <p style={{ color: '#6b7280', fontSize: '0.875rem', lineHeight: 1.8, margin: '0 0 1.5rem' }}>
-            Dr. Shepard discusses VLEO mission use cases including ISR, missile defense sensing, Golden Dome potential, and AI-enabled space capabilities -the full strategic picture for Vaxon Space.
+          <p style={{ color: '#fff', fontFamily: "'Bitter',Georgia,serif", fontSize: '1rem', lineHeight: 1.8, margin: '0 0 1.5rem', fontWeight: 400 }}>
+            Dr. Shepard discusses VLEO mission use cases including ISR, missile defense sensing, Golden Dome potential, and AI-enabled space capabilities - the full strategic picture for Vaxon Space.
           </p>
           <a href="https://www.youtube.com/watch?v=piWj3lWfUEM" target="_blank" rel="noopener noreferrer"
-            style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: '#4a4a5e', textDecoration: 'none', fontFamily: "'Inter',sans-serif", transition: 'color 0.2s' }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#4a4a5e')}
+            style={{ fontSize: '0.7rem', letterSpacing: '0.15em', color: '#fff', textDecoration: 'none', fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, transition: 'color 0.2s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#c8102e')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#fff')}
           >WATCH FULL INTERVIEW →</a>
         </div>
         <div style={{ background: '#02020d', overflow: 'hidden' }}>
@@ -1073,13 +1044,13 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
             </div>
             <div style={{ padding: '2.5rem' }}>
               <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '0.52rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif" }}>FEATURED</span>
-                <span style={{ fontSize: '0.52rem', letterSpacing: '0.15em', color: '#333', fontFamily: "'Inter',sans-serif" }}>{featured.date}</span>
-                <span style={{ fontSize: '0.52rem', letterSpacing: '0.15em', color: '#2a2a3e', fontFamily: "'Inter',sans-serif" }}>{featured.source}</span>
+                <span style={{ fontSize: '0.62rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 700 }}>FEATURED</span>
+                <span style={{ fontSize: '0.62rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif" }}>{featured.date}</span>
+                <span style={{ fontSize: '0.62rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif" }}>{featured.source}</span>
               </div>
-              <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.5rem', fontWeight: 700, color: '#fff', lineHeight: 1.25, margin: '0 0 1.25rem' }}>{featured.title}</h3>
-              <p style={{ color: '#6b7280', lineHeight: 1.85, fontSize: '0.875rem', margin: '0 0 1.5rem' }}>{featured.body}</p>
-              {featured.link && <span style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: '#4a4a5e', fontFamily: "'Inter',sans-serif" }}>READ MORE →</span>}
+              <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.65rem', fontWeight: 700, color: '#fff', lineHeight: 1.25, margin: '0 0 1.25rem' }}>{featured.title}</h3>
+              <p style={{ color: '#fff', fontFamily: "'Bitter',Georgia,serif", lineHeight: 1.85, fontSize: '1rem', margin: '0 0 1.5rem', fontWeight: 400 }}>{featured.body}</p>
+              {featured.link && <span style={{ fontSize: '0.7rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif", fontWeight: 700 }}>READ MORE →</span>}
             </div>
           </div>
         </a>
@@ -1107,12 +1078,12 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
               </div>
               <div style={{ padding: '1.5rem' }}>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem' }}>
-                  <span style={{ fontSize: '0.52rem', letterSpacing: '0.15em', color: '#333', fontFamily: "'Inter',sans-serif" }}>{n.date}</span>
-                  <span style={{ fontSize: '0.52rem', letterSpacing: '0.15em', color: '#222', fontFamily: "'Inter',sans-serif" }}>{n.source}</span>
+                  <span style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif" }}>{n.date}</span>
+                  <span style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 700 }}>{n.source}</span>
                 </div>
-                <h4 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1rem', fontWeight: 700, color: '#fff', lineHeight: 1.35, margin: '0 0 0.85rem' }}>{n.title}</h4>
-                <p style={{ color: '#4a4a5e', lineHeight: 1.75, fontSize: '0.78rem', margin: '0 0 1rem' }}>{n.body}</p>
-                {n.link && <div style={{ fontSize: '0.55rem', letterSpacing: '0.15em', color: '#333', fontFamily: "'Inter',sans-serif" }}>READ MORE →</div>}
+                <h4 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.2rem', fontWeight: 700, color: '#fff', lineHeight: 1.35, margin: '0 0 0.85rem' }}>{n.title}</h4>
+                <p style={{ color: '#fff', fontFamily: "'Bitter',Georgia,serif", lineHeight: 1.75, fontSize: '0.92rem', margin: '0 0 1rem', fontWeight: 400 }}>{n.body}</p>
+                {n.link && <div style={{ fontSize: '0.65rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif", fontWeight: 700 }}>READ MORE →</div>}
               </div>
             </div>
           </a>
@@ -1331,7 +1302,9 @@ export function LogosSection() {
 ───────────────────────────────────────────────────────────────*/
 export const VX_GLOBAL_STYLE = `
   *, *::before, *::after { box-sizing: border-box; }
-  body { margin: 0; background: #02020d; color: #fff; overflow-x: hidden; font-family: 'Inter', sans-serif; }
+  body { margin: 0; background: #02020d; color: #fff; overflow-x: hidden; font-family: 'Bitter', Georgia, serif; }
+  /* Force Bitter across the entire site */
+  body, body * { font-family: 'Bitter', Georgia, serif !important; }
   html { scroll-behavior: smooth; }
   @keyframes vx-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   @keyframes vx-dot { 0%,100%{opacity:.2} 50%{opacity:1} }
@@ -1437,9 +1410,6 @@ export default function VaxonPage() {
 
         <Section id="technology">
           <TechnologySection />
-          <Suspense fallback={<div style={{ height: 400, background: '#02020d' }} />}>
-            <ABEPDiagram />
-          </Suspense>
         </Section>
 
         <Section id="team">

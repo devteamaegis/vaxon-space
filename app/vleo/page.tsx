@@ -84,8 +84,8 @@ export default function VLEOPage() {
         <section style={{ padding: '5rem 2.5rem', background: '#02020d', borderBottom: '1px solid #131323' }}>
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
             <Fade>
-              <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '0.5rem' }}>THE ALTITUDE GAP</div>
-              <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 900, color: '#fff', margin: '0 0 3.5rem' }}>
+              <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '0.85rem', letterSpacing: '0.22em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '0.75rem' }}>THE ALTITUDE GAP</div>
+              <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2.2rem,3.6vw,3.2rem)', fontWeight: 900, color: '#fff', margin: '0 0 3.5rem' }}>
                 The Physics Behind VLEO Superiority
               </h2>
             </Fade>
@@ -115,15 +115,15 @@ export default function VLEOPage() {
               ].map((c, i) => (
                 <Fade key={c.tag} delay={i * 80}>
                   <div style={{ background: '#02020d', padding: '2.25rem 2rem' }}>
-                    <div style={{ fontSize: '0.52rem', letterSpacing: '0.22em', color: '#c8102e', marginBottom: '0.5rem' }}>{c.tag}</div>
-                    <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '2.4rem', fontWeight: 900, color: '#fff', lineHeight: 1, marginBottom: '0.25rem' }}>{c.metric}</div>
-                    <div style={{ fontSize: '0.7rem', color: '#4a4a5e', marginBottom: '1rem', letterSpacing: '0.06em' }}>{c.unit}</div>
-                    <p style={{ fontSize: '0.82rem', color: '#6b7280', lineHeight: 1.75, margin: '0 0 1rem' }}>{c.body}</p>
+                    <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '0.7rem', letterSpacing: '0.22em', color: '#c8102e', marginBottom: '0.5rem' }}>{c.tag}</div>
+                    <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '2.8rem', fontWeight: 900, color: '#fff', lineHeight: 1, marginBottom: '0.25rem' }}>{c.metric}</div>
+                    <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.9rem', color: '#fff', marginBottom: '1rem', letterSpacing: '0.04em', fontWeight: 600 }}>{c.unit}</div>
+                    <p style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', color: '#fff', lineHeight: 1.75, margin: '0 0 1rem', fontWeight: 400 }}>{c.body}</p>
                     <details>
-                      <summary style={{ fontSize: '0.6rem', letterSpacing: '0.14em', color: '#333', cursor: 'pointer', textTransform: 'uppercase', outline: 'none' }}>
+                      <summary style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '0.7rem', letterSpacing: '0.14em', color: '#c8102e', cursor: 'pointer', textTransform: 'uppercase', outline: 'none' }}>
                         PHYSICS DETAIL →
                       </summary>
-                      <p style={{ fontSize: '0.75rem', color: '#4a4a5e', lineHeight: 1.7, margin: '0.75rem 0 0', borderTop: '1px solid #131323', paddingTop: '0.75rem' }}>{c.detail}</p>
+                      <p style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.85rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.7, margin: '0.75rem 0 0', borderTop: '1px solid #131323', paddingTop: '0.75rem', fontWeight: 400 }}>{c.detail}</p>
                     </details>
                   </div>
                 </Fade>
@@ -136,11 +136,11 @@ export default function VLEOPage() {
         <section style={{ padding: '5rem 2.5rem', background: '#050510', borderBottom: '1px solid #131323' }}>
           <div style={{ maxWidth: 1200, margin: '0 auto' }}>
             <Fade>
-              <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '0.5rem' }}>MISSION CRITICAL</div>
-              <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 900, color: '#fff', margin: '0 0 1rem' }}>
+              <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '0.85rem', letterSpacing: '0.22em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '0.75rem' }}>MISSION CRITICAL</div>
+              <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2.2rem,3.6vw,3.2rem)', fontWeight: 900, color: '#fff', margin: '0 0 1rem' }}>
                 Missile Defense: The VLEO Advantage
               </h2>
-              <p style={{ color: '#6b7280', fontSize: '0.9rem', maxWidth: 640, lineHeight: 1.8, marginBottom: '3.5rem' }}>
+              <p style={{ color: '#fff', fontFamily: "'Bitter',Georgia,serif", fontSize: '1.05rem', maxWidth: 680, lineHeight: 1.8, marginBottom: '3.5rem', fontWeight: 400 }}>
                 Hypersonic boost-phase tracking requires sensor platforms at low altitude, low latency, and persistent coverage.
                 No LEO or GEO architecture delivers all three simultaneously. VLEO does.
               </p>
@@ -157,15 +157,15 @@ export default function VLEOPage() {
                     <Fade key={p.phase} delay={i * 100}>
                       <div style={{ borderLeft: '2px solid #c8102e', paddingLeft: '1.25rem', marginBottom: '2rem' }}>
                         <div style={{ display: 'flex', gap: '1rem', alignItems: 'baseline', marginBottom: '0.4rem' }}>
-                          <div style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: '#c8102e' }}>{p.phase}</div>
-                          <div style={{ fontSize: '0.52rem', letterSpacing: '0.1em', color: '#444' }}>WINDOW: {p.window}</div>
+                          <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '0.8rem', letterSpacing: '0.18em', color: '#c8102e' }}>{p.phase}</div>
+                          <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.7rem', letterSpacing: '0.08em', color: '#fff' }}>WINDOW: {p.window}</div>
                         </div>
-                        <p style={{ fontSize: '0.82rem', color: '#6b7280', lineHeight: 1.7, margin: '0 0 0.75rem' }}>{p.desc}</p>
+                        <p style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', color: '#fff', lineHeight: 1.7, margin: '0 0 0.75rem', fontWeight: 400 }}>{p.desc}</p>
                         <div style={{ display: 'flex', gap: '1.5rem' }}>
-                          {[['VLEO', p.vleo, '#c8102e'], ['LEO', p.leo, '#555'], ['GEO', p.geo, '#333']].map(([label, val, color]) => (
+                          {[['VLEO', p.vleo, '#c8102e'], ['LEO', p.leo, '#fff'], ['GEO', p.geo, 'rgba(255,255,255,0.6)']].map(([label, val, color]) => (
                             <div key={label as string}>
-                              <div style={{ fontSize: '0.48rem', letterSpacing: '0.15em', color: '#444', marginBottom: '0.2rem' }}>{label}</div>
-                              <div style={{ fontSize: '0.7rem', color: color as string }}>{val}</div>
+                              <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.6rem', letterSpacing: '0.12em', color: '#fff', marginBottom: '0.2rem' }}>{label}</div>
+                              <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.82rem', color: color as string, fontWeight: 600 }}>{val}</div>
                             </div>
                           ))}
                         </div>
@@ -177,7 +177,7 @@ export default function VLEOPage() {
 
               <Fade delay={150}>
                 <div style={{ background: '#02020d', border: '1px solid #131323', padding: '2rem' }}>
-                  <div style={{ fontSize: '0.55rem', letterSpacing: '0.2em', color: '#c8102e', marginBottom: '1.5rem' }}>GOLDEN DOME ARCHITECTURE ALIGNMENT</div>
+                  <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '0.75rem', letterSpacing: '0.18em', color: '#c8102e', marginBottom: '1.5rem' }}>GOLDEN DOME ARCHITECTURE ALIGNMENT</div>
                   {[
                     { req: 'Persistent hypersonic tracking', vaxon: 'VLEO 45° inclination constellation provides continuous mid-latitude coverage' },
                     { req: 'Boost-phase sensor geometry', vaxon: '180–250km altitude provides optimal off-nadir tracking angles for boost-phase IR' },
@@ -186,8 +186,8 @@ export default function VLEOPage() {
                     { req: 'Resilient constellation', vaxon: 'Self-cleaning orbit and ABEP unlimited endurance ensure no single point of failure' },
                   ].map((r, i) => (
                     <div key={i} style={{ borderBottom: '1px solid #0d0d1a', paddingBottom: '1rem', marginBottom: '1rem' }}>
-                      <div style={{ fontSize: '0.58rem', fontWeight: 600, color: '#fff', marginBottom: '0.3rem' }}>{r.req}</div>
-                      <div style={{ fontSize: '0.75rem', color: '#4a4a5e', lineHeight: 1.6 }}>{r.vaxon}</div>
+                      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', fontWeight: 700, color: '#fff', marginBottom: '0.3rem' }}>{r.req}</div>
+                      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.85rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.6, fontWeight: 400 }}>{r.vaxon}</div>
                     </div>
                   ))}
                 </div>
@@ -206,15 +206,14 @@ export default function VLEOPage() {
                 { n: 88, suf: ' min', pre: '', label: 'Orbital Period', sub: 'vs 95+ min at LEO' },
                 { n: 2, suf: ' hr', pre: '<', label: 'Global Revisit', sub: '5-satellite constellation' },
                 { n: 3, suf: '×', pre: '', label: 'Closer to Earth', sub: 'than Starlink/ISS' },
-                { n: 100, suf: '%', pre: '', label: 'Propellant-Free Ops', sub: 'ABEP harvests atmosphere' },
               ].map((s, i) => (
                 <Fade key={s.label} delay={i * 60}>
                   <div style={{ background: '#02020d', padding: '2rem 1.5rem', textAlign: 'center' }}>
                     <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 900, color: '#fff', marginBottom: '0.25rem' }}>
                       {s.pre}<CountUp to={s.n} suffix={s.suf} />
                     </div>
-                    <div style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: '#fff', textTransform: 'uppercase', marginBottom: '0.3rem' }}>{s.label}</div>
-                    <div style={{ fontSize: '0.62rem', color: '#4a4a5e' }}>{s.sub}</div>
+                    <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.7rem', letterSpacing: '0.12em', color: '#fff', textTransform: 'uppercase', marginBottom: '0.3rem', fontWeight: 700 }}>{s.label}</div>
+                    <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.7rem', color: 'rgba(255,255,255,0.6)' }}>{s.sub}</div>
                   </div>
                 </Fade>
               ))}
