@@ -62,18 +62,18 @@ export type NewsItem = {
 ───────────────────────────────────────────────────────────────*/
 export const CORE_TEAM: TeamMember[] = [
   {
-    name: 'Dr. Steven P. Shepard', role: 'Co-Founder & CEO',
-    image: '/vaxon/team-shepard.png',
-    linkedin: 'https://www.linkedin.com/in/stevenpshepard/',
-    bio: 'Dr. Shepard brings 21+ years of satellite design and advanced systems experience. As Senior R&D Program Manager at Lockheed Martin he managed a $30M portfolio and has advised Space Force, NASA, and DoD on next-generation space architectures.',
-    creds: ['21+ years in satellite design and advanced systems', 'Sr. R+D Program Manager, Lockheed Martin -$30M budget', 'Advisor: Space Force, NASA, DoD, University of Michigan', 'Author: Vanquishing Cancer'],
-  },
-  {
     name: 'Dr. Charles Lipscomb', role: 'Co-Founder & Chief Scientist',
     image: '/vaxon/team-lipscomb.png',
     linkedin: 'https://www.linkedin.com/in/charleslipscomb88',
     bio: 'Dr. Lipscomb is the technical architect of Vaxon\'s air-breathing propulsion system. His doctoral research at CU Boulder in plasmadynamics and electric propulsion and work on the COSMO satellite program provide the scientific foundation for sustained VLEO operations.',
     creds: ['PhD Aerospace Engineering, University of Colorado Boulder', 'Satellite Systems Engineer on COSMO', 'Specialist in electric propulsion integration', 'Air-breathing propulsion and plasmadynamics modeling'],
+  },
+  {
+    name: 'Dr. Steven P. Shepard', role: 'Co-Founder & CEO',
+    image: '/vaxon/team-shepard.png',
+    linkedin: 'https://www.linkedin.com/in/stevenpshepard/',
+    bio: 'Dr. Shepard brings 21+ years of satellite design and advanced systems experience. As Senior R&D Program Manager at Lockheed Martin he managed a $30M portfolio and has advised Space Force, NASA, and DoD on next-generation space architectures.',
+    creds: ['21+ years in satellite design and advanced systems', 'Sr. R+D Program Manager, Lockheed Martin -$30M budget', 'Advisor: Space Force, NASA, DoD, University of Michigan', 'Author: Vanquishing Cancer'],
   },
   {
     name: 'Brandon Williamson', role: 'Head of Engineering',
@@ -858,7 +858,7 @@ export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () 
   const [hov, setHov] = useState(false)
   // Shepard's source portrait frames him small/high — zoom into the face and recenter.
   const isShepard = member.name.includes('Shepard')
-  const imgPosition = isShepard ? '50% 28%' : 'center top'
+  const imgPosition = isShepard ? '38% 28%' : 'center top'
   const baseScale = isShepard ? 1.45 : 1
   const hovScale = isShepard ? 1.55 : 1.08
   return (
@@ -897,9 +897,9 @@ export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () 
           }
         </div>
       </div>
-      <div style={{ fontSize: '0.55rem', letterSpacing: '0.18em', color: '#c8102e', marginBottom: '0.4rem', fontFamily: "'Inter',sans-serif" }}>{member.role}</div>
-      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.4rem', fontWeight: 700, color: '#fff', marginBottom: '0.6rem', lineHeight: 1.2 }}>{member.name}</div>
-      <div style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.8)', lineHeight: 1.6, flexGrow: 1 }}>{member.creds[0]}</div>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, fontSize: '1rem', letterSpacing: '0.1em', color: '#c8102e', marginBottom: '0.5rem', textTransform: 'uppercase' }}>{member.role}</div>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.7rem', fontWeight: 700, color: '#fff', marginBottom: '0.6rem', lineHeight: 1.2 }}>{member.name}</div>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.6, flexGrow: 1, fontWeight: 400 }}>{member.creds[0]}</div>
       <div style={{
         fontSize: '0.52rem', letterSpacing: '0.18em',
         color: hov ? '#c8102e' : 'transparent',
