@@ -403,15 +403,16 @@ function HomeSection() {
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '30%', zIndex: 2, pointerEvents: 'none',
           background: 'linear-gradient(to top, rgba(20,2,6,0.65) 0%, transparent 100%)' }} />
 
-        {/* VLEO label -top left */}
+        {/* Hero headline - top left */}
         <div style={{
           position: 'absolute', top: '2rem', left: '2.5rem', zIndex: 4,
-          fontSize: '0.9rem', letterSpacing: '0.12em', color: '#c8102e',
+          fontSize: 'clamp(1.4rem,2.8vw,2.8rem)', color: '#fff',
           fontFamily: "'Bitter',Georgia,serif", fontWeight: 400,
+          lineHeight: 1.15, maxWidth: 640,
           opacity: videoOk ? 1 : 0,
           transition: 'opacity 1s ease 0.6s',
         }}>
-          VERY LOW EARTH ORBIT
+          Real-time missile defense and connectivity today — and AI tomorrow
         </div>
 
         {/* ── (hero text removed -video shown clean) ── */}
@@ -631,22 +632,6 @@ export function AboutSection() {
           </Suspense>
         </div>
 
-        {/* Right: mission text */}
-        <div>
-          <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 900, color: '#fff', lineHeight: 1.15, margin: '0 0 1.75rem' }}>
-            The Physics Advantage in Low-Altitude Orbit
-          </h2>
-          <p style={{ color: '#6b7280', lineHeight: 1.85, fontSize: '0.9rem', margin: '0 0 1.5rem' }}>
-            Traditional LEO satellites orbit at 400–600km. Vaxon operates at 180–250km -the Very Low Earth Orbit. This is a physics-driven step-change in what satellites can see, hear, and respond to.
-          </p>
-          <p style={{ color: '#6b7280', lineHeight: 1.85, fontSize: '0.9rem', margin: '0 0 2.5rem' }}>
-            Our Air-Breathing Electric Propulsion (ABEP) system harvests atmospheric molecules as propellant, enabling unlimited orbital endurance without carrying fuel -solving the fundamental challenge of sustained VLEO operations.
-          </p>
-          <div style={{ fontSize: '0.6rem', letterSpacing: '0.18em', color: '#333', fontFamily: "'Inter',sans-serif", display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#c8102e' }} />
-            EST. 2021 -BOULDER, COLORADO
-          </div>
-        </div>
       </div>
 
       {/* Advantage cards -scroll reveal */}
@@ -868,10 +853,9 @@ export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () 
   return (
     <div onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
       style={{
-        background: hov ? '#090918' : '#02020d',
-        border: '1px solid ' + (hov ? '#2a1a2e' : '#0d0d1a'),
+        background: 'transparent',
         cursor: 'pointer', overflow: 'hidden',
-        transition: 'background 0.3s, border-color 0.3s, transform 0.3s',
+        transition: 'transform 0.3s',
         transform: hov ? 'translateY(-3px)' : 'translateY(0)',
         textAlign: 'center', padding: '2.25rem 1.5rem 1.75rem',
         height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center',
@@ -892,7 +876,7 @@ export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () 
                 alt={member.name}
                 style={{
                   width: '100%', height: '100%',
-                  objectFit: 'cover', objectPosition: 'center top',
+                  objectFit: 'cover', objectPosition: member.name.includes('Shepard') ? '50% 18%' : 'center top',
                   display: 'block',
                   transition: 'transform 0.5s cubic-bezier(0.22,1,0.36,1)',
                   transform: hov ? 'scale(1.08)' : 'scale(1)',
@@ -934,7 +918,7 @@ export function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: 
         </p>
 
         <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.4rem,2.5vw,2rem)', fontWeight: 900, color: '#fff', textAlign: 'center', marginBottom: '2rem' }}>Core Leadership</div>
-        <div style={{ display: 'flex', flexWrap: 'wrap' as const, justifyContent: 'center', gap: '1px', background: '#0d0d1a', marginBottom: '4rem' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap' as const, justifyContent: 'center', gap: '0', marginBottom: '4rem' }}>
           {core.map((m, i) => (
             <div key={m.name} style={{ animation: `vx-card-in 0.6s cubic-bezier(0.22,1,0.36,1) both`, animationDelay: `${i * 0.1}s`, display: 'flex', width: 280, flexShrink: 0 }}>
               <TeamCard member={m} onClick={() => setSel(m)} />
@@ -943,9 +927,9 @@ export function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: 
         </div>
 
         <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.4rem,2.5vw,2rem)', fontWeight: 900, color: '#fff', textAlign: 'center', marginBottom: '2rem' }}>Advisory Board</div>
-        <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '1px', marginBottom: '1.5rem', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', flexWrap: 'nowrap' as const, gap: '0', marginBottom: '1.5rem', justifyContent: 'center' }}>
           {advisors.map((m, i) => (
-            <div key={m.name} style={{ animation: `vx-card-in 0.6s cubic-bezier(0.22,1,0.36,1) both`, animationDelay: `${i * 0.1 + 0.2}s`, display: 'flex', width: 280, flexShrink: 0 }}>
+            <div key={m.name} style={{ animation: `vx-card-in 0.6s cubic-bezier(0.22,1,0.36,1) both`, animationDelay: `${i * 0.1 + 0.2}s`, display: 'flex', width: 260, flexShrink: 0 }}>
               <TeamCard member={m} onClick={() => setSel(m)} />
             </div>
           ))}
@@ -1292,9 +1276,9 @@ export function LogosSection() {
       <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 900, color: '#fff', textAlign: 'center', marginBottom: '3rem' }}>
         Our Team Has Worked At
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', borderTop: '1px solid #0d0d1a', borderLeft: '1px solid #0d0d1a' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)' }}>
         {all.map(o => (
-          <div key={o.alt} style={{ borderRight: '1px solid #0d0d1a', borderBottom: '1px solid #0d0d1a' }}>
+          <div key={o.alt}>
             <Logo {...o} />
           </div>
         ))}
