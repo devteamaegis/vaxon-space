@@ -1413,10 +1413,6 @@ export default function VaxonPage() {
           <LogosSection />
         </Section>
 
-        <Section id="technology">
-          <TechnologySection />
-        </Section>
-
         <Section id="team">
           <TeamSection core={core} advisors={advisors} />
         </Section>
