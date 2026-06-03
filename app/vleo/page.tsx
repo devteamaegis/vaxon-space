@@ -240,28 +240,28 @@ export default function VLEOPage() {
                 <thead>
                   <tr style={{ background: '#06060f', borderBottom: '1px solid #1a1a2e' }}>
                     {['PLATFORM', 'ALTITUDE', 'RESOLUTION', 'LATENCY', 'REVISIT', 'PROPULSION LIFE'].map((h, i) => (
-                      <th key={h} style={{ padding: '0.85rem 1rem', fontSize: '0.52rem', letterSpacing: '0.18em', color: i === 0 ? '#c8102e' : '#444', textTransform: 'uppercase', textAlign: 'left', fontWeight: 600 }}>{h}</th>
+                      <th key={h} style={{ padding: '0.85rem 1rem', fontFamily: "'Bitter',Georgia,serif", fontSize: '0.65rem', letterSpacing: '0.14em', color: i === 0 ? '#c8102e' : '#fff', textTransform: 'uppercase', textAlign: 'left', fontWeight: 700 }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {[
                     { name: 'Vaxon Space', alt: '180–250 km', res: '<30 cm', lat: '<15 ms', rev: '<2 hr', prop: 'Unlimited (ABEP)', vaxon: true },
-                    { name: 'Planet (Dove/SkySat)', alt: '475–525 km', res: '50 cm–3 m', lat: '~65 ms', rev: '4–12 hr', prop: '3–5 yr (propellant)', vaxon: false },
-                    { name: 'BlackSky', alt: '420–450 km', res: '50 cm', lat: '~60 ms', rev: '~1–4 hr', prop: '3–5 yr (propellant)', vaxon: false },
-                    { name: 'Starlink (SpaceX)', alt: '530–570 km', res: 'N/A (comms)', lat: '20–40 ms', rev: 'Continuous (comms)', prop: '5 yr (propellant)', vaxon: false },
-                    { name: 'WorldView-3 (Maxar)', alt: '617 km', res: '31 cm', lat: '~82 ms', rev: '<1 hr (single sat)', prop: '10+ yr (GEO-class)', vaxon: false },
+                    { name: 'Company A', alt: '475–525 km', res: '50 cm–3 m', lat: '~65 ms', rev: '4–12 hr', prop: '3–5 yr (propellant)', vaxon: false },
+                    { name: 'Company B', alt: '420–450 km', res: '50 cm', lat: '~60 ms', rev: '~1–4 hr', prop: '3–5 yr (propellant)', vaxon: false },
+                    { name: 'Company C', alt: '530–570 km', res: 'N/A (comms)', lat: '20–40 ms', rev: 'Continuous (comms)', prop: '5 yr (propellant)', vaxon: false },
+                    { name: 'Company D', alt: '617 km', res: '31 cm', lat: '~82 ms', rev: '<1 hr (single sat)', prop: '10+ yr (GEO-class)', vaxon: false },
                   ].map((r, i) => (
                     <tr key={r.name} style={{ background: r.vaxon ? 'rgba(200,16,46,0.06)' : (i % 2 === 0 ? '#02020d' : '#030312'), borderBottom: '1px solid #0d0d1a', transition: 'background 0.2s' }}
                       onMouseEnter={e => { if (!r.vaxon) (e.currentTarget as HTMLElement).style.background = '#060620' }}
                       onMouseLeave={e => { if (!r.vaxon) (e.currentTarget as HTMLElement).style.background = i % 2 === 0 ? '#02020d' : '#030312' }}
                     >
-                      <td style={{ padding: '1rem', fontFamily: "'Bitter',Georgia,serif", fontSize: '0.88rem', fontWeight: r.vaxon ? 700 : 400, color: r.vaxon ? '#fff' : '#6b7280', borderLeft: r.vaxon ? '2px solid #c8102e' : '2px solid transparent' }}>{r.name}</td>
-                      <td style={{ padding: '1rem', fontSize: '0.8rem', color: r.vaxon ? '#c8102e' : '#4a4a5e' }}>{r.alt}</td>
-                      <td style={{ padding: '1rem', fontSize: '0.8rem', color: r.vaxon ? '#c8102e' : '#4a4a5e' }}>{r.res}</td>
-                      <td style={{ padding: '1rem', fontSize: '0.8rem', color: r.vaxon ? '#c8102e' : '#4a4a5e' }}>{r.lat}</td>
-                      <td style={{ padding: '1rem', fontSize: '0.8rem', color: r.vaxon ? '#c8102e' : '#4a4a5e' }}>{r.rev}</td>
-                      <td style={{ padding: '1rem', fontSize: '0.8rem', color: r.vaxon ? '#c8102e' : '#4a4a5e' }}>{r.prop}</td>
+                      <td style={{ padding: '1rem', fontFamily: "'Bitter',Georgia,serif", fontSize: '1rem', fontWeight: r.vaxon ? 700 : 500, color: '#fff', borderLeft: r.vaxon ? '2px solid #c8102e' : '2px solid transparent' }}>{r.name}</td>
+                      <td style={{ padding: '1rem', fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', color: r.vaxon ? '#c8102e' : '#fff' }}>{r.alt}</td>
+                      <td style={{ padding: '1rem', fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', color: r.vaxon ? '#c8102e' : '#fff' }}>{r.res}</td>
+                      <td style={{ padding: '1rem', fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', color: r.vaxon ? '#c8102e' : '#fff' }}>{r.lat}</td>
+                      <td style={{ padding: '1rem', fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', color: r.vaxon ? '#c8102e' : '#fff' }}>{r.rev}</td>
+                      <td style={{ padding: '1rem', fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', color: r.vaxon ? '#c8102e' : '#fff' }}>{r.prop}</td>
                     </tr>
                   ))}
                 </tbody>

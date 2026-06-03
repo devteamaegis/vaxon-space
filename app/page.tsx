@@ -944,12 +944,12 @@ export function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: 
     <>
       {sel && <TeamModal member={sel} onClose={() => setSel(null)} />}
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
-        <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>OUR TEAM</div>
-        <div style={{ width: 36, height: 1, background: '#1e1e30', marginBottom: '1.5rem' }} />
+        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 900, color: '#fff', marginBottom: '0.5rem' }}>Our Team</div>
+        <div style={{ width: 48, height: 2, background: '#c8102e', marginBottom: '1.5rem' }} />
         <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3.5vw,3rem)', fontWeight: 900, color: '#fff', margin: '0 0 0.75rem' }}>
           Built by the People Who've Done It
         </h2>
-        <p style={{ color: '#6b7280', fontSize: '0.88rem', maxWidth: 520, margin: '0 0 3.5rem', lineHeight: 1.75 }}>
+        <p style={{ color: '#fff', fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1rem,1.5vw,1.15rem)', maxWidth: 640, margin: '0 0 3.5rem', lineHeight: 1.75, fontWeight: 400 }}>
           Decades of experience from Lockheed Martin, the US Army, US Air Force, NRO, DARPA, and the world's leading aerospace research institutions.
         </p>
 
@@ -1264,15 +1264,15 @@ export function LogosSection() {
     { src: '/vaxon/logos/ut-austin.png',                alt: 'UT Austin' },
     { src: '/vaxon/logos/west-point-logo.png',          alt: 'West Point' },
     { src: '/vaxon/logos/unc.svg',                      alt: 'UNC Chapel Hill' },
-    { src: '/vaxon/logos/stanford-color.webp',          alt: 'Stanford' },
+    { src: '/vaxon/logos/stanford.svg',                 alt: 'Stanford' },
     { src: '/vaxon/logos/cornell-seal.png',             alt: 'Cornell' },
-    { src: '/vaxon/logos/bates-logo.jpg',               alt: 'Bates College' },
+    { src: '/vaxon/logos/bates.svg',                    alt: 'Bates College' },
   ]
 
   const Logo = ({ src, alt }: { src: string; alt: string }) => {
     const [hov, setHov] = useState(false)
-    // Logos with white backgrounds need inversion to blend on dark page
-    const needsInvert = alt === 'Stanford' || alt === 'Bates College' || alt === 'Lockheed Martin'
+    // Lockheed SVG is dark blue on transparent — invert to white for dark page visibility
+    const needsInvert = alt === 'Lockheed Martin'
     const baseFilter = needsInvert ? 'brightness(0) invert(1)' : 'none'
     const hovFilter = needsInvert
       ? 'brightness(0) invert(1) drop-shadow(0 0 12px rgba(200,16,46,0.6))'
