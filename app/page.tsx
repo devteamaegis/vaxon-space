@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, lazy, Suspense, useCallback } from 'react'
 
 const SatelliteDiagram = lazy(() => import('@/components/SatelliteDiagram'))
 const EarthGlobeV2     = lazy(() => import('@/components/EarthGlobeV2'))
+const ABEPDiagram      = lazy(() => import('@/components/ABEPDiagram'))
 const VaxonWidget      = lazy(() => import('@/components/VaxonWidget'))
 const SatelliteGlobe   = lazy(() => import('@/components/SatelliteGlobe'))
 
@@ -1436,6 +1437,9 @@ export default function VaxonPage() {
 
         <Section id="technology">
           <TechnologySection />
+          <Suspense fallback={<div style={{ height: 400, background: '#02020d' }} />}>
+            <ABEPDiagram />
+          </Suspense>
         </Section>
 
         <Section id="team">
