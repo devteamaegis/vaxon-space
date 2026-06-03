@@ -7,7 +7,7 @@ export default function AboutPage() {
       <style>{VX_GLOBAL_STYLE}</style>
       <StarField />
       <Nav active="about" />
-      <div style={{ paddingTop: 64, position: 'relative', zIndex: 1 }}>
+      <div style={{ paddingTop: 80, position: 'relative', zIndex: 1 }}>
         <AboutSection />
         <LogosSection />
         <Footer />

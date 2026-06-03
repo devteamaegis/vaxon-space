@@ -23,7 +23,7 @@ export default function TeamPage() {
       <style>{VX_GLOBAL_STYLE}</style>
       <StarField />
       <Nav active="team" />
-      <div style={{ paddingTop: 64, position: 'relative', zIndex: 1 }}>
+      <div style={{ paddingTop: 80, position: 'relative', zIndex: 1 }}>
         <TeamSection core={core} advisors={advisors} />
         <LogosSection />
         <Footer />

@@ -18,7 +18,7 @@ export default function NewsPage() {
       <style>{VX_GLOBAL_STYLE}</style>
       <StarField />
       <Nav active="news" />
-      <div style={{ paddingTop: 64, position: 'relative', zIndex: 1 }}>
+      <div style={{ paddingTop: 80, position: 'relative', zIndex: 1 }}>
         <NewsSection news={news} />
         <Footer />
       </div>

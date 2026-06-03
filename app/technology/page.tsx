@@ -38,7 +38,7 @@ export default function TechnologyPage() {
       <style>{VX_GLOBAL_STYLE}</style>
       <StarField />
       <Nav active="technology" />
-      <div style={{ paddingTop: 64, position: 'relative', zIndex: 1 }}>
+      <div style={{ paddingTop: 80, position: 'relative', zIndex: 1 }}>
         <TechnologySection />
         <Suspense fallback={<div style={{ height: 400, background: '#02020d' }} />}>
           <ABEPDiagram />

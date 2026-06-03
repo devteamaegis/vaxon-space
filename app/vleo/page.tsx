@@ -53,7 +53,7 @@ export default function VLEOPage() {
       <StarField />
       <Nav active="vleo" />
 
-      <div style={{ paddingTop: 64, position: 'relative', zIndex: 1, fontFamily: "'Inter',sans-serif" }}>
+      <div style={{ paddingTop: 80, position: 'relative', zIndex: 1, fontFamily: "'Inter',sans-serif" }}>
 
         {/* ── HERO ── */}
         <div style={{ position: 'relative', padding: '6rem 2.5rem 5rem', background: 'linear-gradient(to bottom, #02020d 0%, #06020f 100%)', borderBottom: '1px solid #131323', overflow: 'hidden' }}>

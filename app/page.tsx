@@ -265,7 +265,7 @@ export function Nav({ active }: { active: Tab }) {
 
   return (
     <nav style={{
-      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000, height: 64,
+      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000, height: 80,
       display: 'flex', alignItems: 'center', padding: '0 2.5rem',
       background: dark ? 'rgba(2,2,13,0.96)' : 'rgba(2,2,13,0.6)',
       backdropFilter: 'blur(16px)',
@@ -306,7 +306,7 @@ export function Nav({ active }: { active: Tab }) {
 
       {/* Mobile overlay */}
       {menuOpen && (
-        <div style={{ position: 'fixed', inset: 0, top: 64, background: 'rgba(2,2,13,0.98)', zIndex: 999, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '2.5rem' }}>
+        <div style={{ position: 'fixed', inset: 0, top: 80, background: 'rgba(2,2,13,0.98)', zIndex: 999, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '2.5rem' }}>
           {NAV_LINKS.map(t => (
             <a key={t.id} href={t.href} onClick={() => setMenuOpen(false)} style={{
               textDecoration: 'none',
@@ -370,7 +370,7 @@ function HomeSection() {
   return (
     <>
       {showStory && <VideoModal url={PITCH_URL} onClose={() => setShowStory(false)} />}
-      <div style={{ position: 'relative', height: 'calc(100vh - 64px)', overflow: 'hidden', background: '#02020d' }}>
+      <div style={{ position: 'relative', height: 'calc(100vh - 80px)', overflow: 'hidden', background: '#02020d' }}>
 
         {/* ── Cinematic background video ── */}
         <video
@@ -861,8 +861,9 @@ const HEADSHOT_CROP: Record<string, { scale: number; pos: string; tx: string }> 
   'Lipscomb':   { scale: 1.15, pos: '50% 22%', tx: '0%' },
   'Williamson': { scale: 1.35, pos: '50% 24%', tx: '5%' },
   'Anderson':   { scale: 1.0,  pos: '50% 30%', tx: '0%' },
-  'Pedreiro':   { scale: 1.25, pos: '50% 26%', tx: '3%' },
-  'Shah':       { scale: 1.4,  pos: '50% 22%', tx: '3%' },
+  // Pedreiro & Shah reverted to the original default (no zoom) — their heads were getting cut off.
+  'Pedreiro':   { scale: 1.0,  pos: 'center top', tx: '0%' },
+  'Shah':       { scale: 1.0,  pos: 'center top', tx: '0%' },
   'Boyd':       { scale: 1.05, pos: '50% 30%', tx: '0%' },
 }
 
@@ -1263,6 +1264,8 @@ export function LogosSection() {
     const [hov, setHov] = useState(false)
     const baseFilter = 'none'
     const hovFilter = 'drop-shadow(0 0 12px rgba(200,16,46,0.5))'
+    // Lockheed file is a blue disc on a white JPEG square — clip to a circle to hide the white corners.
+    const isLockheed = alt === 'Lockheed Martin'
     return (
       <div
         onMouseEnter={() => setHov(true)}
@@ -1280,6 +1283,7 @@ export function LogosSection() {
           style={{
             width: 100, height: 100,
             objectFit: 'contain',
+            borderRadius: isLockheed ? '50%' : 0,
             opacity: hov ? 1 : 0.85,
             transform: hov ? 'scale(1.2)' : 'scale(1)',
             filter: hov ? hovFilter : baseFilter,
@@ -1412,7 +1416,7 @@ export default function VaxonPage() {
       <Nav active={active} />
 
       {/* pt-16 to clear fixed nav */}
-      <div style={{ paddingTop: 64 }}>
+      <div style={{ paddingTop: 80 }}>
         <Section id="home">
           <HomeSection />
         </Section>
