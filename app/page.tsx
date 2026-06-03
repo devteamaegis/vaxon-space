@@ -1238,7 +1238,7 @@ export function LogosSection() {
     { src: '/vaxon/logos/naval-war-college-color.webp', alt: 'Naval War College' },
     { src: '/vaxon/logos/nasa-color.jpg',               alt: 'NASA' },
     { src: '/vaxon/logos/dod.svg',                      alt: 'Dept of Defense' },
-    { src: '/vaxon/logos/lockheed.svg',                 alt: 'Lockheed Martin' },
+    { src: '/vaxon/logos/lockheed-logo.png',             alt: 'Lockheed Martin' },
     { src: '/vaxon/logos/michigan-seal.png',            alt: 'University of Michigan' },
     { src: '/vaxon/logos/cu-boulder.svg',               alt: 'CU Boulder' },
     { src: '/vaxon/logos/ut-austin.png',                alt: 'UT Austin' },
@@ -1251,7 +1251,7 @@ export function LogosSection() {
 
   const Logo = ({ src, alt }: { src: string; alt: string }) => {
     const [hov, setHov] = useState(false)
-    const needsBlend = alt === 'Stanford' || alt === 'NASA'
+    const needsBlend = alt === 'Stanford' || alt === 'NASA' || alt === 'Lockheed Martin'
     return (
       <div
         onMouseEnter={() => setHov(true)}
