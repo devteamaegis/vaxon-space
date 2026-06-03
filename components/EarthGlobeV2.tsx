@@ -1,16 +1,32 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 
-/* ─── ORBITAL MECHANICS ──────────────────────────────────── */
+/* ───────────────────────────────────────────────────────────
+   VISUAL SCALE
+   Earth radius = 1.0 in scene units. Real altitudes are tiny
+   vs Earth's 6371km radius, so we exaggerate altitude by a
+   constant factor to make the VLEO / ISS / Starlink gap legible
+   while preserving their true ratios.
+─────────────────────────────────────────────────────────────*/
+const ALT_EXAG = 4.6
+const visRadius = (altKm: number) => 1 + (altKm / 6371) * ALT_EXAG
+
+/* Time acceleration: 1 real second = TIME_SCALE simulated seconds.
+   A VLEO orbit (~88 min) then completes in ~14s on screen. */
+const TIME_SCALE = 380
+
+/* ───────────────────────────────────────────────────────────
+   ORBITAL MECHANICS — real Kepler period, exaggerated radius
+─────────────────────────────────────────────────────────────*/
 function keplerPosition(incDeg: number, raanDeg: number, altKm: number, phaseOffsetSec = 0): [number, number, number] {
   const MU = 3.986e14
   const r = (6371 + altKm) * 1000
-  const T = 2 * Math.PI * Math.sqrt(r * r * r / MU)
-  const now = Date.now() / 1000 + phaseOffsetSec
-  const angle = ((now % T) / T) * 2 * Math.PI
-  const inc = incDeg * Math.PI / 180
-  const raan = raanDeg * Math.PI / 180
-  const rNorm = (6371 + altKm) / 6371
+  const T = 2 * Math.PI * Math.sqrt((r * r * r) / MU) // true period (s)
+  const t = (Date.now() / 1000) * TIME_SCALE + phaseOffsetSec
+  const angle = ((t % T) / T) * 2 * Math.PI
+  const inc = (incDeg * Math.PI) / 180
+  const raan = (raanDeg * Math.PI) / 180
+  const rNorm = visRadius(altKm)
   const xO = rNorm * Math.cos(angle)
   const yO = rNorm * Math.sin(angle)
   const x = xO * Math.cos(raan) - yO * Math.cos(inc) * Math.sin(raan)
@@ -19,41 +35,56 @@ function keplerPosition(incDeg: number, raanDeg: number, altKm: number, phaseOff
   return [x, z, -y]
 }
 
-/* ─── COVERAGE FOOTPRINT ─────────────────────────────────── */
-function footprintPoints(satPos: [number,number,number], altKm: number): [number,number,number][] {
+/* ───────────────────────────────────────────────────────────
+   COVERAGE FOOTPRINT (physical cone half-angle)
+─────────────────────────────────────────────────────────────*/
+function footprintPoints(satPos: [number, number, number], altKm: number): [number, number, number][] {
   const halfAngle = Math.acos(6371 / (6371 + altKm))
   const [sx, sy, sz] = satPos
-  const len = Math.sqrt(sx*sx + sy*sy + sz*sz)
-  const nx = sx/len, ny = sy/len, nz = sz/len
-  let px = ny*0 - nz*1, py = nz*0 - nx*0, pz = nx*1 - ny*0
-  const pLen = Math.sqrt(px*px+py*py+pz*pz)
-  if (pLen > 0.001) { px/=pLen; py/=pLen; pz/=pLen } else { px=1;py=0;pz=0 }
-  const p2x = ny*pz-nz*py, p2y = nz*px-nx*pz, p2z = nx*py-ny*px
-  const pts: [number,number,number][] = []
-  const R = 1.002
+  const len = Math.sqrt(sx * sx + sy * sy + sz * sz)
+  const nx = sx / len, ny = sy / len, nz = sz / len
+  let px = ny * 0 - nz * 1, py = nz * 0 - nx * 0, pz = nx * 1 - ny * 0
+  const pLen = Math.sqrt(px * px + py * py + pz * pz)
+  if (pLen > 0.001) { px /= pLen; py /= pLen; pz /= pLen } else { px = 1; py = 0; pz = 0 }
+  const p2x = ny * pz - nz * py, p2y = nz * px - nx * pz, p2z = nx * py - ny * px
+  const pts: [number, number, number][] = []
+  const R = 1.003
   for (let i = 0; i <= 64; i++) {
-    const a = (i/64)*2*Math.PI
+    const a = (i / 64) * 2 * Math.PI
     const cosH = Math.cos(halfAngle), sinH = Math.sin(halfAngle)
-    const cx = cosH*nx + sinH*(Math.cos(a)*px + Math.sin(a)*p2x)
-    const cy = cosH*ny + sinH*(Math.cos(a)*py + Math.sin(a)*p2y)
-    const cz = cosH*nz + sinH*(Math.cos(a)*pz + Math.sin(a)*p2z)
-    pts.push([cx*R, cy*R, cz*R])
+    const cx = cosH * nx + sinH * (Math.cos(a) * px + Math.sin(a) * p2x)
+    const cy = cosH * ny + sinH * (Math.cos(a) * py + Math.sin(a) * p2y)
+    const cz = cosH * nz + sinH * (Math.cos(a) * pz + Math.sin(a) * p2z)
+    pts.push([cx * R, cy * R, cz * R])
   }
   return pts
 }
 
-/* ─── CONSTELLATION ──────────────────────────────────────── */
+/* ───────────────────────────────────────────────────────────
+   CONSTELLATIONS
+─────────────────────────────────────────────────────────────*/
 const VAXON_SATS = [
-  { inc:53, raan:0,   alt:220, phase:0 },
-  { inc:53, raan:72,  alt:215, phase:1200 },
-  { inc:53, raan:144, alt:210, phase:2400 },
-  { inc:53, raan:216, alt:225, phase:3600 },
-  { inc:53, raan:288, alt:218, phase:4800 },
+  { inc: 53, raan: 0, alt: 220, phase: 0 },
+  { inc: 53, raan: 72, alt: 215, phase: 1200 },
+  { inc: 53, raan: 144, alt: 210, phase: 2400 },
+  { inc: 53, raan: 216, alt: 225, phase: 3600 },
+  { inc: 53, raan: 288, alt: 218, phase: 4800 },
 ]
-const REF_SATS = [
-  { inc:51.6, raan:45, alt:408, phase:0 },
-  { inc:53,   raan:20, alt:550, phase:800 },
+const ISS_SATS = [
+  { inc: 51.6, raan: 130, alt: 408, phase: 0 },
 ]
+const STARLINK_SATS = [
+  { inc: 53, raan: 20, alt: 550, phase: 0 },
+  { inc: 53, raan: 95, alt: 552, phase: 1600 },
+  { inc: 53, raan: 200, alt: 548, phase: 3200 },
+  { inc: 53, raan: 300, alt: 551, phase: 4400 },
+]
+
+const COL = {
+  vaxon: 0xff2d4b,
+  iss: 0x4aa3ff,
+  starlink: 0x35d07f,
+}
 
 export default function EarthGlobeV2({ showFootprint = false, height = 500 }: { showFootprint?: boolean; height?: number }) {
   const mountRef = useRef<HTMLDivElement>(null)
@@ -75,221 +106,253 @@ export default function EarthGlobeV2({ showFootprint = false, height = 500 }: { 
       const W = container.clientWidth || 600
       const H = height
 
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' })
       renderer.setSize(W, H)
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
       renderer.toneMapping = THREE.ACESFilmicToneMapping
-      renderer.toneMappingExposure = 1.1
+      renderer.toneMappingExposure = 1.05
+      renderer.outputColorSpace = THREE.SRGBColorSpace
       container.appendChild(renderer.domElement)
+      const maxAniso = renderer.capabilities.getMaxAnisotropy()
 
       const scene = new THREE.Scene()
-      const camera = new THREE.PerspectiveCamera(40, W / H, 0.01, 100)
-      camera.position.set(0, 0.5, 3.2)
+      const camera = new THREE.PerspectiveCamera(38, W / H, 0.01, 100)
+      camera.position.set(0.2, 0.35, 3.25)
       camera.lookAt(0, 0, 0)
 
-      /* Lights */
-      const sun = new THREE.DirectionalLight(0xfff5e0, 3.2)
-      sun.position.set(5, 2, 3)
+      /* ── Lighting ── */
+      const sunDirWorld = new THREE.Vector3(5, 1.6, 3).normalize()
+      const sun = new THREE.DirectionalLight(0xfff4e2, 3.0)
+      sun.position.copy(sunDirWorld.clone().multiplyScalar(10))
       scene.add(sun)
-      scene.add(new THREE.AmbientLight(0x0d1a33, 1.5))
+      scene.add(new THREE.AmbientLight(0x16243f, 1.1))
+      // subtle blue fill from the opposite side (earthshine)
+      const fill = new THREE.DirectionalLight(0x2a4a7a, 0.5)
+      fill.position.set(-4, -1, -3)
+      scene.add(fill)
 
-      /* ── Earth — solid fallback, upgrades to textured ── */
-      const earthGeo = new THREE.SphereGeometry(1, 96, 96)
+      /* ── Tilted planet group (23.5° axial tilt) ── */
+      const planet = new THREE.Group()
+      planet.rotation.z = (23.5 * Math.PI) / 180
+      scene.add(planet)
 
-      // Start with a solid blue-green Earth immediately
+      /* ── Earth (solid fallback first) ── */
+      const earthGeo = new THREE.SphereGeometry(1, 128, 128)
       const earthMat = new THREE.MeshPhongMaterial({
-        color: 0x1a4a6e,
-        emissive: 0x0a1a2e,
-        shininess: 25,
-        specular: 0x224466,
+        color: 0x12365a, emissive: 0x06101f, shininess: 18, specular: 0x1a3a5a,
       })
       const earthMesh = new THREE.Mesh(earthGeo, earthMat)
-      scene.add(earthMesh)
+      planet.add(earthMesh)
 
-      /* Atmosphere (renders immediately, no textures needed) */
-      const atmGeo = new THREE.SphereGeometry(1.055, 64, 64)
+      /* ── Cloud layer (separate sphere, upgrades when texture ready) ── */
+      const cloudGeo = new THREE.SphereGeometry(1.006, 96, 96)
+      const cloudMat = new THREE.MeshPhongMaterial({ transparent: true, opacity: 0, depthWrite: false })
+      const cloudMesh = new THREE.Mesh(cloudGeo, cloudMat)
+      planet.add(cloudMesh)
+
+      /* ── Atmosphere rim (day-side scatter) ── */
+      const atmGeo = new THREE.SphereGeometry(1.045, 80, 80)
       const atmMat = new THREE.ShaderMaterial({
-        uniforms: { sunDir: { value: sun.position.clone().normalize() } },
+        uniforms: { sunDir: { value: sunDirWorld.clone() } },
         vertexShader: `
-          varying vec3 vNormal;
-          varying vec3 vPos;
+          varying vec3 vNormal; varying vec3 vWorld;
           void main(){
-            vNormal = normalize(normalMatrix * normal);
-            vPos = (modelMatrix * vec4(position,1.0)).xyz;
+            vNormal = normalize(mat3(modelMatrix) * normal);
+            vWorld  = (modelMatrix * vec4(position,1.0)).xyz;
             gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
-          }
-        `,
+          }`,
         fragmentShader: `
-          varying vec3 vNormal;
-          varying vec3 vPos;
-          uniform vec3 sunDir;
+          varying vec3 vNormal; varying vec3 vWorld; uniform vec3 sunDir;
           void main(){
-            vec3 view = normalize(cameraPosition - vPos);
-            float rim = 1.0 - abs(dot(vNormal, view));
-            float intensity = pow(rim, 3.0);
-            float sun = dot(normalize(vNormal), normalize(sunDir));
-            float day = smoothstep(-0.3, 0.5, sun);
-            vec3 col = mix(vec3(0.05,0.08,0.3), vec3(0.2,0.5,1.0), day);
-            gl_FragColor = vec4(col, intensity * 0.88);
-          }
-        `,
-        blending: THREE.AdditiveBlending,
-        side: THREE.BackSide,
-        transparent: true,
-        depthWrite: false,
+            vec3 view = normalize(cameraPosition - vWorld);
+            float rim = pow(1.0 - abs(dot(vNormal, view)), 3.2);
+            float sd  = dot(normalize(vNormal), normalize(sunDir));
+            float day = smoothstep(-0.45, 0.55, sd);
+            vec3 dayCol  = vec3(0.25, 0.55, 1.0);
+            vec3 duskCol = vec3(1.0, 0.45, 0.25);
+            float dusk = smoothstep(0.0, 0.25, sd) * (1.0 - smoothstep(0.25, 0.7, sd));
+            vec3 col = mix(vec3(0.04,0.07,0.22), dayCol, day) + duskCol * dusk * 0.5;
+            gl_FragColor = vec4(col, rim * (0.35 + 0.65*day));
+          }`,
+        blending: THREE.AdditiveBlending, side: THREE.BackSide, transparent: true, depthWrite: false,
       })
       scene.add(new THREE.Mesh(atmGeo, atmMat))
 
-      /* Outer halo */
-      const haloGeo = new THREE.SphereGeometry(1.12, 32, 32)
+      /* ── Outer halo ── */
       const haloMat = new THREE.ShaderMaterial({
-        vertexShader: `varying vec3 vN; void main(){ vN = normalize(normalMatrix*normal); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
-        fragmentShader: `varying vec3 vN; void main(){ float r=pow(1.0-abs(dot(vN,vec3(0,0,1))),5.0); gl_FragColor=vec4(0.15,0.45,1.0,r*0.3); }`,
-        blending: THREE.AdditiveBlending,
-        side: THREE.BackSide,
-        transparent: true,
-        depthWrite: false,
+        vertexShader: `varying vec3 vN; void main(){ vN=normalize(normalMatrix*normal); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);} `,
+        fragmentShader: `varying vec3 vN; void main(){ float r=pow(1.0-abs(dot(vN,vec3(0,0,1))),5.5); gl_FragColor=vec4(0.16,0.42,1.0,r*0.22);} `,
+        blending: THREE.AdditiveBlending, side: THREE.BackSide, transparent: true, depthWrite: false,
       })
-      scene.add(new THREE.Mesh(haloGeo, haloMat))
+      scene.add(new THREE.Mesh(new THREE.SphereGeometry(1.12, 48, 48), haloMat))
 
-      /* Orbit rings */
-      const addRing = (altKm: number, color: number, opacity: number) => {
-        const r = (6371 + altKm) / 6371
-        const g = new THREE.TorusGeometry(r, 0.002, 8, 300)
-        const m = new THREE.MeshBasicMaterial({ color, transparent: true, opacity })
-        const mesh = new THREE.Mesh(g, m)
-        mesh.rotation.x = Math.PI / 2
-        scene.add(mesh)
+      /* ── Orbit rings (inclined, exaggerated, glowing) ── */
+      const addRing = (altKm: number, incDeg: number, raanDeg: number, color: number, opacity: number, glow: number) => {
+        const r = visRadius(altKm)
+        const pts: any[] = []
+        const inc = (incDeg * Math.PI) / 180, raan = (raanDeg * Math.PI) / 180
+        for (let i = 0; i <= 256; i++) {
+          const a = (i / 256) * Math.PI * 2
+          const xO = r * Math.cos(a), yO = r * Math.sin(a)
+          const x = xO * Math.cos(raan) - yO * Math.cos(inc) * Math.sin(raan)
+          const y = xO * Math.sin(raan) + yO * Math.cos(inc) * Math.cos(raan)
+          const z = yO * Math.sin(inc)
+          pts.push(new THREE.Vector3(x, z, -y))
+        }
+        const g = new THREE.BufferGeometry().setFromPoints(pts)
+        const core = new THREE.Line(g, new THREE.LineBasicMaterial({ color, transparent: true, opacity }))
+        scene.add(core)
+        // additive glow halo line (slightly larger torus look via second pass)
+        const glowLine = new THREE.Line(g, new THREE.LineBasicMaterial({ color, transparent: true, opacity: glow, blending: THREE.AdditiveBlending }))
+        glowLine.scale.setScalar(1.004)
+        scene.add(glowLine)
       }
-      addRing(220, 0xc8102e, 0.55)
-      addRing(408, 0x4488cc, 0.25)
-      addRing(550, 0x336644, 0.18)
+      addRing(220, 53, 0, COL.vaxon, 0.85, 0.4)
+      addRing(408, 51.6, 130, COL.iss, 0.45, 0.18)
+      addRing(550, 53, 20, COL.starlink, 0.38, 0.15)
 
-      /* Stars */
+      /* ── Stars ── */
       const sv: number[] = []
-      for (let i = 0; i < 2000; i++) {
-        const r2 = 30 + Math.random() * 20
+      for (let i = 0; i < 2600; i++) {
+        const r2 = 34 + Math.random() * 22
         const t = Math.random() * Math.PI * 2, p = Math.acos(2 * Math.random() - 1)
-        sv.push(r2*Math.sin(p)*Math.cos(t), r2*Math.sin(p)*Math.sin(t), r2*Math.cos(p))
+        sv.push(r2 * Math.sin(p) * Math.cos(t), r2 * Math.sin(p) * Math.sin(t), r2 * Math.cos(p))
       }
       const sg = new THREE.BufferGeometry()
       sg.setAttribute('position', new THREE.Float32BufferAttribute(sv, 3))
-      scene.add(new THREE.Points(sg, new THREE.PointsMaterial({ color: 0xffffff, size: 0.055, transparent: true, opacity: 0.75 })))
+      scene.add(new THREE.Points(sg, new THREE.PointsMaterial({ color: 0xffffff, size: 0.05, transparent: true, opacity: 0.8, sizeAttenuation: true })))
 
-      /* Satellites */
-      const satMeshes: { mesh: any; sat: typeof VAXON_SATS[0]; isVaxon: boolean }[] = []
-      const trails: { line: any; pts: [number,number,number][] }[] = []
+      /* ── Satellites + comet trails (all tiers) ── */
+      type SatDef = { inc: number; raan: number; alt: number; phase: number }
+      type SatRec = { mesh: any; def: SatDef; tier: 'vaxon' | 'iss' | 'starlink'; trail: any; pts: [number, number, number][] }
+      const sats: SatRec[] = []
 
-      for (const sat of VAXON_SATS) {
-        const m = new THREE.Mesh(new THREE.SphereGeometry(0.018, 8, 8), new THREE.MeshBasicMaterial({ color: 0xc8102e }))
-        const glow = new THREE.Mesh(new THREE.SphereGeometry(0.034, 8, 8), new THREE.MeshBasicMaterial({ color: 0xc8102e, transparent: true, opacity: 0.2 }))
-        m.add(glow)
-        scene.add(m)
-        const lineGeo = new THREE.BufferGeometry()
-        const line = new THREE.Line(lineGeo, new THREE.LineBasicMaterial({ color: 0xc8102e, transparent: true, opacity: 0.35 }))
-        scene.add(line)
-        satMeshes.push({ mesh: m, sat, isVaxon: true })
-        trails.push({ line, pts: [] })
+      // round camera-facing glow sprite texture
+      const makeGlowTex = (hex: number) => {
+        const c = document.createElement('canvas'); c.width = c.height = 64
+        const ctx = c.getContext('2d')!
+        const col = new THREE.Color(hex)
+        const r = Math.round(col.r * 255), g = Math.round(col.g * 255), b = Math.round(col.b * 255)
+        const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32)
+        grad.addColorStop(0, `rgba(${r},${g},${b},1)`)
+        grad.addColorStop(0.3, `rgba(${r},${g},${b},0.7)`)
+        grad.addColorStop(1, `rgba(${r},${g},${b},0)`)
+        ctx.fillStyle = grad; ctx.fillRect(0, 0, 64, 64)
+        const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t
       }
-      for (const sat of REF_SATS) {
-        const col = sat.alt < 500 ? 0x4488cc : 0x336644
-        const m = new THREE.Mesh(new THREE.SphereGeometry(0.012, 8, 8), new THREE.MeshBasicMaterial({ color: col }))
-        scene.add(m)
-        satMeshes.push({ mesh: m, sat, isVaxon: false })
-        trails.push({ line: null, pts: [] })
+      const glowTex = { vaxon: makeGlowTex(COL.vaxon), iss: makeGlowTex(COL.iss), starlink: makeGlowTex(COL.starlink) }
+
+      const addSat = (def: SatDef, tier: 'vaxon' | 'iss' | 'starlink', size: number, trailLen: number) => {
+        const color = COL[tier]
+        const grp = new THREE.Group()
+        // bright core
+        const core = new THREE.Mesh(new THREE.SphereGeometry(size, 10, 10), new THREE.MeshBasicMaterial({ color: 0xffffff }))
+        grp.add(core)
+        // sprite glow
+        const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex[tier], transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }))
+        spr.scale.setScalar(size * 7)
+        grp.add(spr)
+        scene.add(grp)
+        // comet trail with fading vertex colors
+        const tg = new THREE.BufferGeometry()
+        const tm = new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending })
+        const trail = new THREE.Line(tg, tm)
+        scene.add(trail)
+        sats.push({ mesh: grp, def, tier, trail, pts: [] })
+        ;(trail as any)._len = trailLen
+        ;(trail as any)._color = new THREE.Color(color)
       }
 
-      /* Coverage footprint */
-      const fpGeo = new THREE.BufferGeometry()
-      const fpLine = new THREE.Line(fpGeo, new THREE.LineBasicMaterial({ color: 0xc8102e, transparent: true, opacity: 0.7 }))
-      fpLine.visible = false
-      scene.add(fpLine)
-      const fillGeo = new THREE.BufferGeometry()
-      const fillMesh = new THREE.Mesh(fillGeo, new THREE.MeshBasicMaterial({ color: 0xc8102e, transparent: true, opacity: 0.07, side: THREE.FrontSide, depthWrite: false }))
-      fillMesh.visible = false
-      scene.add(fillMesh)
+      VAXON_SATS.forEach(s => addSat(s, 'vaxon', 0.02, 90))
+      ISS_SATS.forEach(s => addSat(s, 'iss', 0.015, 70))
+      STARLINK_SATS.forEach(s => addSat(s, 'starlink', 0.013, 60))
 
-      /* Start rendering IMMEDIATELY — before textures load */
+      /* ── Coverage footprint ── */
+      const fpLine = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: COL.vaxon, transparent: true, opacity: 0.8 }))
+      fpLine.visible = false; scene.add(fpLine)
+      const fillMesh = new THREE.Mesh(new THREE.BufferGeometry(), new THREE.MeshBasicMaterial({ color: COL.vaxon, transparent: true, opacity: 0.09, side: THREE.DoubleSide, depthWrite: false }))
+      fillMesh.visible = false; scene.add(fillMesh)
+
+      /* Render immediately */
       setLoading(false)
 
-      /* Load textures in background, upgrade Earth when ready */
+      /* ── Load textures in background, upgrade Earth ── */
       const loader = new THREE.TextureLoader()
       loader.crossOrigin = 'anonymous'
+      const tryLoad = (urls: string[]): Promise<any> => new Promise(resolve => {
+        let settled = false, tried = 0
+        for (const url of urls) {
+          loader.loadAsync(url)
+            .then(tex => { if (!settled) { settled = true; resolve(tex) } })
+            .catch(() => { tried++; if (tried === urls.length && !settled) resolve(null) })
+        }
+      })
+      const setColor = (t: any) => { if (t) { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = maxAniso } return t }
+      const setLinear = (t: any) => { if (t) { t.anisotropy = maxAniso } return t }
 
-      // Try multiple CDN sources in parallel, use first to resolve
-      const tryLoad = (urls: string[]): Promise<any> => {
-        return new Promise(resolve => {
-          let settled = false
-          let tried = 0
-          for (const url of urls) {
-            loader.loadAsync(url)
-              .then(tex => { if (!settled) { settled = true; resolve(tex) } })
-              .catch(() => { tried++; if (tried === urls.length && !settled) resolve(null) })
-          }
-        })
-      }
-
-      const [dayTex, nightTex, cloudTex] = await Promise.all([
-        tryLoad([
-          'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
-          'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg',
-        ]),
-        tryLoad([
-          'https://unpkg.com/three-globe/example/img/earth-night.jpg',
-          'https://threejs.org/examples/textures/planets/earth_lights_2048.png',
-        ]),
-        tryLoad([
-          'https://unpkg.com/three-globe/example/img/earth-clouds.png',
-          'https://threejs.org/examples/textures/planets/earth_clouds_1024.png',
-        ]),
+      const [dayTex, nightTex, cloudTex, specTex] = await Promise.all([
+        tryLoad(['https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg', 'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg']).then(setColor),
+        tryLoad(['https://unpkg.com/three-globe/example/img/earth-night.jpg', 'https://threejs.org/examples/textures/planets/earth_lights_2048.png']).then(setColor),
+        tryLoad(['https://unpkg.com/three-globe/example/img/earth-clouds.png', 'https://threejs.org/examples/textures/planets/earth_clouds_1024.png']).then(setColor),
+        tryLoad(['https://unpkg.com/three-globe/example/img/earth-water.png']).then(setLinear),
       ])
-
       if (disposed) return
 
       if (dayTex) {
-        // Upgrade to shader-based day/night Earth
         const shaderMat = new THREE.ShaderMaterial({
           uniforms: {
             dayTex: { value: dayTex },
             nightTex: { value: nightTex },
-            cloudTex: { value: cloudTex },
-            sunDir: { value: sun.position.clone().normalize() },
+            specTex: { value: specTex },
+            hasSpec: { value: specTex ? 1 : 0 },
+            sunDir: { value: sunDirWorld.clone() },
           },
           vertexShader: `
-            varying vec2 vUv;
-            varying vec3 vNormal;
+            varying vec2 vUv; varying vec3 vNormalW; varying vec3 vViewDir;
             void main(){
               vUv = uv;
-              vNormal = normalize(normalMatrix * normal);
+              vNormalW = normalize(mat3(modelMatrix) * normal);
+              vec4 wp = modelMatrix * vec4(position,1.0);
+              vViewDir = normalize(cameraPosition - wp.xyz);
               gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
-            }
-          `,
+            }`,
           fragmentShader: `
-            uniform sampler2D dayTex;
-            uniform sampler2D nightTex;
-            uniform sampler2D cloudTex;
-            uniform vec3 sunDir;
-            varying vec2 vUv;
-            varying vec3 vNormal;
+            uniform sampler2D dayTex; uniform sampler2D nightTex; uniform sampler2D specTex;
+            uniform float hasSpec; uniform vec3 sunDir;
+            varying vec2 vUv; varying vec3 vNormalW; varying vec3 vViewDir;
             void main(){
-              vec4 day   = texture2D(dayTex,   vUv);
-              vec4 night = texture2D(nightTex, vUv);
-              float sunDot = dot(normalize(vNormal), normalize(sunDir));
-              float blend  = smoothstep(-0.18, 0.32, sunDot);
-              vec3 earth   = mix(night.rgb * 2.0, day.rgb, blend);
-              // specular on ocean
-              earth += vec3(0.4,0.6,1.0) * pow(max(0.0,sunDot), 52.0) * 0.2 * blend;
-              // clouds
-              ${cloudTex ? `
-              vec4 cloud = texture2D(cloudTex, vUv);
-              vec3 cloudCol = mix(vec3(0.05), vec3(1.0), blend) * cloud.r;
-              earth = mix(earth, cloudCol, cloud.r * 0.7);
-              ` : ''}
-              gl_FragColor = vec4(earth, 1.0);
-            }
-          `,
+              vec3 nrm = normalize(vNormalW);
+              vec3 sd  = normalize(sunDir);
+              vec3 day   = texture2D(dayTex, vUv).rgb;
+              vec3 night = texture2D(nightTex, vUv).rgb;
+              float sunDot = dot(nrm, sd);
+              float dayBlend = smoothstep(-0.12, 0.30, sunDot);
+
+              // base day/night
+              vec3 col = mix(night * 1.7, day, dayBlend);
+
+              // warm terminator band (narrow, subtle — sunset line only)
+              float term = smoothstep(0.0, 0.08, sunDot) * (1.0 - smoothstep(0.08, 0.28, sunDot));
+              col += vec3(1.0, 0.45, 0.22) * term * 0.10;
+
+              // ocean sun-glint (only on water, only day side)
+              float water = hasSpec > 0.5 ? texture2D(specTex, vUv).r : 0.0;
+              vec3 H = normalize(sd + vViewDir);
+              float glint = pow(max(dot(nrm, H), 0.0), 90.0);
+              col += vec3(0.55, 0.72, 1.0) * glint * water * dayBlend * 0.9;
+
+              // subtle ambient lift on night side so it isn't pure black
+              col += vec3(0.02, 0.03, 0.06) * (1.0 - dayBlend);
+
+              gl_FragColor = vec4(col, 1.0);
+            }`,
         })
         ;(earthMesh as any).material = shaderMat
+      }
+      if (cloudTex) {
+        ;(cloudMesh.material as any).map = cloudTex
+        ;(cloudMesh.material as any).opacity = 0.85
+        ;(cloudMesh.material as any).needsUpdate = true
       }
 
       /* Resize */
@@ -301,49 +364,54 @@ export default function EarthGlobeV2({ showFootprint = false, height = 500 }: { 
       }
       window.addEventListener('resize', onResize)
 
-      /* Animation loop */
-      let frame = 0
+      /* ── Animation loop ── */
       const animate = () => {
         animId = requestAnimationFrame(animate)
-        frame++
-        earthMesh.rotation.y += 0.0007
+        earthMesh.rotation.y += 0.0009
+        cloudMesh.rotation.y += 0.00115 // clouds drift slightly faster
 
-        if (frame % 2 === 0) {
-          satMeshes.forEach(({ mesh, sat, isVaxon }, i) => {
-            const [x, y, z] = keplerPosition(sat.inc, sat.raan, sat.alt, sat.phase || 0)
-            mesh.position.set(x, y, z)
-            if (isVaxon) {
-              const trail = trails[i]
-              trail.pts.unshift([x, y, z])
-              if (trail.pts.length > 80) trail.pts.pop()
-              if (trail.line && trail.pts.length > 2) {
-                trail.line.geometry.setFromPoints(trail.pts.map((p: [number,number,number]) => new THREE.Vector3(p[0], p[1], p[2])))
-              }
+        sats.forEach(({ mesh, def, trail, pts }) => {
+          const [x, y, z] = keplerPosition(def.inc, def.raan, def.alt, def.phase)
+          mesh.position.set(x, y, z)
+          pts.unshift([x, y, z])
+          const maxLen = (trail as any)._len
+          if (pts.length > maxLen) pts.pop()
+          if (pts.length > 2) {
+            const posArr: number[] = []
+            const colArr: number[] = []
+            const base = (trail as any)._color as { r: number; g: number; b: number }
+            for (let k = 0; k < pts.length; k++) {
+              posArr.push(pts[k][0], pts[k][1], pts[k][2])
+              const f = 1 - k / pts.length // head bright -> tail faded
+              colArr.push(base.r * f, base.g * f, base.b * f)
             }
-          })
-
-          const show = fpRef.current
-          fpLine.visible = show
-          fillMesh.visible = show
-          if (show && satMeshes[0]) {
-            const p = satMeshes[0].mesh.position
-            const pts = footprintPoints([p.x, p.y, p.z], VAXON_SATS[0].alt)
-            fpGeo.setFromPoints(pts.map((pt: [number,number,number]) => new THREE.Vector3(pt[0], pt[1], pt[2])))
-            const nadir = satMeshes[0].mesh.position.clone().normalize().multiplyScalar(1.001)
-            const fv: number[] = []
-            for (let j = 0; j < pts.length - 1; j++) {
-              fv.push(nadir.x, nadir.y, nadir.z, pts[j][0], pts[j][1], pts[j][2], pts[j+1][0], pts[j+1][1], pts[j+1][2])
-            }
-            fillGeo.setAttribute('position', new THREE.Float32BufferAttribute(fv, 3))
+            trail.geometry.setAttribute('position', new THREE.Float32BufferAttribute(posArr, 3))
+            trail.geometry.setAttribute('color', new THREE.Float32BufferAttribute(colArr, 3))
+            trail.geometry.attributes.position.needsUpdate = true
           }
+        })
+
+        const show = fpRef.current
+        fpLine.visible = show
+        fillMesh.visible = show
+        if (show && sats[0]) {
+          const p = sats[0].mesh.position
+          const pts = footprintPoints([p.x, p.y, p.z], VAXON_SATS[0].alt)
+          fpLine.geometry.setFromPoints(pts.map((pt) => new THREE.Vector3(pt[0], pt[1], pt[2])))
+          const nadir = sats[0].mesh.position.clone().normalize().multiplyScalar(1.001)
+          const fv: number[] = []
+          for (let j = 0; j < pts.length - 1; j++) {
+            fv.push(nadir.x, nadir.y, nadir.z, pts[j][0], pts[j][1], pts[j][2], pts[j + 1][0], pts[j + 1][1], pts[j + 1][2])
+          }
+          fillMesh.geometry.setAttribute('position', new THREE.Float32BufferAttribute(fv, 3))
+          fillMesh.geometry.attributes.position.needsUpdate = true
         }
+
         renderer.render(scene, camera)
       }
       animate()
 
-      return () => {
-        window.removeEventListener('resize', onResize)
-      }
+      return () => { window.removeEventListener('resize', onResize) }
     })().catch(console.error)
 
     return () => {
@@ -361,24 +429,27 @@ export default function EarthGlobeV2({ showFootprint = false, height = 500 }: { 
     <div ref={mountRef} style={{ width: '100%', height, position: 'relative', background: 'transparent' }}>
       {loading && (
         <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
-          {[0,1,2,3].map(i => (
-            <div key={i} style={{ width: 160-i*30, height: 5, background: '#0d0d1a', borderRadius: 2, animation: 'vx-skel 1.5s ease infinite', animationDelay: `${i*0.2}s` }} />
+          {[0, 1, 2, 3].map(i => (
+            <div key={i} style={{ width: 160 - i * 30, height: 5, background: '#0d0d1a', borderRadius: 2, animation: 'vx-skel 1.5s ease infinite', animationDelay: `${i * 0.2}s` }} />
           ))}
           <div style={{ fontSize: '0.58rem', letterSpacing: '0.2em', color: '#2a2a3e', fontFamily: "'Inter',sans-serif", marginTop: '0.5rem' }}>INITIALIZING ORBIT MODEL</div>
         </div>
       )}
       {!loading && (
-        <div style={{ position: 'absolute', bottom: '0.75rem', left: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+        <div style={{ position: 'absolute', bottom: '0.75rem', left: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
           {[
-            { col: '#c8102e', label: 'VLEO 180–250km (VAXON)' },
-            { col: '#4488cc', label: 'ISS ~408km' },
-            { col: '#336644', label: 'Starlink ~550km' },
+            { col: '#ff2d4b', label: 'VLEO 180–250km (VAXON)' },
+            { col: '#4aa3ff', label: 'ISS ~408km' },
+            { col: '#35d07f', label: 'Starlink ~550km' },
           ].map(({ col, label }) => (
             <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div style={{ width: 16, height: 2, background: col }} />
-              <span style={{ fontSize: '0.5rem', letterSpacing: '0.13em', color: col, fontFamily: "'Inter',sans-serif" }}>{label}</span>
+              <div style={{ width: 16, height: 2, background: col, boxShadow: `0 0 8px ${col}` }} />
+              <span style={{ fontSize: '0.55rem', letterSpacing: '0.13em', color: col, fontFamily: "'Inter',sans-serif" }}>{label}</span>
             </div>
           ))}
+          <div style={{ fontSize: '0.45rem', letterSpacing: '0.1em', color: '#444', fontFamily: "'Inter',sans-serif", marginTop: '0.2rem', maxWidth: 180 }}>
+            ALTITUDE EXAGGERATED FOR CLARITY · TRUE RATIOS PRESERVED
+          </div>
         </div>
       )}
     </div>
