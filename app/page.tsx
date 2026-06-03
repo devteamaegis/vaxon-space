@@ -384,7 +384,7 @@ function HomeSection() {
             width: '100%', height: '100%',
             objectFit: 'cover', objectPosition: 'center center',
             zIndex: 1,
-            opacity: videoOk ? 0.52 : 0,
+            opacity: videoOk ? 0.82 : 0,
             transition: 'opacity 2.4s cubic-bezier(0.4,0,0.2,1)',
             willChange: 'opacity',
           }}
@@ -399,9 +399,9 @@ function HomeSection() {
         {/* Side vignettes -pull focus to center */}
         <div style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
           background: 'radial-gradient(ellipse 80% 100% at 50% 50%, transparent 50%, rgba(2,2,13,0.55) 100%)' }} />
-        {/* Subtle red tint at bottom -brand color bleed */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '30%', zIndex: 2, pointerEvents: 'none',
-          background: 'linear-gradient(to top, rgba(20,2,6,0.65) 0%, transparent 100%)' }} />
+        {/* Very subtle dark fade at bottom for stat strip transition */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '18%', zIndex: 2, pointerEvents: 'none',
+          background: 'linear-gradient(to top, rgba(2,2,13,0.85) 0%, transparent 100%)' }} />
 
         {/* Hero headline - top left */}
         <div style={{
@@ -505,18 +505,38 @@ function HomeSection() {
   )
 }
 
+function TypeOut({ text, delay = 0 }: { text: string; delay?: number }) {
+  const [displayed, setDisplayed] = useState('')
+  useEffect(() => {
+    let i = 0
+    const t = setTimeout(() => {
+      const id = setInterval(() => {
+        i++
+        setDisplayed(text.slice(0, i))
+        if (i >= text.length) clearInterval(id)
+      }, 60)
+      return () => clearInterval(id)
+    }, delay)
+    return () => clearTimeout(t)
+  }, [text, delay])
+  return <>{displayed || ' '}</>
+}
+
 function StatsStrip() {
+  const { ref, visible } = useReveal()
   return (
     <>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', background: 'rgba(2,2,13,0.72)', backdropFilter: 'blur(12px)', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+      <div ref={ref} style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', background: 'rgba(2,2,13,0.72)', backdropFilter: 'blur(12px)', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         {[
-          { v: '180-250km', l: 'Orbital Altitude' },
-          { v: '<15ms',     l: 'Signal Latency' },
-          { v: '10x',       l: 'Closer Than LEO' },
-          { v: '24/7',      l: 'Persistent Coverage' },
+          { v: '180-250km', l: 'Orbital Altitude',    d: 0   },
+          { v: '<15ms',     l: 'Signal Latency',       d: 200 },
+          { v: '10x',       l: 'Closer Than LEO',      d: 400 },
+          { v: '24/7',      l: 'Persistent Coverage',  d: 600 },
         ].map((s, i) => (
           <div key={i} style={{ padding: '1.5rem 1rem', textAlign: 'center', borderRight: i < 3 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}>
-            <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.1rem,2.5vw,1.75rem)', fontWeight: 900, color: '#fff' }}>{s.v}</div>
+            <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.1rem,2.5vw,1.75rem)', fontWeight: 900, color: '#fff', minHeight: '2rem' }}>
+              {visible ? <TypeOut text={s.v} delay={s.d} /> : ' '}
+            </div>
             <div style={{ fontSize: '0.55rem', letterSpacing: '0.15em', color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', marginTop: '0.25rem', fontFamily: "'Inter',sans-serif" }}>{s.l}</div>
           </div>
         ))}
@@ -616,8 +636,8 @@ export function AboutSection() {
 
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
-      <div style={{ fontSize: '0.58rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>ABOUT VAXON SPACE</div>
-      <div style={{ width: 36, height: 1, background: '#1e1e30', marginBottom: '3.5rem' }} />
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 900, color: '#fff', marginBottom: '0.5rem' }}>About Vaxon Space</div>
+      <div style={{ width: 48, height: 2, background: '#c8102e', marginBottom: '3.5rem' }} />
 
       {/* Globe + mission */}
       <div className="vx-about-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center', marginBottom: '5rem' }}>
@@ -632,6 +652,22 @@ export function AboutSection() {
           </Suspense>
         </div>
 
+        {/* Right: mission text */}
+        <div>
+          <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 900, color: '#fff', lineHeight: 1.15, margin: '0 0 1.75rem' }}>
+            Vaxon Space operates where no other satellite can survive.
+          </h2>
+          <p style={{ color: 'rgba(255,255,255,0.72)', lineHeight: 1.85, fontSize: '1rem', margin: '0 0 1.5rem' }}>
+            Operating at 180-250km, 10x closer than traditional LEO, Vaxon's air-breathing satellites deliver sub-30cm imagery, under-15ms latency, and persistent coverage for defense and commercial customers.
+          </p>
+          <p style={{ color: 'rgba(255,255,255,0.55)', lineHeight: 1.85, fontSize: '0.92rem', margin: '0 0 2.5rem' }}>
+            Our Air-Breathing Electric Propulsion system harvests atmospheric molecules as propellant, enabling unlimited mission duration with no propellant mass penalty.
+          </p>
+          <div style={{ fontSize: '0.6rem', letterSpacing: '0.18em', color: '#c8102e', fontFamily: "'Inter',sans-serif", display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#c8102e' }} />
+            EST. 2021 - BOULDER, COLORADO
+          </div>
+        </div>
       </div>
 
       {/* Advantage cards -scroll reveal */}
@@ -1220,9 +1256,9 @@ export function LogosSection() {
     { src: '/vaxon/logos/space-force.png',              alt: 'Space Force' },
     { src: '/vaxon/logos/naval-research-lab.png',       alt: 'Naval Research Lab' },
     { src: '/vaxon/logos/naval-war-college-color.webp', alt: 'Naval War College' },
-    { src: '/vaxon/logos/nasa-color.jpg',               alt: 'NASA' },
+    { src: '/vaxon/logos/nasa.svg',                      alt: 'NASA' },
     { src: '/vaxon/logos/dod.svg',                      alt: 'Dept of Defense' },
-    { src: '/vaxon/logos/lockheed-logo.png',             alt: 'Lockheed Martin' },
+    { src: '/vaxon/logos/lockheed.svg',                  alt: 'Lockheed Martin' },
     { src: '/vaxon/logos/michigan-seal.png',            alt: 'University of Michigan' },
     { src: '/vaxon/logos/cu-boulder.svg',               alt: 'CU Boulder' },
     { src: '/vaxon/logos/ut-austin.png',                alt: 'UT Austin' },
@@ -1235,7 +1271,12 @@ export function LogosSection() {
 
   const Logo = ({ src, alt }: { src: string; alt: string }) => {
     const [hov, setHov] = useState(false)
-    const needsBlend = alt === 'Stanford' || alt === 'NASA' || alt === 'Lockheed Martin'
+    // Logos with white backgrounds need inversion to blend on dark page
+    const needsInvert = alt === 'Stanford' || alt === 'Bates College' || alt === 'Lockheed Martin'
+    const baseFilter = needsInvert ? 'brightness(0) invert(1)' : 'none'
+    const hovFilter = needsInvert
+      ? 'brightness(0) invert(1) drop-shadow(0 0 12px rgba(200,16,46,0.6))'
+      : 'drop-shadow(0 0 12px rgba(200,16,46,0.5))'
     return (
       <div
         onMouseEnter={() => setHov(true)}
@@ -1243,7 +1284,7 @@ export function LogosSection() {
         style={{
           display: 'flex', flexDirection: 'column', alignItems: 'center',
           justifyContent: 'center', padding: '1.8rem 1rem', gap: '0.75rem',
-          background: hov ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.03)',
+          background: 'transparent',
           transition: 'background 0.3s',
           cursor: 'default',
         }}
@@ -1253,11 +1294,10 @@ export function LogosSection() {
           style={{
             width: 100, height: 100,
             objectFit: 'contain',
-            opacity: hov ? 1 : 0.8,
+            opacity: hov ? 1 : 0.85,
             transform: hov ? 'scale(1.2)' : 'scale(1)',
-            filter: hov ? 'drop-shadow(0 0 12px rgba(200,16,46,0.5))' : 'none',
+            filter: hov ? hovFilter : baseFilter,
             transition: 'opacity 0.3s, transform 0.4s cubic-bezier(0.22,1,0.36,1), filter 0.3s',
-            ...(needsBlend ? { mixBlendMode: 'screen' as const } : {}),
           }}
           onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
         />
