@@ -110,7 +110,7 @@ export default function EarthGlobeV2({ showFootprint = false, height = 500 }: { 
       renderer.setSize(W, H)
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
       renderer.toneMapping = THREE.ACESFilmicToneMapping
-      renderer.toneMappingExposure = 1.05
+      renderer.toneMappingExposure = 1.35
       renderer.outputColorSpace = THREE.SRGBColorSpace
       container.appendChild(renderer.domElement)
       const maxAniso = renderer.capabilities.getMaxAnisotropy()
@@ -122,12 +122,12 @@ export default function EarthGlobeV2({ showFootprint = false, height = 500 }: { 
 
       /* ── Lighting ── */
       const sunDirWorld = new THREE.Vector3(5, 1.6, 3).normalize()
-      const sun = new THREE.DirectionalLight(0xfff4e2, 3.0)
+      const sun = new THREE.DirectionalLight(0xfff4e2, 3.4)
       sun.position.copy(sunDirWorld.clone().multiplyScalar(10))
       scene.add(sun)
-      scene.add(new THREE.AmbientLight(0x16243f, 1.1))
+      scene.add(new THREE.AmbientLight(0x2a3c5c, 1.9))
       // subtle blue fill from the opposite side (earthshine)
-      const fill = new THREE.DirectionalLight(0x2a4a7a, 0.5)
+      const fill = new THREE.DirectionalLight(0x3a5a8a, 0.85)
       fill.position.set(-4, -1, -3)
       scene.add(fill)
 
@@ -267,11 +267,14 @@ export default function EarthGlobeV2({ showFootprint = false, height = 500 }: { 
       ISS_SATS.forEach(s => addSat(s, 'iss', 0.015, 70))
       STARLINK_SATS.forEach(s => addSat(s, 'starlink', 0.013, 60))
 
-      /* ── Coverage footprint ── */
-      const fpLine = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: COL.vaxon, transparent: true, opacity: 0.8 }))
-      fpLine.visible = false; scene.add(fpLine)
-      const fillMesh = new THREE.Mesh(new THREE.BufferGeometry(), new THREE.MeshBasicMaterial({ color: COL.vaxon, transparent: true, opacity: 0.09, side: THREE.DoubleSide, depthWrite: false }))
-      fillMesh.visible = false; scene.add(fillMesh)
+      /* ── Coverage footprints (one per VLEO / Vaxon satellite) ── */
+      const footprints = sats.filter(s => s.tier === 'vaxon').map(rec => {
+        const line = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: COL.vaxon, transparent: true, opacity: 0.8 }))
+        line.visible = false; scene.add(line)
+        const fill = new THREE.Mesh(new THREE.BufferGeometry(), new THREE.MeshBasicMaterial({ color: COL.vaxon, transparent: true, opacity: 0.08, side: THREE.DoubleSide, depthWrite: false }))
+        fill.visible = false; scene.add(fill)
+        return { rec, line, fill }
+      })
 
       /* Render immediately */
       setLoading(false)
@@ -326,10 +329,10 @@ export default function EarthGlobeV2({ showFootprint = false, height = 500 }: { 
               vec3 day   = texture2D(dayTex, vUv).rgb;
               vec3 night = texture2D(nightTex, vUv).rgb;
               float sunDot = dot(nrm, sd);
-              float dayBlend = smoothstep(-0.12, 0.30, sunDot);
+              float dayBlend = smoothstep(-0.22, 0.30, sunDot);
 
-              // base day/night
-              vec3 col = mix(night * 1.7, day, dayBlend);
+              // base day/night (day brightened so the Earth reads more clearly)
+              vec3 col = mix(night * 1.9, day * 1.25, dayBlend);
 
               // warm terminator band (narrow, subtle — sunset line only)
               float term = smoothstep(0.0, 0.08, sunDot) * (1.0 - smoothstep(0.08, 0.28, sunDot));
@@ -392,20 +395,21 @@ export default function EarthGlobeV2({ showFootprint = false, height = 500 }: { 
         })
 
         const show = fpRef.current
-        fpLine.visible = show
-        fillMesh.visible = show
-        if (show && sats[0]) {
-          const p = sats[0].mesh.position
-          const pts = footprintPoints([p.x, p.y, p.z], VAXON_SATS[0].alt)
-          fpLine.geometry.setFromPoints(pts.map((pt) => new THREE.Vector3(pt[0], pt[1], pt[2])))
-          const nadir = sats[0].mesh.position.clone().normalize().multiplyScalar(1.001)
+        footprints.forEach(({ rec, line, fill }) => {
+          line.visible = show
+          fill.visible = show
+          if (!show) return
+          const p = rec.mesh.position
+          const pts = footprintPoints([p.x, p.y, p.z], rec.def.alt)
+          line.geometry.setFromPoints(pts.map((pt) => new THREE.Vector3(pt[0], pt[1], pt[2])))
+          const nadir = rec.mesh.position.clone().normalize().multiplyScalar(1.001)
           const fv: number[] = []
           for (let j = 0; j < pts.length - 1; j++) {
             fv.push(nadir.x, nadir.y, nadir.z, pts[j][0], pts[j][1], pts[j][2], pts[j + 1][0], pts[j + 1][1], pts[j + 1][2])
           }
-          fillMesh.geometry.setAttribute('position', new THREE.Float32BufferAttribute(fv, 3))
-          fillMesh.geometry.attributes.position.needsUpdate = true
-        }
+          fill.geometry.setAttribute('position', new THREE.Float32BufferAttribute(fv, 3))
+          fill.geometry.attributes.position.needsUpdate = true
+        })
 
         renderer.render(scene, camera)
       }

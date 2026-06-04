@@ -110,10 +110,10 @@ export default function ABEPDiagram() {
 
       {/* ── Section label ── */}
       <div style={{ maxWidth: 1100, margin: '0 auto', marginBottom: '3rem' }}>
-        <div style={{ fontSize: '0.6rem', letterSpacing: '0.28em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.5rem' }}>
+        <div style={{ fontSize: '0.78rem', letterSpacing: '0.28em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.5rem' }}>
           ABEP PROPULSION SYSTEM
         </div>
-        <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.6rem,2.8vw,2.4rem)', fontWeight: 900, color: '#fff', margin: 0 }}>
+        <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.6rem,2.8vw,2.4rem)', fontWeight: 400, color: '#fff', margin: 0 }}>
           Air-Breathing Electric Propulsion
         </h2>
       </div>

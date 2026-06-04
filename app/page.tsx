@@ -168,10 +168,11 @@ export const NEWS: NewsItem[] = [
     image: `${WSIMG}/Redwire.webp/:/cr=t:0%25,l:18.97%25,w:62.05%25,h:100%25/rs=w:800,h:400,cg:true`,
   },
   {
-    date: 'OCT 2025', title: "Why This Space Startup Flies Where Others Can't Survive",
-    body: 'Deep dive into how Vaxon Space harnesses atmospheric drag as a feature, operating where no other satellite can survive and delivering unprecedented ISR and connectivity from ultra-low orbit.',
-    source: 'VAXON SPACE',
-    image: `${WSIMG}/Vaxon.jpg/:/rs=w:800,h:400,cg:true,m/cr=w:800,h:400`,
+    date: 'FEB 25 2026', title: "Why This Space Startup Flies Where Other Satellites Can't Survive",
+    body: 'Vaxon Space CEO Dr. Steven P. Shepard has a conversation with Aidan Daoussis of Balerion Space Ventures, discussing the momentum behind very low Earth orbit (VLEO) satellites and the mission use cases being built at Vaxon Space. The discussion includes why VLEO is becoming such an important domain for the next generation of space infrastructure, including opportunities for enhanced ISR, missile defense sensing and new AI-enabled space capabilities.',
+    source: 'BALERION SPACE VENTURES',
+    link: 'https://www.youtube.com/watch?v=piWj3lWfUEM',
+    image: '/vaxon/vaxonspacesatelitessurvive.jpg',
   },
   {
     date: 'SEP 2025', title: 'Spanish Startup Wins $9M for VLEO Satellite Tech',
@@ -247,7 +248,6 @@ const NAV_LINKS = [
   { id: 'home',       label: 'HOME',       href: '/' },
   { id: 'about',      label: 'ABOUT',      href: '/about' },
   { id: 'technology', label: 'TECHNOLOGY', href: '/technology' },
-  { id: 'vleo',       label: 'WHY VLEO',   href: '/vleo' },
   { id: 'team',       label: 'TEAM',       href: '/team' },
   { id: 'news',       label: 'NEWS',       href: '/news' },
   { id: 'contact',    label: 'CONTACT',    href: '/contact' },
@@ -294,10 +294,6 @@ export function Nav({ active }: { active: Tab }) {
 
       {/* Right */}
       <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center' }}>
-        <a href="/login" className="vx-login-lnk" style={{ fontSize: '0.6rem', letterSpacing: '0.2em', color: '#4a4a5e', textDecoration: 'none', fontFamily: "'Inter',sans-serif", transition: 'color 0.2s' }}
-          onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
-          onMouseLeave={e => (e.currentTarget.style.color = '#4a4a5e')}
-        >LOGIN</a>
         {/* Hamburger */}
         <button className="vx-burger" onClick={() => setMenuOpen(m => !m)} style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', flexDirection: 'column', gap: 4, padding: 4 }}>
           {[0,1,2].map(i => <div key={i} style={{ width: 20, height: 1, background: menuOpen ? (i === 1 ? 'transparent' : '#c8102e') : '#aaa' }} />)}
@@ -310,7 +306,7 @@ export function Nav({ active }: { active: Tab }) {
           {NAV_LINKS.map(t => (
             <a key={t.id} href={t.href} onClick={() => setMenuOpen(false)} style={{
               textDecoration: 'none',
-              fontFamily: "'Bitter',Georgia,serif", fontSize: '1.8rem', fontWeight: 700,
+              fontFamily: "'Bitter',Georgia,serif", fontSize: '1.8rem', fontWeight: 400,
               color: active === t.id ? '#fff' : '#333', letterSpacing: '0.05em',
             }}>{t.label}</a>
           ))}
@@ -403,7 +399,7 @@ function HomeSection() {
 
         {/* Hero headline - top left */}
         <div style={{
-          position: 'absolute', top: '5.5rem', left: '2.5rem', zIndex: 4,
+          position: 'absolute', top: '3rem', left: '2.5rem', zIndex: 4,
           fontSize: 'clamp(1.4rem,2.8vw,2.8rem)', color: '#fff',
           fontFamily: "'Bitter',Georgia,serif", fontWeight: 400,
           lineHeight: 1.15, maxWidth: 640,
@@ -594,7 +590,7 @@ function AltitudeBars() {
 
   return (
     <div ref={ref} style={{ borderTop: '1px solid #131323', paddingTop: '3rem' }}>
-      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.2rem,2vw,1.6rem)', fontWeight: 700, color: '#fff', marginBottom: '2.5rem' }}>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.2rem,2vw,1.6rem)', fontWeight: 400, color: '#fff', marginBottom: '2.5rem' }}>
         ALTITUDE COMPARISON
       </div>
       {TIERS.map((tier, i) => (
@@ -629,8 +625,38 @@ function AltitudeBars() {
 /* ─────────────────────────────────────────────────────────────
    ABOUT SECTION
 ───────────────────────────────────────────────────────────────*/
+const MISSION_PROFILES = [
+  {
+    title: 'Remote Sensing',
+    image: '/vaxon/mission-remote-sensing.jpg',
+    body: 'Operating 3x closer to the surface in very low Earth orbit (VLEO) with altitudes of 180-250 km, Vaxon satellites revolutionize space-based imaging and intelligence. VLEO operation enables image resolutions under 30 cm with revisit times of 1-2 hours, serving the US government and its allies to ensure leaders and soldiers have the pivotal information they need to make vital decisions. We also provide information to the commercial market, providing agriculture, energy, infrastructure, forestry and mapping services.',
+  },
+  {
+    title: 'Missile Defense',
+    image: '/vaxon/mission-missile-defense.jpg',
+    body: "Golden Dome is the DoD's next big challenge and Vaxon Space is ready to partner. Our satellites enable more precise navigation for hypersonic and intercept missiles by decreasing latency. Faster response for hypersonic tracking is paramount and enabled by Vaxon's patented air-breathing electric propulsion subsystem. Precise navigation also extends to our commercial customers, such as maritime tracking and traffic route optimization.",
+  },
+  {
+    title: 'Connectivity',
+    image: '/vaxon/mission-connectivity.jpg',
+    body: 'Vaxon Space is a bus provider for satellite partners looking to bring connectivity to another level. With advancements in AI and data transmission exponentially increasing, satellites operating in VLEO provide best-in-class performance. As Internet providers increase their footprint in space, we will be right there with them to revolutionize information dissemination. Lower latency also enhances financial trading, remote surgery, directed energy weapons and military communications.',
+  },
+  {
+    title: 'Space Resiliency',
+    image: '/vaxon/mission-resiliency.jpg',
+    body: 'Satellites in low Earth orbit (LEO) are susceptible to orbital debris, e.g. by anti-satellite attacks or careless operations. Operating in VLEO has the advantage of being "self-cleaning" where debris falls down into Earth\'s atmosphere within a few weeks versus decades or years for LEO satellites. Vaxon satellites, as well as partnering companies using Vaxon buses for payload operations, will have this survivability advantage over traditional satellites as we create the next generation of proliferated satellites.',
+  },
+]
+
+const BREAKTHROUGH_ITEMS = [
+  { h: 'Sharper Imagery, Under 30 cm Resolution', b: 'Operating three times closer to Earth delivers up to twice the imaging precision. Our proprietary Air Intake System (Vaxon Space IP) achieves this without the need for heavier optical systems.' },
+  { h: 'Ultra-Low Latency, Under 15 ms', b: "A five-times shorter signal path means near-real-time performance that's unattainable at higher altitudes." },
+  { h: 'Self-Cleaning Orbit', b: 'Natural atmospheric drag continuously clears debris, keeping the orbit safe and sustainable in weeks instead of years.' },
+  { h: 'The ABEP Advantage', b: 'Traditional satellites cannot operate between 150 and 250 km due to extreme atmospheric drag that would quickly deorbit them. ABEP transforms this challenge into an advantage, using the atmosphere itself as fuel, turning a former enemy into an ally.' },
+]
+
 export function AboutSection() {
-  const { ref: cardsRef, visible: cardsVisible } = useReveal()
+  const [showFootprint, setShowFootprint] = useState(false)
 
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
@@ -639,15 +665,27 @@ export function AboutSection() {
 
       {/* Globe + mission */}
       <div className="vx-about-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center', marginBottom: '5rem' }}>
-        {/* Left: hyper-realistic globe */}
-        <div style={{ height: 460 }}>
-          <Suspense fallback={
-            <div style={{ height: '100%', background: '#050512', border: '1px solid #131323', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <div style={{ fontSize: '0.6rem', letterSpacing: '0.2em', color: '#333', fontFamily: "'Inter',sans-serif" }}>LOADING EARTH MODEL…</div>
-            </div>
-          }>
-            <EarthGlobeV2 height={460} />
-          </Suspense>
+        {/* Left: hyper-realistic globe + coverage footprint toggle */}
+        <div>
+          <div style={{ height: 460 }}>
+            <Suspense fallback={
+              <div style={{ height: '100%', background: '#050512', border: '1px solid #131323', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ fontSize: '0.6rem', letterSpacing: '0.2em', color: '#333', fontFamily: "'Inter',sans-serif" }}>LOADING EARTH MODEL…</div>
+              </div>
+            }>
+              <EarthGlobeV2 height={460} showFootprint={showFootprint} />
+            </Suspense>
+          </div>
+          <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
+            <span style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: '#888', fontFamily: "'Inter',sans-serif" }}>COVERAGE FOOTPRINT</span>
+            <button onClick={() => setShowFootprint(f => !f)} style={{
+              width: 40, height: 22, borderRadius: 11, border: 'none', cursor: 'pointer',
+              background: showFootprint ? '#c8102e' : '#131323', position: 'relative', transition: 'background 0.2s',
+            }}>
+              <div style={{ position: 'absolute', top: 3, left: showFootprint ? 21 : 3, width: 16, height: 16, borderRadius: '50%', background: '#fff', transition: 'left 0.2s' }} />
+            </button>
+            <span style={{ fontSize: '0.55rem', letterSpacing: '0.12em', color: showFootprint ? '#c8102e' : '#555', fontFamily: "'Inter',sans-serif" }}>{showFootprint ? 'ON' : 'OFF'}</span>
+          </div>
         </div>
 
         {/* Right: mission text */}
@@ -655,48 +693,94 @@ export function AboutSection() {
           <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 400, color: '#fff', lineHeight: 1.15, margin: '0 0 1.75rem' }}>
             Vaxon Space operates where no other satellite can survive.
           </h2>
-          <p style={{ color: 'rgba(255,255,255,0.72)', lineHeight: 1.85, fontSize: '1rem', margin: '0 0 1.5rem' }}>
+          <p style={{ fontFamily: "'Bitter',Georgia,serif", color: '#fff', lineHeight: 1.85, fontSize: '1rem', fontWeight: 400, margin: '0 0 1.5rem' }}>
             Operating at 180-250km, 10x closer than traditional LEO, Vaxon's air-breathing satellites deliver sub-30cm imagery, under-15ms latency, and persistent coverage for defense and commercial customers.
           </p>
-          <p style={{ color: 'rgba(255,255,255,0.55)', lineHeight: 1.85, fontSize: '0.92rem', margin: '0 0 2.5rem' }}>
+          <p style={{ fontFamily: "'Bitter',Georgia,serif", color: '#fff', lineHeight: 1.85, fontSize: '1rem', fontWeight: 400, margin: 0 }}>
             Our Air-Breathing Electric Propulsion system harvests atmospheric molecules as propellant, enabling unlimited mission duration with no propellant mass penalty.
           </p>
-          <div style={{ fontSize: '1.2rem', letterSpacing: '0.18em', color: '#c8102e', fontFamily: "'Inter',sans-serif", display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#c8102e' }} />
-            EST. 2021 - BOULDER, COLORADO
-          </div>
         </div>
       </div>
 
-      {/* Advantage cards -scroll reveal */}
-      <div ref={cardsRef} style={{ borderTop: '1px solid #131323', paddingTop: '3.5rem', marginBottom: '4rem' }}>
-        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.4rem,2.5vw,2rem)', fontWeight: 700, color: '#fff', marginBottom: '2.5rem', textAlign: 'center' }}>KEY ADVANTAGES</div>
-        <div className="vx-4col" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1px', background: '#131323' }}>
-          {[
-            { tag: 'IMAGERY', h: '<30cm Resolution', b: '5x sharper than standard LEO. Sub-decimeter imagery enabling target identification at orbital speed.' },
-            { tag: 'LATENCY', h: '<15ms Signal', b: 'Near-ground-speed communications for real-time missile defense coordination and C2 networks.' },
-            { tag: 'COVERAGE', h: 'Persistent ISR', b: 'Continuous surveillance of high-priority zones. Not 4-hour revisit windows.' },
-            { tag: 'PROPULSION', h: 'No Propellant Limit', b: 'ABEP harvests atmosphere as fuel. Unlimited mission duration with no propellant mass penalty.' },
-          ].map((c, i) => (
-            <div key={i} style={{
-              background: '#02020d', padding: '2.5rem 2rem', textAlign: 'center',
-              transition: 'background 0.2s, opacity 0.6s, transform 0.6s',
-              opacity: cardsVisible ? 1 : 0, transform: cardsVisible ? 'none' : 'translateY(20px)',
-              transitionDelay: cardsVisible ? `${i * 0.1}s` : '0s',
-            }}
-              onMouseEnter={e => (e.currentTarget.style.background = '#090918')}
-              onMouseLeave={e => (e.currentTarget.style.background = '#02020d')}
-            >
-              <div style={{ fontSize: '1.2rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem', textAlign: 'center' }}>{c.tag}</div>
-              <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.35rem', fontWeight: 700, color: '#fff', marginBottom: '0.75rem', lineHeight: 1.2, textAlign: 'center' }}>{c.h}</div>
-              <div style={{ fontSize: '0.88rem', color: 'rgba(255,255,255,0.75)', lineHeight: 1.7, textAlign: 'center' }}>{c.b}</div>
+      {/* ── MISSION PROFILES ── */}
+      <div style={{ borderTop: '1px solid #131323', paddingTop: '4rem', marginBottom: '4rem' }}>
+        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2rem,3.5vw,3rem)', fontWeight: 400, color: '#fff', marginBottom: '3.5rem' }}>Mission Profiles</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '3.5rem' }}>
+          {MISSION_PROFILES.map((m, i) => (
+            <div key={m.title} className="vx-about-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', alignItems: 'center' }}>
+              <div style={{ order: i % 2 === 0 ? 0 : 1, overflow: 'hidden', border: '1px solid #1a1a2e', background: '#050512', aspectRatio: '16/10' }}>
+                <img src={m.image} alt={m.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+              </div>
+              <div style={{ order: i % 2 === 0 ? 1 : 0 }}>
+                <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.4rem,2.4vw,2rem)', fontWeight: 400, color: '#fff', margin: '0 0 1rem' }}>{m.title}</h3>
+                <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.78)', lineHeight: 1.8, fontSize: '0.95rem', fontWeight: 400, margin: 0 }}>{m.body}</p>
+              </div>
             </div>
           ))}
         </div>
       </div>
 
+      {/* ── BREAKTHROUGH TECHNOLOGY ── */}
+      <div style={{ borderTop: '1px solid #131323', paddingTop: '4rem', marginBottom: '4rem' }}>
+        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2rem,3.5vw,3rem)', fontWeight: 400, color: '#fff', marginBottom: '1rem' }}>Breakthrough Technology</div>
+        <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.78)', lineHeight: 1.8, fontSize: '1rem', fontWeight: 400, maxWidth: 760, margin: '0 0 3rem' }}>
+          Air-breathing electric propulsion (ABEP) harnesses atmospheric molecules as propellant, enabling continuous operation in ultra-low Earth orbits where conventional satellites cannot survive.
+        </p>
+        <div className="vx-about-grid" style={{ display: 'grid', gridTemplateColumns: '0.9fr 1.1fr', gap: '3rem', alignItems: 'center' }}>
+          <div style={{ background: 'rgba(235,240,248,0.96)', borderRadius: 8, padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <img src="/vaxon/mission-orbit-diagram.png" alt="VLEO orbit profile" style={{ width: '100%', height: 'auto', display: 'block' }} />
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+            {BREAKTHROUGH_ITEMS.map(item => (
+              <div key={item.h}>
+                <h4 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.15rem', fontWeight: 400, color: '#fff', margin: '0 0 0.4rem' }}>{item.h}</h4>
+                <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.7)', lineHeight: 1.7, fontSize: '0.9rem', fontWeight: 400, margin: 0 }}>{item.b}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Altitude comparison -animated bars on scroll */}
       <AltitudeBars />
+
+      {/* ── COMPETITIVE COMPARISON ── */}
+      <div style={{ borderTop: '1px solid #131323', paddingTop: '4rem', marginTop: '4rem' }}>
+        <div style={{ fontSize: '1.05rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.5rem' }}>COMPETITIVE LANDSCAPE</div>
+        <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 400, color: '#fff', margin: '0 0 0.75rem' }}>How Vaxon Compares</h3>
+        <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.7)', fontSize: '0.95rem', maxWidth: 560, margin: '0 0 2.5rem', lineHeight: 1.75 }}>
+          Technical comparison across altitude, resolution, latency, revisit time, and mission life.
+        </p>
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 700 }}>
+            <thead>
+              <tr style={{ background: '#06060f', borderBottom: '1px solid #1a1a2e' }}>
+                {['PLATFORM', 'ALTITUDE', 'RESOLUTION', 'LATENCY', 'REVISIT', 'PROPULSION LIFE'].map((h, i) => (
+                  <th key={h} style={{ padding: '0.85rem 1rem', fontFamily: "'Bitter',Georgia,serif", fontSize: '0.7rem', letterSpacing: '0.14em', color: i === 0 ? '#c8102e' : '#fff', textTransform: 'uppercase', textAlign: 'left', fontWeight: 400 }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { name: 'Vaxon Space', alt: '180–250 km', res: '<30 cm', lat: '<15 ms', rev: '<2 hr', prop: 'Unlimited (ABEP)', vaxon: true },
+                { name: 'Company A', alt: '475–525 km', res: '50 cm–3 m', lat: '~65 ms', rev: '4–12 hr', prop: '3–5 yr (propellant)', vaxon: false },
+                { name: 'Company B', alt: '420–450 km', res: '50 cm', lat: '~60 ms', rev: '~1–4 hr', prop: '3–5 yr (propellant)', vaxon: false },
+                { name: 'Company C', alt: '530–570 km', res: 'N/A (comms)', lat: '20–40 ms', rev: 'Continuous (comms)', prop: '5 yr (propellant)', vaxon: false },
+                { name: 'Company D', alt: '617 km', res: '31 cm', lat: '~82 ms', rev: '<1 hr (single sat)', prop: '10+ yr (GEO-class)', vaxon: false },
+              ].map((r, i) => (
+                <tr key={r.name} style={{ background: r.vaxon ? 'rgba(200,16,46,0.06)' : (i % 2 === 0 ? '#02020d' : '#030312'), borderBottom: '1px solid #0d0d1a' }}>
+                  <td style={{ padding: '1rem', fontFamily: "'Bitter',Georgia,serif", fontSize: '1rem', fontWeight: 400, color: '#fff', borderLeft: r.vaxon ? '2px solid #c8102e' : '2px solid transparent' }}>{r.name}</td>
+                  <td style={{ padding: '1rem', fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', color: r.vaxon ? '#c8102e' : '#fff' }}>{r.alt}</td>
+                  <td style={{ padding: '1rem', fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', color: r.vaxon ? '#c8102e' : '#fff' }}>{r.res}</td>
+                  <td style={{ padding: '1rem', fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', color: r.vaxon ? '#c8102e' : '#fff' }}>{r.lat}</td>
+                  <td style={{ padding: '1rem', fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', color: r.vaxon ? '#c8102e' : '#fff' }}>{r.rev}</td>
+                  <td style={{ padding: '1rem', fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', color: r.vaxon ? '#c8102e' : '#fff' }}>{r.prop}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   )
 }
@@ -769,7 +853,7 @@ export function TechnologySection() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
                     <span style={{ fontSize: '1.05rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif" }}>{cap.tag} / </span>
-                    <span style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.9rem', fontWeight: 700, color: '#fff' }}>{cap.title}</span>
+                    <span style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.9rem', fontWeight: 400, color: '#fff' }}>{cap.title}</span>
                   </div>
                   <span style={{ color: '#333', fontSize: '0.9rem', flexShrink: 0, marginLeft: '1rem' }}>{expanded === i ? '−' : '+'}</span>
                 </div>
@@ -815,16 +899,20 @@ export function TeamModal({ member, onClose }: { member: TeamMember; onClose: ()
         <button onClick={onClose} style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', background: 'none', border: 'none', cursor: 'pointer', color: '#333', fontSize: '0.58rem', letterSpacing: '0.2em', fontFamily: "'Inter',sans-serif" }}>ESC</button>
 
         <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '2rem', alignItems: 'flex-start' }}>
-          {member.image && (
-            <div style={{ width: 84, height: 84, borderRadius: '50%', overflow: 'hidden', flexShrink: 0, border: '1px solid #1a1a2e', background: '#05050e' }}>
-              <img src={member.image} alt={member.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }} />
-            </div>
-          )}
+          {member.image && (() => {
+            const k = Object.keys(HEADSHOT_CROP).find(kk => member.name.includes(kk))
+            const cr = k ? HEADSHOT_CROP[k] : { scale: 1, pos: 'center top', tx: '0%' }
+            return (
+              <div style={{ width: 130, height: 130, borderRadius: '50%', overflow: 'hidden', flexShrink: 0, border: '2px solid #1a1a2e', background: '#05050e' }}>
+                <img src={member.image} alt={member.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: cr.pos, transform: `scale(${cr.scale}) translateX(${cr.tx})`, display: 'block' }} />
+              </div>
+            )
+          })()}
           <div>
             <div style={{ fontSize: '1.1rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '0.4rem' }}>
               {member.isAdvisor ? 'ADVISORY BOARD' : 'CORE LEADERSHIP'}
             </div>
-            <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.5rem', fontWeight: 700, color: '#fff', margin: '0 0 0.3rem' }}>{member.name}</h3>
+            <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.5rem', fontWeight: 400, color: '#fff', margin: '0 0 0.3rem' }}>{member.name}</h3>
             <div style={{ fontSize: '0.75rem', color: '#4a4a5e', fontFamily: "'Inter',sans-serif" }}>{member.role}</div>
           </div>
         </div>
@@ -859,7 +947,7 @@ export function TeamModal({ member, onClose }: { member: TeamMember; onClose: ()
 const HEADSHOT_CROP: Record<string, { scale: number; pos: string; tx: string }> = {
   'Shepard':    { scale: 1.45, pos: '50% 28%', tx: '7%' },
   'Lipscomb':   { scale: 1.15, pos: '50% 22%', tx: '0%' },
-  'Williamson': { scale: 1.35, pos: '50% 24%', tx: '5%' },
+  'Williamson': { scale: 1.45, pos: '50% 24%', tx: '9%' },
   'Anderson':   { scale: 1.0,  pos: '50% 30%', tx: '0%' },
   // Pedreiro & Shah reverted to the original default (no zoom) — their heads were getting cut off.
   'Pedreiro':   { scale: 1.0,  pos: 'center top', tx: '0%' },
@@ -915,8 +1003,8 @@ export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () 
       <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.7rem', fontWeight: 400, color: '#fff', marginBottom: '0.6rem', lineHeight: 1.2 }}>{member.name}</div>
       <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.6, flexGrow: 1, fontWeight: 400 }}>{member.creds[0]}</div>
       <div style={{
-        fontSize: '0.52rem', letterSpacing: '0.18em',
-        color: hov ? '#c8102e' : 'transparent',
+        fontSize: '0.8rem', letterSpacing: '0.18em',
+        color: hov ? '#c8102e' : '#fff',
         fontFamily: "'Inter',sans-serif", marginTop: '1rem',
         transition: 'color 0.3s',
       }}>VIEW FULL BIO →</div>
@@ -1001,8 +1089,8 @@ function VideoEmbed({ videoId }: { videoId: string }) {
         </div>
       </div>
       <div style={{ position: 'absolute', bottom: 16, left: 16 }}>
-        <div style={{ fontSize: '0.6rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.75)', textTransform: 'uppercase', marginBottom: 4, fontFamily: "'Bitter',Georgia,serif", fontWeight: 700 }}>FEATURED INTERVIEW</div>
-        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.05rem', fontWeight: 700, color: '#fff', textShadow: '0 1px 6px rgba(0,0,0,0.9)' }}>
+        <div style={{ fontSize: '0.6rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.75)', textTransform: 'uppercase', marginBottom: 4, fontFamily: "'Bitter',Georgia,serif", fontWeight: 400 }}>FEATURED INTERVIEW</div>
+        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.05rem', fontWeight: 400, color: '#fff', textShadow: '0 1px 6px rgba(0,0,0,0.9)' }}>
           Dr. Steven Shepard - VLEO Mission + Strategy
         </div>
       </div>
@@ -1024,15 +1112,15 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
       {/* Dr. Shepard interview video -pinned above featured card */}
       <div style={{ border: '1px solid #131323', marginBottom: '2px', overflow: 'hidden', display: 'grid', gridTemplateColumns: '1fr 1fr' }} className="vx-feat">
         <div style={{ padding: '2.5rem', borderRight: '1px solid #131323', background: '#060614', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <div style={{ fontSize: '1.2rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, marginBottom: '0.75rem' }}>FEATURED INTERVIEW / FEB 2026</div>
-          <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.5rem', fontWeight: 700, color: '#fff', lineHeight: 1.25, margin: '0 0 1rem' }}>
+          <div style={{ fontSize: '1.2rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 400, marginBottom: '0.75rem' }}>FEATURED INTERVIEW / FEB 2026</div>
+          <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.5rem', fontWeight: 400, color: '#fff', lineHeight: 1.25, margin: '0 0 1rem' }}>
             CEO Dr. Steven Shepard on VLEO Momentum
           </h3>
           <p style={{ color: '#fff', fontFamily: "'Bitter',Georgia,serif", fontSize: '1rem', lineHeight: 1.8, margin: '0 0 1.5rem', fontWeight: 400 }}>
             Dr. Shepard discusses VLEO mission use cases including ISR, missile defense sensing, Golden Dome potential, and AI-enabled space capabilities - the full strategic picture for Vaxon Space.
           </p>
           <a href="https://www.youtube.com/watch?v=piWj3lWfUEM" target="_blank" rel="noopener noreferrer"
-            style={{ fontSize: '0.7rem', letterSpacing: '0.15em', color: '#fff', textDecoration: 'none', fontFamily: "'Bitter',Georgia,serif", fontWeight: 700, transition: 'color 0.2s' }}
+            style={{ fontSize: '0.7rem', letterSpacing: '0.15em', color: '#fff', textDecoration: 'none', fontFamily: "'Bitter',Georgia,serif", fontWeight: 400, transition: 'color 0.2s' }}
             onMouseEnter={e => (e.currentTarget.style.color = '#c8102e')}
             onMouseLeave={e => (e.currentTarget.style.color = '#fff')}
           >WATCH FULL INTERVIEW →</a>
@@ -1063,13 +1151,13 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
             </div>
             <div style={{ padding: '2.5rem' }}>
               <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '1.2rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 700 }}>FEATURED</span>
+                <span style={{ fontSize: '1.2rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 400 }}>FEATURED</span>
                 <span style={{ fontSize: '0.62rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif" }}>{featured.date}</span>
                 <span style={{ fontSize: '0.62rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif" }}>{featured.source}</span>
               </div>
-              <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.65rem', fontWeight: 700, color: '#fff', lineHeight: 1.25, margin: '0 0 1.25rem' }}>{featured.title}</h3>
+              <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.65rem', fontWeight: 400, color: '#fff', lineHeight: 1.25, margin: '0 0 1.25rem' }}>{featured.title}</h3>
               <p style={{ color: '#fff', fontFamily: "'Bitter',Georgia,serif", lineHeight: 1.85, fontSize: '1rem', margin: '0 0 1.5rem', fontWeight: 400 }}>{featured.body}</p>
-              {featured.link && <span style={{ fontSize: '0.7rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif", fontWeight: 700 }}>READ MORE →</span>}
+              {featured.link && <span style={{ fontSize: '0.7rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif", fontWeight: 400 }}>READ MORE →</span>}
             </div>
           </div>
         </a>
@@ -1098,11 +1186,11 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
               <div style={{ padding: '1.5rem' }}>
                 <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem' }}>
                   <span style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif" }}>{n.date}</span>
-                  <span style={{ fontSize: '1.2rem', letterSpacing: '0.15em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 700 }}>{n.source}</span>
+                  <span style={{ fontSize: '1.2rem', letterSpacing: '0.15em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 400 }}>{n.source}</span>
                 </div>
-                <h4 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.2rem', fontWeight: 700, color: '#fff', lineHeight: 1.35, margin: '0 0 0.85rem' }}>{n.title}</h4>
+                <h4 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.2rem', fontWeight: 400, color: '#fff', lineHeight: 1.35, margin: '0 0 0.85rem' }}>{n.title}</h4>
                 <p style={{ color: '#fff', fontFamily: "'Bitter',Georgia,serif", lineHeight: 1.75, fontSize: '0.92rem', margin: '0 0 1rem', fontWeight: 400 }}>{n.body}</p>
-                {n.link && <div style={{ fontSize: '0.65rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif", fontWeight: 700 }}>READ MORE →</div>}
+                {n.link && <div style={{ fontSize: '0.65rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif", fontWeight: 400 }}>READ MORE →</div>}
               </div>
             </div>
           </a>
@@ -1153,9 +1241,8 @@ export function ContactSection() {
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
                 {[
-                  { l: 'GENERAL INQUIRIES', v: 'contact@vaxonspace.com', href: 'mailto:contact@vaxonspace.com' },
                   { l: 'BRIEFING REQUESTS', v: 'Schedule via Calendly ↓', href: '#calendly' },
-                  { l: 'LOCATION', v: 'Boulder, Colorado', href: null },
+                  { l: 'LOCATION', v: 'San Jose, California', href: null },
                 ].map((item, i) => (
                   <div key={i} style={{ borderTop: '1px solid #131323', padding: '1rem 0', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                     <div style={{ fontSize: '0.52rem', letterSpacing: '0.22em', color: '#444', fontFamily: "'Inter',sans-serif" }}>{item.l}</div>
@@ -1179,7 +1266,19 @@ export function ContactSection() {
                   <p style={{ color: '#6b7280', fontSize: '0.9rem', margin: 0 }}>We'll be in touch within 48 hours.</p>
                 </div>
               ) : (
-                <form onSubmit={e => { e.preventDefault(); setSent(true) }} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <form onSubmit={e => {
+                  e.preventDefault()
+                  const subject = encodeURIComponent(`Vaxon Space inquiry from ${f.name || 'website'}`)
+                  const bodyLines = [
+                    `Name: ${f.name}`,
+                    `Email: ${f.email}`,
+                    `Organization: ${f.org}`,
+                    '',
+                    f.msg,
+                  ].join('\n')
+                  window.location.href = `mailto:StevenPShepard@vaxonspace.com?subject=${subject}&body=${encodeURIComponent(bodyLines)}`
+                  setSent(true)
+                }} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   <div style={{ fontSize: '1.1rem', letterSpacing: '0.2em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '0.25rem' }}>SEND AN INQUIRY</div>
                   <input type="text" placeholder="Full Name" required value={f.name} onChange={e => setF(p => ({ ...p, name: e.target.value }))} style={inp}
                     onFocus={e => (e.currentTarget.style.borderColor = '#c8102e')}
