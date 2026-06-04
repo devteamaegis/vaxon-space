@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Ratelimit } from '@upstash/ratelimit'
-import { Redis } from '@upstash/redis'
 
 /* ───────────────────────────────────────────────────────────
    CONFIG — cost and abuse controls
@@ -38,27 +36,24 @@ Rules:
 - If you do not know something, say so plainly rather than guessing.`
 
 /* ───────────────────────────────────────────────────────────
-   RATE LIMITING (Upstash Redis when configured, in-memory fallback)
+   RATE LIMITING — in-memory, per serverless instance.
+   No external service or account required. Combined with the
+   per-response token cap above and a monthly spend limit set in
+   the Anthropic Console, this bounds worst-case cost.
 ─────────────────────────────────────────────────────────────*/
-const hasUpstash = !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
+const PER_IP_PER_MIN = 8
+const GLOBAL_PER_DAY = 1500
 
-let ipMinute: Ratelimit | null = null
-let ipDay: Ratelimit | null = null
-let globalDay: Ratelimit | null = null
-if (hasUpstash) {
-  const redis = Redis.fromEnv()
-  ipMinute = new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(8, '60 s'), prefix: 'vx:ipmin', analytics: false })
-  ipDay = new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(40, '86400 s'), prefix: 'vx:ipday', analytics: false })
-  globalDay = new Ratelimit({ redis, limiter: Ratelimit.fixedWindow(1500, '86400 s'), prefix: 'vx:global', analytics: false })
-}
-
-// Best-effort in-memory fallback (per serverless instance)
 const memHits = new Map<string, number[]>()
 function memAllow(key: string, max: number, windowMs: number): boolean {
   const now = Date.now()
   const arr = (memHits.get(key) || []).filter(t => now - t < windowMs)
   if (arr.length >= max) { memHits.set(key, arr); return false }
   arr.push(now); memHits.set(key, arr)
+  // light cleanup so the map cannot grow unbounded
+  if (memHits.size > 5000) {
+    for (const [k, v] of memHits) { if (v.every(t => now - t > windowMs)) memHits.delete(k) }
+  }
   return true
 }
 
@@ -81,15 +76,12 @@ export async function POST(req: NextRequest) {
       || 'anon')
 
     // ── Rate limit ──
-    if (hasUpstash) {
-      const [a, b, g] = await Promise.all([ipMinute!.limit(ip), ipDay!.limit(ip), globalDay!.limit('all')])
-      if (!a.success || !b.success) return sse('You are sending questions too quickly. Please wait a moment and try again.')
-      if (!g.success) return sse('VAXON AI has reached today\'s query capacity. Please check back tomorrow.')
-    } else {
-      const dayKey = 'g:' + new Date().toISOString().slice(0, 10)
-      if (!memAllow(ip, 8, 60_000) || !memAllow(dayKey, 1500, 86_400_000)) {
-        return sse('You are sending questions too quickly. Please wait a moment and try again.')
-      }
+    const dayKey = 'g:' + new Date().toISOString().slice(0, 10)
+    if (!memAllow('ip:' + ip, PER_IP_PER_MIN, 60_000)) {
+      return sse('You are sending questions too quickly. Please wait a moment and try again.')
+    }
+    if (!memAllow(dayKey, GLOBAL_PER_DAY, 86_400_000)) {
+      return sse("VAXON AI has reached today's query capacity. Please check back tomorrow.")
     }
 
     // ── Validate + sanitize input ──
