@@ -452,7 +452,7 @@ function HomeSection() {
               onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background='#a50d26'; (e.currentTarget as HTMLAnchorElement).style.boxShadow='0 0 48px rgba(200,16,46,0.5)' }}
               onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background='#c8102e'; (e.currentTarget as HTMLAnchorElement).style.boxShadow='0 0 32px rgba(200,16,46,0.35)' }}
             >EXPLORE TECHNOLOGY</a>
-            <a href="https://calendly.com/stevenpshepard-vaxonspace/30-1" target="_blank" rel="noopener noreferrer" style={{
+            <a href="/contact" style={{
               background: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(8px)',
               color: '#fff', border: '1px solid rgba(255,255,255,0.22)', cursor: 'pointer',
               padding: '0.9rem 2.5rem', fontSize: '0.62rem', fontWeight: 500,
@@ -1199,19 +1199,6 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
   )
 }
 
-/* ─────────────────────────────────────────────────────────────
-   CALENDLY SCRIPT LOADER
-───────────────────────────────────────────────────────────────*/
-function CalendlyScript() {
-  useEffect(() => {
-    if (document.querySelector('script[src*="calendly"]')) return
-    const s = document.createElement('script')
-    s.src = 'https://assets.calendly.com/assets/external/widget.js'
-    s.async = true
-    document.head.appendChild(s)
-  }, [])
-  return null
-}
 
 /* ─────────────────────────────────────────────────────────────
    CONTACT SECTION
@@ -1240,7 +1227,6 @@ export function ContactSection() {
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
                 {[
-                  { l: 'BRIEFING REQUESTS', v: 'Schedule via Calendly ↓', href: '#calendly' },
                   { l: 'LOCATION', v: 'San Jose, California', href: null },
                 ].map((item, i) => (
                   <div key={i} style={{ borderTop: '1px solid #131323', padding: '1rem 0', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
@@ -1303,30 +1289,6 @@ export function ContactSection() {
                 </form>
               )}
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Calendly embed */}
-      <div id="calendly" style={{ background: '#02020d', borderTop: '1px solid #131323' }}>
-        <div style={{ maxWidth: 900, margin: '0 auto', padding: '5rem 2.5rem' }}>
-          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-            <div style={{ fontSize: '1.15rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>SCHEDULE A BRIEFING</div>
-            <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.6rem)', fontWeight: 400, color: '#fff', margin: '0 0 0.5rem' }}>
-              Book a Meeting with Vaxon Space
-            </h3>
-            <div style={{ fontSize: '0.6rem', letterSpacing: '0.15em', color: '#444', fontFamily: "'Inter',sans-serif" }}>
-              30 MIN · VIRTUAL · DR. STEVEN SHEPARD, CEO
-            </div>
-          </div>
-          <div style={{ border: '1px solid #1a1a2e', overflow: 'hidden', background: '#02020d', borderRadius: 2 }}>
-            <div className="calendly-inline-widget"
-              data-url="https://calendly.com/stevenpshepard-vaxonspace/30-1?background_color=02020d&text_color=ffffff&primary_color=c8102e&hide_gdpr_banner=1"
-              style={{ minWidth: 320, height: 780 }} />
-            <CalendlyScript />
-          </div>
-          <div style={{ marginTop: '1rem', fontSize: '0.55rem', letterSpacing: '0.15em', color: '#333', fontFamily: "'Inter',sans-serif", textAlign: 'center' }}>
-            Powered by Calendly · All meetings handled with appropriate discretion
           </div>
         </div>
       </div>
