@@ -432,7 +432,7 @@ function HomeSection() {
             opacity: videoOk ? 1 : 0, transform: videoOk ? 'none' : 'translateY(8px)',
             transition: 'opacity 1s ease 1s, transform 1s ease 1s',
           }}>
-            Vaxon Space operates air-breathing satellites at 180–250km -10× closer than traditional LEO,
+            Vaxon Space operates air-breathing satellites at 180–250km -2× closer than traditional LEO,
             delivering unprecedented resolution, latency, and persistence.
           </p>
 
@@ -523,7 +523,7 @@ function StatsStrip() {
         {[
           { v: '180-250km', l: 'Orbital Altitude',    d: 0   },
           { v: '<15ms',     l: 'Signal Latency',       d: 200 },
-          { v: '10x',       l: 'Closer Than LEO',      d: 400 },
+          { v: '2x',        l: 'Closer Than LEO',      d: 400 },
           { v: '24/7',      l: 'Persistent Coverage',  d: 600 },
         ].map((s, i) => (
           <div key={i} style={{ padding: '1.5rem 1rem', textAlign: 'center', borderRight: i < 3 ? '1px solid rgba(255,255,255,0.06)' : 'none' }}>
@@ -541,7 +541,7 @@ function StatsStrip() {
           color: 'rgba(255,255,255,0.65)', lineHeight: 1.8,
           maxWidth: 580, margin: '0 auto 2rem', fontWeight: 300,
         }}>
-          Vaxon Space operates air-breathing satellites at 180-250km, 10x closer than traditional LEO,
+          Vaxon Space operates air-breathing satellites at 180-250km, 2x closer than traditional LEO,
           delivering unprecedented resolution, latency, and persistence.
         </p>
         <a href="/technology"
@@ -693,7 +693,7 @@ export function AboutSection() {
             Vaxon Space operates where no other satellite can survive.
           </h2>
           <p style={{ fontFamily: "'Bitter',Georgia,serif", color: '#fff', lineHeight: 1.85, fontSize: '1rem', fontWeight: 400, margin: '0 0 1.5rem' }}>
-            Operating at 180-250km, 10x closer than traditional LEO, Vaxon's air-breathing satellites deliver sub-30cm imagery, under-15ms latency, and persistent coverage for defense and commercial customers.
+            Operating at 180-250km, 2x closer than traditional LEO, Vaxon's air-breathing satellites deliver sub-30cm imagery, under-15ms latency, and persistent coverage for defense and commercial customers.
           </p>
           <p style={{ fontFamily: "'Bitter',Georgia,serif", color: '#fff', lineHeight: 1.85, fontSize: '1rem', fontWeight: 400, margin: 0 }}>
             Our Air-Breathing Electric Propulsion system harvests atmospheric molecules as propellant, enabling unlimited mission duration with no propellant mass penalty.
