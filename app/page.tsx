@@ -519,7 +519,7 @@ function StatsStrip() {
   const { ref, visible } = useReveal()
   return (
     <>
-      <div ref={ref} style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', background: 'rgba(2,2,13,0.72)', backdropFilter: 'blur(12px)', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+      <div ref={ref} className="vx-stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', background: 'rgba(2,2,13,0.72)', backdropFilter: 'blur(12px)', borderTop: '1px solid rgba(255,255,255,0.06)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         {[
           { v: '180-250km', l: 'Orbital Altitude',    d: 0   },
           { v: '<15ms',     l: 'Signal Latency',       d: 200 },
@@ -706,11 +706,11 @@ export function AboutSection() {
         <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2rem,3.5vw,3rem)', fontWeight: 400, color: '#fff', marginBottom: '3.5rem' }}>Mission Profiles</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '3.5rem' }}>
           {MISSION_PROFILES.map((m, i) => (
-            <div key={m.title} className="vx-about-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', alignItems: 'center' }}>
-              <div style={{ order: i % 2 === 0 ? 0 : 1, overflow: 'hidden', border: '1px solid #1a1a2e', background: '#050512', aspectRatio: '16/10' }}>
+            <div key={m.title} className="vx-about-grid vx-mission-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', alignItems: 'center' }}>
+              <div className="vx-mission-img" style={{ order: i % 2 === 0 ? 0 : 1, overflow: 'hidden', border: '1px solid #1a1a2e', background: '#050512', aspectRatio: '16/10' }}>
                 <img src={m.image} alt={m.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
               </div>
-              <div style={{ order: i % 2 === 0 ? 1 : 0 }}>
+              <div className="vx-mission-txt" style={{ order: i % 2 === 0 ? 1 : 0 }}>
                 <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.4rem,2.4vw,2rem)', fontWeight: 400, color: '#fff', margin: '0 0 1rem' }}>{m.title}</h3>
                 <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.78)', lineHeight: 1.8, fontSize: '0.95rem', fontWeight: 400, margin: 0 }}>{m.body}</p>
               </div>
@@ -750,8 +750,8 @@ export function AboutSection() {
         <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.7)', fontSize: '0.95rem', maxWidth: 560, margin: '0 0 2.5rem', lineHeight: 1.75 }}>
           Technical comparison across altitude, resolution, latency, revisit time, and mission life.
         </p>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 700 }}>
+        <div className="vx-table-wrap" style={{ overflowX: 'auto', maxWidth: '100%', WebkitOverflowScrolling: 'touch' }}>
+          <table className="vx-cmp-table" style={{ width: '100%', borderCollapse: 'collapse', minWidth: 640 }}>
             <thead>
               <tr style={{ background: '#06060f', borderBottom: '1px solid #1a1a2e' }}>
                 {['PLATFORM', 'ALTITUDE', 'RESOLUTION', 'LATENCY', 'REVISIT', 'PROPULSION LIFE'].map((h, i) => (
@@ -1433,13 +1433,26 @@ export const VX_GLOBAL_STYLE = `
     .vx-nav-tabs { display: none !important; }
     .vx-login-lnk { display: none !important; }
     .vx-burger { display: flex !important; }
-    .vx-about-grid { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
+    .vx-about-grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
     .vx-4col { grid-template-columns: 1fr 1fr !important; }
     .vx-tech-grid { grid-template-columns: 1fr !important; }
     .vx-team-grid { grid-template-columns: repeat(2,1fr) !important; }
     .vx-contact-grid { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
     .vx-feat { grid-template-columns: 1fr !important; }
     .vx-news-grid { grid-template-columns: 1fr !important; }
+    /* Stats strip: 2x2 instead of a cramped single row */
+    .vx-stats { grid-template-columns: 1fr 1fr !important; }
+    /* Mission Profiles: image always stacks above the text */
+    .vx-mission-img { order: 0 !important; }
+    .vx-mission-txt { order: 1 !important; }
+    /* Comparison table: tighter cells, contained horizontal scroll with a hint */
+    .vx-cmp-table { min-width: 560px !important; }
+    .vx-cmp-table th, .vx-cmp-table td { padding: 0.65rem 0.7rem !important; font-size: 0.82rem !important; }
+    .vx-table-wrap { border: 1px solid #131323; border-radius: 4px; }
+  }
+  @media (max-width: 420px) {
+    .vx-4col { grid-template-columns: 1fr !important; }
+    .vx-team-grid { grid-template-columns: 1fr !important; }
   }
 `
 
