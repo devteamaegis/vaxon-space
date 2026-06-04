@@ -263,10 +263,11 @@ export function Nav({ active }: { active: Tab }) {
   }, [])
 
   return (
+    <>
     <nav style={{
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000, height: 80,
       display: 'flex', alignItems: 'center', padding: '0 2.5rem',
-      background: dark ? 'rgba(2,2,13,0.96)' : 'rgba(2,2,13,0.6)',
+      background: dark || menuOpen ? 'rgba(2,2,13,0.96)' : 'rgba(2,2,13,0.6)',
       backdropFilter: 'blur(16px)',
       borderBottom: `1px solid ${dark ? '#131323' : 'transparent'}`,
       transition: 'background 0.3s, border-color 0.3s',
@@ -298,20 +299,22 @@ export function Nav({ active }: { active: Tab }) {
           {[0,1,2].map(i => <div key={i} style={{ width: 20, height: 1, background: menuOpen ? (i === 1 ? 'transparent' : '#c8102e') : '#aaa' }} />)}
         </button>
       </div>
-
-      {/* Mobile overlay */}
-      {menuOpen && (
-        <div style={{ position: 'fixed', inset: 0, top: 80, background: 'rgba(2,2,13,0.98)', zIndex: 999, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '2.5rem' }}>
-          {NAV_LINKS.map(t => (
-            <a key={t.id} href={t.href} onClick={() => setMenuOpen(false)} style={{
-              textDecoration: 'none',
-              fontFamily: "'Bitter',Georgia,serif", fontSize: '1.8rem', fontWeight: 400,
-              color: active === t.id ? '#fff' : '#333', letterSpacing: '0.05em',
-            }}>{t.label}</a>
-          ))}
-        </div>
-      )}
     </nav>
+
+    {/* Mobile overlay — rendered OUTSIDE <nav> so the nav's backdrop-filter doesn't
+        trap this fixed element in its containing block (iOS Safari bug). */}
+    {menuOpen && (
+      <div style={{ position: 'fixed', top: 80, left: 0, right: 0, bottom: 0, background: '#02020d', zIndex: 1001, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '2.25rem' }}>
+        {NAV_LINKS.map(t => (
+          <a key={t.id} href={t.href} onClick={() => setMenuOpen(false)} style={{
+            textDecoration: 'none',
+            fontFamily: "'Bitter',Georgia,serif", fontSize: '1.9rem', fontWeight: 400,
+            color: active === t.id ? '#c8102e' : '#fff', letterSpacing: '0.05em',
+          }}>{t.label}</a>
+        ))}
+      </div>
+    )}
+    </>
   )
 }
 
@@ -1041,7 +1044,7 @@ export function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: 
         </div>
 
         <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.4rem,2.5vw,2rem)', fontWeight: 400, color: '#fff', textAlign: 'center', marginBottom: '2rem' }}>Advisory Board</div>
-        <div style={{ display: 'flex', flexWrap: 'nowrap' as const, gap: '0', marginBottom: '1.5rem', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '0', marginBottom: '1.5rem', justifyContent: 'center' }}>
           {advisors.map((m, i) => (
             <div key={m.name} style={{ animation: `vx-card-in 0.6s cubic-bezier(0.22,1,0.36,1) both`, animationDelay: `${i * 0.1 + 0.2}s`, display: 'flex', width: 260, flexShrink: 0 }}>
               <TeamCard member={m} onClick={() => setSel(m)} />
@@ -1366,7 +1369,7 @@ export function LogosSection() {
       <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', textAlign: 'center', marginBottom: '3rem' }}>
         Our Team Has Worked At
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)' }}>
+      <div className="vx-logos" style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)' }}>
         {all.map(o => (
           <div key={o.alt}>
             <Logo {...o} />
@@ -1411,9 +1414,12 @@ export const VX_GLOBAL_STYLE = `
     .vx-cmp-table { min-width: 560px !important; }
     .vx-cmp-table th, .vx-cmp-table td { padding: 0.65rem 0.7rem !important; font-size: 0.82rem !important; }
     .vx-table-wrap { border: 1px solid #131323; border-radius: 4px; }
+    /* "Our Team Has Worked At" logos: 3 across so all are visible */
+    .vx-logos { grid-template-columns: repeat(3, 1fr) !important; }
   }
   @media (max-width: 480px) {
     .vx-team-grid { grid-template-columns: 1fr !important; }
+    .vx-logos { grid-template-columns: repeat(2, 1fr) !important; }
   }
 `
 
