@@ -1,57 +1,130 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { Ratelimit } from '@upstash/ratelimit'
+import { Redis } from '@upstash/redis'
 
-const SYSTEM_PROMPT = `You are Vaxon, the AI intelligence briefing system for Vaxon Space — a defense-grade satellite company operating Air-Breathing Electric Propulsion (ABEP) satellites at 180-250 km altitude in Very Low Earth Orbit (VLEO).
+/* ───────────────────────────────────────────────────────────
+   CONFIG — cost and abuse controls
+─────────────────────────────────────────────────────────────*/
+const MODEL = 'claude-haiku-4-5'   // cheapest tier
+const MAX_TOKENS = 300             // hard ceiling on every response
+const MAX_INPUT_CHARS = 600        // per-message input cap
+const MAX_HISTORY = 6              // only the last few turns are sent
 
-Your role: brief defense contractors, government officials, investors, and commercial partners on Vaxon Space's capabilities and technology.
+/* Knowledge: everything the assistant is allowed to draw on lives here.
+   No database needed at this scale. */
+const SYSTEM_PROMPT = `You are Vaxon, the AI briefing assistant for Vaxon Space, a defense-grade satellite company operating Air-Breathing Electric Propulsion (ABEP) satellites at 180 to 250 km altitude in Very Low Earth Orbit (VLEO).
 
-Key facts:
-- VLEO altitude: 180-250 km (vs LEO at 400-600 km)
-- Image resolution: under 30 cm
-- Signal latency: under 15 ms
-- Revisit time: 1-2 hours
-- ABEP uses atmospheric molecules as propellant — no propellant tank required, unlimited mission duration
-- Applications: ISR, missile defense (Golden Dome compatible), connectivity, space resiliency
-- Leadership: Dr. Steven P. Shepard (CEO), Dr. Charles Lipscomb (Chief Scientist), Brandon Williamson (Head of Engineering)
-- Advisors: Lt. Col. Anand Shah (NRO), Lt. Gen. Joseph Anderson (US Army), Dr. Nelson Pedreiro (Lockheed Martin)
+Your role: brief defense contractors, government officials, investors, and commercial partners on Vaxon Space's capabilities and technology, accurately and concisely.
 
-Communication style:
-- Military precision. Concise. No fluff. No em dashes.
-- Use tactical terminology naturally
-- Present classified-feeling but publicly shareable information
-- Keep responses under 150 words unless specifically asked for detail
-- Do not reveal pricing, classified programs, or personnel contact information`
+Company facts:
+- VLEO altitude: 180 to 250 km, roughly 3x closer to the surface than traditional LEO (400 to 600 km).
+- Image resolution: under 30 cm ground sample distance.
+- Signal latency: under 15 ms.
+- Revisit time: 1 to 2 hours with a small constellation.
+- ABEP harvests atmospheric molecules as propellant, so there is no propellant tank and effectively unlimited mission duration. The atmosphere itself becomes the fuel.
+- Self-cleaning orbit: at VLEO, atmospheric drag clears debris in weeks rather than decades, improving resiliency.
+- Applications and mission profiles: Remote Sensing (ISR), Missile Defense (Golden Dome compatible, hypersonic and intercept tracking), Connectivity (low-latency data links, bus provider for partners), and Space Resiliency.
+- Satellite design highlights: oxygen-resistant thrusters (DARPA-backed engine partner), high-efficiency inlet, aerodynamic architecture, and atomic oxygen (AO) resistant coatings.
+- Leadership: Dr. Steven P. Shepard (Co-Founder and CEO), Dr. Charles Lipscomb (Co-Founder and Chief Scientist), Brandon Williamson (Head of Engineering).
+- Advisory board: Lt. Gen. Joseph Anderson (US Army), Dr. Nelson Pedreiro (Lockheed Martin), Lt. Col. Anand Shah (USAF, NRO), Dr. Iain Boyd (hypersonics and space plasma physics).
+- Headquarters mailing address: Vaxon Space, Inc., 2066 N Capitol Ave #5009, San Jose, CA 95132.
+- General contact: route partnership and briefing requests to the contact page or Dr. Shepard.
+
+Rules:
+- Answer only questions related to Vaxon Space, VLEO, space technology, defense applications, and adjacent topics. If asked something unrelated, briefly say it is outside your scope and steer back to Vaxon Space.
+- Be concise. Keep answers under 120 words unless detail is explicitly requested.
+- Use clear, professional language. Do not use em dashes or semicolons.
+- Do not invent pricing, classified program details, contract values, or personal contact information. If asked, direct the user to the contact page.
+- If you do not know something, say so plainly rather than guessing.`
+
+/* ───────────────────────────────────────────────────────────
+   RATE LIMITING (Upstash Redis when configured, in-memory fallback)
+─────────────────────────────────────────────────────────────*/
+const hasUpstash = !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
+
+let ipMinute: Ratelimit | null = null
+let ipDay: Ratelimit | null = null
+let globalDay: Ratelimit | null = null
+if (hasUpstash) {
+  const redis = Redis.fromEnv()
+  ipMinute = new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(8, '60 s'), prefix: 'vx:ipmin', analytics: false })
+  ipDay = new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(40, '86400 s'), prefix: 'vx:ipday', analytics: false })
+  globalDay = new Ratelimit({ redis, limiter: Ratelimit.fixedWindow(1500, '86400 s'), prefix: 'vx:global', analytics: false })
+}
+
+// Best-effort in-memory fallback (per serverless instance)
+const memHits = new Map<string, number[]>()
+function memAllow(key: string, max: number, windowMs: number): boolean {
+  const now = Date.now()
+  const arr = (memHits.get(key) || []).filter(t => now - t < windowMs)
+  if (arr.length >= max) { memHits.set(key, arr); return false }
+  arr.push(now); memHits.set(key, arr)
+  return true
+}
+
+function sse(text: string) {
+  return new Response(
+    `data: ${JSON.stringify({ delta: { text } })}\n\ndata: [DONE]\n\n`,
+    { headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache' } }
+  )
+}
 
 export async function POST(req: NextRequest) {
   try {
-    const { messages } = await req.json()
-
     const apiKey = process.env.ANTHROPIC_API_KEY
     if (!apiKey) {
-      return new Response(
-        `data: ${JSON.stringify({ delta: { text: 'VAXON AI: Intelligence briefing system requires API authorization. Contact Vaxon Space to obtain access credentials.' } })}\ndata: [DONE]\n\n`,
-        { headers: { 'Content-Type': 'text/event-stream' } }
-      )
+      return sse('VAXON AI is not yet activated. Authorization is pending. Please check back soon.')
     }
 
+    const ip = (req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+      || req.headers.get('x-real-ip')
+      || 'anon')
+
+    // ── Rate limit ──
+    if (hasUpstash) {
+      const [a, b, g] = await Promise.all([ipMinute!.limit(ip), ipDay!.limit(ip), globalDay!.limit('all')])
+      if (!a.success || !b.success) return sse('You are sending questions too quickly. Please wait a moment and try again.')
+      if (!g.success) return sse('VAXON AI has reached today\'s query capacity. Please check back tomorrow.')
+    } else {
+      const dayKey = 'g:' + new Date().toISOString().slice(0, 10)
+      if (!memAllow(ip, 8, 60_000) || !memAllow(dayKey, 1500, 86_400_000)) {
+        return sse('You are sending questions too quickly. Please wait a moment and try again.')
+      }
+    }
+
+    // ── Validate + sanitize input ──
+    const body = await req.json().catch(() => null)
+    const raw = body?.messages
+    if (!Array.isArray(raw) || raw.length === 0) return sse('No query received.')
+
+    const clean = (raw as Array<{ role?: unknown; content?: unknown }>)
+      .filter(m => (m?.role === 'user' || m?.role === 'assistant') && typeof m?.content === 'string')
+      .slice(-MAX_HISTORY)
+      .map(m => ({ role: m.role as 'user' | 'assistant', content: (m.content as string).slice(0, MAX_INPUT_CHARS) }))
+
+    if (clean.length === 0 || clean[clean.length - 1].role !== 'user') return sse('No query received.')
+
+    // ── Call Anthropic (streaming) ──
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'x-api-key': apiKey,
         'anthropic-version': '2023-06-01',
         'content-type': 'application/json',
-        'anthropic-beta': 'messages-2023-12-15',
       },
       body: JSON.stringify({
-        model: 'claude-opus-4-5',
-        max_tokens: 512,
+        model: MODEL,
+        max_tokens: MAX_TOKENS,
         system: SYSTEM_PROMPT,
-        messages: messages.slice(-10),
+        messages: clean,
         stream: true,
       }),
     })
 
     if (!response.ok || !response.body) {
-      throw new Error(`Anthropic API error: ${response.status}`)
+      const detail = await response.text().catch(() => '')
+      console.error('Anthropic API error:', response.status, detail.slice(0, 300))
+      return sse('VAXON AI is temporarily unavailable. Please try again shortly.')
     }
 
     const encoder = new TextEncoder()
@@ -59,27 +132,19 @@ export async function POST(req: NextRequest) {
       async start(controller) {
         const reader = response.body!.getReader()
         const decoder = new TextDecoder()
-
         try {
           while (true) {
             const { done, value } = await reader.read()
             if (done) break
-
             const chunk = decoder.decode(value)
-            const lines = chunk.split('\n')
-
-            for (const line of lines) {
+            for (const line of chunk.split('\n')) {
               if (!line.startsWith('data: ')) continue
               const data = line.slice(6).trim()
-              if (data === '[DONE]') continue
-              if (!data) continue
-
+              if (!data || data === '[DONE]') continue
               try {
                 const event = JSON.parse(data)
                 if (event.type === 'content_block_delta' && event.delta?.type === 'text_delta') {
-                  controller.enqueue(encoder.encode(
-                    `data: ${JSON.stringify({ delta: { text: event.delta.text } })}\n\n`
-                  ))
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({ delta: { text: event.delta.text } })}\n\n`))
                 } else if (event.type === 'message_stop') {
                   controller.enqueue(encoder.encode('data: [DONE]\n\n'))
                 }
@@ -94,11 +159,7 @@ export async function POST(req: NextRequest) {
     })
 
     return new Response(stream, {
-      headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-      },
+      headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', 'Connection': 'keep-alive' },
     })
   } catch (err) {
     console.error('Vaxon API error:', err)

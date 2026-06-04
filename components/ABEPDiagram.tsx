@@ -379,43 +379,6 @@ export default function ABEPDiagram() {
 
         </svg>
       </div>
-
-      {/* ── Info cards ── */}
-      <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1px', background: '#0d0d1a' }}>
-        {/* Card 1 — Thrusters */}
-        <div style={{ background: '#02020d', padding: '2.5rem 2rem', transition: 'background 0.2s' }}
-          onMouseEnter={e => (e.currentTarget.style.background = '#060618')}
-          onMouseLeave={e => (e.currentTarget.style.background = '#02020d')}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-            <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#c8102e', boxShadow: '0 0 8px rgba(200,16,46,0.6)', flexShrink: 0 }} />
-            <div style={{ fontSize: '0.6rem', letterSpacing: '0.22em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", fontWeight: 600 }}>
-              OXYGEN-RESISTANT THRUSTERS
-            </div>
-          </div>
-          <div style={{ width: 32, height: 1, background: '#c8102e22', marginBottom: '1.25rem' }} />
-          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.9rem', lineHeight: 1.8, margin: 0, fontFamily: "'Inter',sans-serif" }}>
-            Vaxon Space has a strategic partnership agreement with a DARPA-backed engine supplier developing an AO-resistant, air-breathing flight thruster. This thruster has best-in-class air-breathing performance numbers to enable Vaxon's VLEO missions.
-          </p>
-        </div>
-
-        {/* Card 2 — Inlet */}
-        <div style={{ background: '#02020d', padding: '2.5rem 2rem', transition: 'background 0.2s' }}
-          onMouseEnter={e => (e.currentTarget.style.background = '#060618')}
-          onMouseLeave={e => (e.currentTarget.style.background = '#02020d')}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1rem' }}>
-            <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#0088ff', boxShadow: '0 0 8px rgba(0,136,255,0.6)', flexShrink: 0 }} />
-            <div style={{ fontSize: '0.6rem', letterSpacing: '0.22em', color: '#0088ff', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", fontWeight: 600 }}>
-              HIGH EFFICIENCY INLET
-            </div>
-          </div>
-          <div style={{ width: 32, height: 1, background: '#0088ff22', marginBottom: '1.25rem' }} />
-          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.9rem', lineHeight: 1.8, margin: 0, fontFamily: "'Inter',sans-serif" }}>
-            A novel air capture design along with AO resistant materials produces an inlet system with increased collection and capture efficiencies that allows Vaxon satellites to operate in a wide VLEO altitude range.
-          </p>
-        </div>
-      </div>
     </div>
   )
 }

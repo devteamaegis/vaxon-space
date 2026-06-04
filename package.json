@@ -17,6 +17,8 @@
     "@types/node": "^25.9.1",
     "@types/react": "^19.2.15",
     "@types/three": "^0.184.1",
+    "@upstash/ratelimit": "^2.0.8",
+    "@upstash/redis": "^1.38.0",
     "next": "^16.2.6",
     "next-sanity": "^9.8.21",
     "react": "^19.2.6",

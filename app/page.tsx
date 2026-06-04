@@ -399,7 +399,7 @@ function HomeSection() {
 
         {/* Hero headline - top left */}
         <div style={{
-          position: 'absolute', top: '3rem', left: '2.5rem', zIndex: 4,
+          position: 'absolute', top: '1.75rem', left: '2.5rem', zIndex: 4,
           fontSize: 'clamp(1.4rem,2.8vw,2.8rem)', color: '#fff',
           fontFamily: "'Bitter',Georgia,serif", fontWeight: 400,
           lineHeight: 1.15, maxWidth: 640,
@@ -947,7 +947,7 @@ export function TeamModal({ member, onClose }: { member: TeamMember; onClose: ()
 const HEADSHOT_CROP: Record<string, { scale: number; pos: string; tx: string }> = {
   'Shepard':    { scale: 1.45, pos: '50% 28%', tx: '7%' },
   'Lipscomb':   { scale: 1.15, pos: '50% 22%', tx: '0%' },
-  'Williamson': { scale: 1.45, pos: '50% 24%', tx: '9%' },
+  'Williamson': { scale: 1.45, pos: '50% 24%', tx: '3%' },
   'Anderson':   { scale: 1.0,  pos: '50% 30%', tx: '0%' },
   // Pedreiro & Shah reverted to the original default (no zoom) — their heads were getting cut off.
   'Pedreiro':   { scale: 1.0,  pos: 'center top', tx: '0%' },
