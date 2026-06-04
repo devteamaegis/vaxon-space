@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState, lazy, Suspense, useCallback } from 'react'
 
 const EarthGlobeV2     = lazy(() => import('@/components/EarthGlobeV2'))
-const VaxonWidget      = lazy(() => import('@/components/VaxonWidget'))
 
 /* ─────────────────────────────────────────────────────────────
    SCROLL REVEAL HOOK
@@ -1541,10 +1540,6 @@ export default function VaxonPage() {
 
         <Footer />
       </div>
-
-      <Suspense fallback={null}>
-        <VaxonWidget />
-      </Suspense>
     </>
   )
 }
