@@ -76,7 +76,7 @@ export const CORE_TEAM: TeamMember[] = [
     creds: ['PhD Aerospace Engineering, University of Colorado Boulder', 'Satellite Systems Engineer on COSMO', 'Specialist in electric propulsion integration', 'Air-breathing propulsion and plasmadynamics modeling'],
   },
   {
-    name: 'Brandon Williamson', role: 'Head of Engineering',
+    name: 'Brandon Williamson', role: 'Co-Founder & Head of Engineering',
     image: '/vaxon/team-williamson.jpg',
     linkedin: 'https://www.linkedin.com/in/brandon-williamson-83b0191ba/',
     bio: 'Brandon leads Vaxon\'s engineering team, overseeing all aspects of system design, analysis, testing, and integration. His plasma research background from the University of Michigan makes him uniquely qualified to advance VLEO satellite hardware.',

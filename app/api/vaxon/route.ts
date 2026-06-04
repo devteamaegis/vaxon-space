@@ -25,7 +25,7 @@ Company facts:
 - Self-cleaning orbit: at VLEO, atmospheric drag clears debris in weeks rather than decades, improving resiliency.
 - Applications and mission profiles: Remote Sensing (ISR), Missile Defense (Golden Dome compatible, hypersonic and intercept tracking), Connectivity (low-latency data links, bus provider for partners), and Space Resiliency.
 - Satellite design highlights: oxygen-resistant thrusters (DARPA-backed engine partner), high-efficiency inlet, aerodynamic architecture, and atomic oxygen (AO) resistant coatings.
-- Leadership: Dr. Steven P. Shepard (Co-Founder and CEO), Dr. Charles Lipscomb (Co-Founder and Chief Scientist), Brandon Williamson (Head of Engineering).
+- Leadership: Dr. Steven P. Shepard (Co-Founder and CEO), Dr. Charles Lipscomb (Co-Founder and Chief Scientist), Brandon Williamson (Co-Founder and Head of Engineering).
 - Advisory board: Lt. Gen. Joseph Anderson (US Army), Dr. Nelson Pedreiro (Lockheed Martin), Lt. Col. Anand Shah (USAF, NRO), Dr. Iain Boyd (hypersonics and space plasma physics).
 - Headquarters mailing address: Vaxon Space, Inc., 2066 N Capitol Ave #5009, San Jose, CA 95132.
 - General contact: route partnership and briefing requests to the contact page or Dr. Shepard.
