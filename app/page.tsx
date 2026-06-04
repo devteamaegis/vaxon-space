@@ -1434,7 +1434,7 @@ export const VX_GLOBAL_STYLE = `
     .vx-login-lnk { display: none !important; }
     .vx-burger { display: flex !important; }
     .vx-about-grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
-    .vx-4col { grid-template-columns: 1fr 1fr !important; }
+    .vx-4col { grid-template-columns: 1fr !important; }
     .vx-tech-grid { grid-template-columns: 1fr !important; }
     .vx-team-grid { grid-template-columns: repeat(2,1fr) !important; }
     .vx-contact-grid { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
@@ -1450,8 +1450,7 @@ export const VX_GLOBAL_STYLE = `
     .vx-cmp-table th, .vx-cmp-table td { padding: 0.65rem 0.7rem !important; font-size: 0.82rem !important; }
     .vx-table-wrap { border: 1px solid #131323; border-radius: 4px; }
   }
-  @media (max-width: 420px) {
-    .vx-4col { grid-template-columns: 1fr !important; }
+  @media (max-width: 480px) {
     .vx-team-grid { grid-template-columns: 1fr !important; }
   }
 `
