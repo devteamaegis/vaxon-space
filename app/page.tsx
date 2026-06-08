@@ -45,7 +45,7 @@ function CountUp({ target, suffix = '', duration = 1800, visible }: {
 /* ─────────────────────────────────────────────────────────────
    TYPES
 ───────────────────────────────────────────────────────────────*/
-type Tab = 'home' | 'about' | 'technology' | 'team' | 'news' | 'contact' | 'vleo'
+type Tab = 'home' | 'about' | 'technology' | 'team' | 'traction' | 'news' | 'contact' | 'vleo'
 
 export type TeamMember = {
   name: string; role: string; image?: string
@@ -54,6 +54,7 @@ export type TeamMember = {
 export type NewsItem = {
   date: string; title: string; body: string
   source: string; link?: string; image?: string
+  link2?: string; link2Label?: string
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -125,7 +126,16 @@ export const NEWS: NewsItem[] = [
     body: 'Dr. Steven P. Shepard participated in the ASCEND 2026 panel "Racing to vLEO: Next-Generation Operations in Very Low Earth Orbit," joining Brian Cameron of The Aerospace Corporation, Dr. Gillian Bussey of the US Space Force, and Spence Wise of Redwire. The discussion covered recent technological advancements, military and commercial applications, and where the VLEO ecosystem is headed over the coming decade.',
     source: 'LINKEDIN / AIAA',
     link: 'https://www.linkedin.com/posts/stevenpshepard_aiaaascend26-vleo-spacetech-activity-7463033959719788544-W-uy',
+    link2: 'https://aerospaceamerica.aiaa.org/institute/vleo-gains-momentum-as-space-force-industry-weigh-dual-use-potential/',
+    link2Label: 'NEWS ARTICLE',
     image: '/vaxon/ascend-2026.jpg',
+  },
+  {
+    date: 'JUN 01 2026', title: 'Bellatrix Aerospace to Build Korean VLEO Demonstration Satellite',
+    body: 'India-based Bellatrix Aerospace was selected by Korean optical-payload maker TelePIX to build a very low Earth orbit demonstration satellite, supplying the bus and air-breathing electric propulsion while TelePIX provides its Chouette optical payload. Targeting operations between 180 and 230 km with a launch no earlier than 2028, the deal reflects accelerating global momentum behind ABEP, the same domain Vaxon Space is advancing for US defense and commercial customers.',
+    source: 'PAYLOAD',
+    link: 'https://payloadspace.com/bellatrix-aerospace-tapped-to-build-korean-vleo-demo-sat/',
+    image: '/vaxon/bellatrix-vleo.png',
   },
   {
     date: 'MAY 13 2026', title: 'Bay Area Space Ecosystem Map Highlights Regional Growth',
@@ -138,33 +148,15 @@ export const NEWS: NewsItem[] = [
     date: 'APR 23 2026', title: 'UNIVITY Raises €27M for VLEO 5G Connectivity',
     body: 'Paris-based UNIVITY secured Series A funding to advance VLEO 5G demonstration and commercial deployment by 2028, signaling strong investor confidence in the VLEO connectivity market that Vaxon is positioned to lead in the US defense and commercial sectors.',
     source: 'EU STARTUPS',
+    link: 'https://www.eu-startups.com/2026/04/spacetech-startup-univity-raises-e27-million-to-position-europe-as-a-key-player-in-global-hybrid-connectivity/',
     image: `${WSIMG}/UNIVITY.png/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:800,cg:true`,
   },
   {
     date: 'MAR 16 2026', title: 'EDA Commits $17.9M to VLEO Military Research',
-    body: 'The European Defence Agency launches a major initiative exploring VLEO for enhanced ISR and new mission architectures, validating the strategic importance of sub-200km satellite operations for modern defense applications worldwide.',
+    body: 'The European Defence Agency launches a major initiative exploring VLEO for enhanced ISR and new mission architectures. The 36-month VLEO-DEF project, a consortium of 17 organizations led by Spain, validates the strategic importance of sub-200km satellite operations for modern defense applications worldwide.',
     source: 'VIA SATELLITE',
+    link: 'https://www.satellitetoday.com/government-military/2026/03/16/eda-commits-to-new-vleo-military-research-project/',
     image: `${WSIMG}/EDA-image.webp/:/cr=t:0%25,l:21.88%25,w:56.25%25,h:100%25/rs=w:800,h:400,cg:true`,
-  },
-  {
-    date: 'FEB 05 2026', title: 'Vaxon Joins Starburst / IAI Cohort 4',
-    body: 'Selected for the IAI Catalyst cohort focused on autonomous systems, advanced sensing, AI computing, and VLEO satellites. Vaxon joins a prestigious group of defense-focused startups advancing next-generation space capabilities for US and allied forces.',
-    source: 'LINKEDIN',
-    link: 'https://www.linkedin.com/company/vaxon-space',
-    image: `${WSIMG}/IAI_Kickoff.jpg/:/cr=t:0%25,l:10.87%25,w:56.25%25,h:100%25/rs=w:800,h:400,cg:true`,
-  },
-  {
-    date: 'JAN 14 2026', title: 'AIAA SciTech 2026 VLEO Panel',
-    body: 'Dr. Shepard spoke on ABEP, emerging VLEO use cases, and growing alignment across academia, industry, and government. The panel highlighted the maturation of VLEO technology and its increasing relevance for both defense and commercial applications.',
-    source: 'LINKEDIN',
-    image: `${WSIMG}/AIAA%20ASCEND%202026.jpg/:/cr=t:0%25,l:12.07%25,w:75%25,h:100%25/rs=w:800,h:400,cg:true`,
-  },
-  {
-    date: 'NOV 19 2025', title: 'Redwire Awarded $44M DARPA ABEP Contract',
-    body: 'Redwire receives Phase 2 DARPA contract for air-breathing satellite development, validating ABEP as a defense priority. This contract confirms the maturation of air-breathing electric propulsion technology that forms the technical foundation of Vaxon\'s propulsion system.',
-    source: 'SPACENEWS',
-    link: 'https://spacenews.com',
-    image: `${WSIMG}/Redwire.webp/:/cr=t:0%25,l:18.97%25,w:62.05%25,h:100%25/rs=w:800,h:400,cg:true`,
   },
   {
     date: 'FEB 25 2026', title: "Why This Space Startup Flies Where Other Satellites Can't Survive",
@@ -174,15 +166,38 @@ export const NEWS: NewsItem[] = [
     image: '/vaxon/vaxonspacesatelitessurvive.jpg',
   },
   {
+    date: 'FEB 05 2026', title: 'Vaxon Joins Starburst / IAI Cohort 4',
+    body: 'Selected for the IAI Catalyst cohort focused on autonomous systems, advanced sensing, AI computing, and VLEO satellites. Vaxon joins a prestigious group of defense-focused startups advancing next-generation space capabilities for US and allied forces.',
+    source: 'STARBURST / IAI',
+    link: 'https://catalyst.iainorthamerica.com/',
+    image: `${WSIMG}/IAI_Kickoff.jpg/:/cr=t:0%25,l:10.87%25,w:56.25%25,h:100%25/rs=w:800,h:400,cg:true`,
+  },
+  {
+    date: 'JAN 14 2026', title: 'AIAA SciTech 2026 VLEO Panel',
+    body: 'Dr. Shepard spoke on ABEP, emerging VLEO use cases, and growing alignment across academia, industry, and government. The panel highlighted the maturation of VLEO technology and its increasing relevance for both defense and commercial applications.',
+    source: 'AIAA',
+    link: 'https://aiaa.org/2026/01/02/aiaa-scitech-forum-2026-bringing-aerospace-innovation-to-orlando/',
+    image: `${WSIMG}/AIAA%20ASCEND%202026.jpg/:/cr=t:0%25,l:12.07%25,w:75%25,h:100%25/rs=w:800,h:400,cg:true`,
+  },
+  {
+    date: 'NOV 19 2025', title: 'Redwire Awarded $44M DARPA ABEP Contract',
+    body: 'Redwire receives a $44M Phase 2 DARPA contract under the Otter program for air-breathing satellite development, validating ABEP as a defense priority. This contract confirms the maturation of air-breathing electric propulsion technology that forms the technical foundation of Vaxon\'s propulsion system.',
+    source: 'SPACENEWS',
+    link: 'https://spacenews.com/redwire-lands-44-million-darpa-award-to-build-air-breathing-satellite/',
+    image: `${WSIMG}/Redwire.webp/:/cr=t:0%25,l:18.97%25,w:62.05%25,h:100%25/rs=w:800,h:400,cg:true`,
+  },
+  {
     date: 'SEP 2025', title: 'Spanish Startup Wins $9M for VLEO Satellite Tech',
     body: 'Kreios Space raises funding to develop VLEO satellite technology, joining a growing global ecosystem of companies validating the commercial and defense case for sub-250km orbital operations.',
-    source: 'TECH CRUNCH',
+    source: 'THE DEFENSE POST',
+    link: 'https://thedefensepost.com/2025/09/23/spanish-startup-low-earth-orbit/',
     image: `${WSIMG}/satellite_kreios.jpg/:/cr=t:0%25,l:8.47%25,w:64.97%25,h:100%25/rs=w:800,h:400,cg:true`,
   },
   {
     date: 'AUG 2025', title: 'DeepSat Secures USAF $1.25M SBIR for VLEO Constellation',
-    body: 'DeepSat wins US Air Force Small Business Innovation Research contract to develop a VLEO constellation architecture, further confirming DoD interest in persistent low-altitude space-based intelligence assets.',
-    source: 'DEFENSE NEWS',
+    body: 'DeepSat wins a US Air Force AFWERX Direct to Phase II SBIR contract to develop a VLEO constellation architecture, further confirming DoD interest in persistent low-altitude space-based intelligence assets.',
+    source: 'SPACENEWS',
+    link: 'https://spacenews.com/deepsat-wins-afwerx-funding-for-observations-from-very-low-earth-orbit/',
     image: `${WSIMG}/Deepsat.jpg/:/cr=t:0%25,l:15.71%25,w:68.58%25,h:100%25/rs=w:800,h:400,cg:true`,
   },
 ]
@@ -248,6 +263,7 @@ const NAV_LINKS = [
   { id: 'about',      label: 'ABOUT',      href: '/about' },
   { id: 'technology', label: 'TECHNOLOGY', href: '/technology' },
   { id: 'team',       label: 'TEAM',       href: '/team' },
+  { id: 'traction',   label: 'TRACTION',   href: '/traction' },
   { id: 'news',       label: 'NEWS',       href: '/news' },
   { id: 'contact',    label: 'CONTACT',    href: '/contact' },
 ]
@@ -350,12 +366,81 @@ function VideoModal({ url, onClose }: { url: string; onClose: () => void }) {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   MISSION OVERVIEW — expands from the hero box into a full-screen explainer
+───────────────────────────────────────────────────────────────*/
+function MissionOverlay({ rect, onClose }: { rect: { top: number; left: number; width: number; height: number }; onClose: () => void }) {
+  const vref = useRef<HTMLVideoElement>(null)
+  const [ended, setEnded] = useState(false)
+
+  const boxClip = () => `inset(${rect.top}px ${window.innerWidth - rect.left - rect.width}px ${window.innerHeight - rect.top - rect.height}px ${rect.left}px round 4px)`
+  const [clip, setClip] = useState(boxClip())
+
+  // Expand on mount, lock scroll, play once open.
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    const id = requestAnimationFrame(() => requestAnimationFrame(() => setClip('inset(0px 0px 0px 0px)')))
+    const t = setTimeout(() => { vref.current?.play().catch(() => {}) }, 640)
+    return () => { document.body.style.overflow = ''; cancelAnimationFrame(id); clearTimeout(t) }
+  }, [])
+
+  const close = () => {
+    setClip(boxClip())          // collapse back into the box
+    setTimeout(onClose, 560)
+  }
+
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 9500, background: '#000',
+      clipPath: clip, WebkitClipPath: clip,
+      transition: 'clip-path 0.6s cubic-bezier(0.65,0,0.35,1), -webkit-clip-path 0.6s cubic-bezier(0.65,0,0.35,1)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+    }}>
+      <video ref={vref} controls playsInline onEnded={() => setEnded(true)}
+        style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#000' }}>
+        <source src="/vaxon/explainer.mp4" type="video/mp4" />
+      </video>
+
+      <button onClick={close} style={{
+        position: 'absolute', top: '1.5rem', left: '1.75rem', zIndex: 2, background: 'none', border: 'none', cursor: 'pointer',
+        fontFamily: "'Inter',sans-serif", fontSize: '0.62rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.6)', textTransform: 'uppercase', transition: 'color 0.2s',
+      }}
+        onMouseEnter={e => (e.currentTarget.style.color = '#c8102e')}
+        onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.6)')}
+      >← Close</button>
+
+      {ended && (
+        <div style={{ position: 'absolute', inset: 0, zIndex: 3, background: 'rgba(2,2,13,0.92)', backdropFilter: 'blur(6px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '2rem' }}>
+          <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.6rem,3vw,2.4rem)', fontWeight: 400, color: '#fff', textAlign: 'center', padding: '0 1.5rem' }}>Thank you for watching</div>
+          <button onClick={close} style={{ background: '#c8102e', color: '#fff', border: 'none', cursor: 'pointer', padding: '1rem 2.5rem', fontSize: '0.7rem', letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", transition: 'background 0.2s' }}
+            onMouseEnter={e => (e.currentTarget.style.background = '#a50d26')}
+            onMouseLeave={e => (e.currentTarget.style.background = '#c8102e')}
+          >Return to Landing Page</button>
+          <button onClick={() => { setEnded(false); if (vref.current) { vref.current.currentTime = 0; vref.current.play().catch(() => {}) } }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Inter',sans-serif", fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', transition: 'color 0.2s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.55)')}
+          >↻ Replay</button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
    HOME SECTION
 ───────────────────────────────────────────────────────────────*/
 function HomeSection() {
   const [videoOk, setVideoOk] = useState(false)
   const [showStory, setShowStory] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const missionBtnRef = useRef<HTMLButtonElement>(null)
+  const [missionRect, setMissionRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null)
+  const openMission = () => {
+    const el = missionBtnRef.current
+    if (!el) return
+    const r = el.getBoundingClientRect()
+    setMissionRect({ top: r.top, left: r.left, width: r.width, height: r.height })
+  }
   const PITCH_URL = 'https://www.youtube.com/embed/piWj3lWfUEM?autoplay=1&rel=0'
 
   // Ensure autoplay fires even if browser delays it
@@ -368,6 +453,7 @@ function HomeSection() {
   return (
     <>
       {showStory && <VideoModal url={PITCH_URL} onClose={() => setShowStory(false)} />}
+      {missionRect && <MissionOverlay rect={missionRect} onClose={() => setMissionRect(null)} />}
       <div style={{ position: 'relative', height: 'calc(100vh - 80px)', overflow: 'hidden', background: '#02020d' }}>
 
         {/* ── Cinematic background video ── */}
@@ -410,6 +496,37 @@ function HomeSection() {
         }}>
           Real-time missile defense and connectivity today — and AI tomorrow
         </div>
+
+        {/* Mission Overview — floating military-style box, top right → expands into full-screen explainer */}
+        <button ref={missionBtnRef} onClick={openMission} className="vx-mission-box" style={{
+          position: 'absolute', top: '1.75rem', right: '2.5rem', zIndex: 4,
+          display: 'block', textAlign: 'left', font: 'inherit',
+          width: 280, padding: '1.5rem 1.75rem',
+          background: 'rgba(2,2,13,0.72)', border: '1px solid #c8102e',
+          boxShadow: '0 0 0 1px rgba(200,16,46,0.25), 0 8px 30px rgba(0,0,0,0.5)',
+          animation: 'vx-float 4s ease-in-out infinite',
+          opacity: videoOk ? 1 : 0, transition: 'opacity 1s ease 0.8s, box-shadow 0.25s, transform 0.25s',
+          cursor: 'pointer',
+        }}
+          onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 0 1px rgba(200,16,46,0.6), 0 0 28px rgba(200,16,46,0.5)'; e.currentTarget.style.transform = 'translateY(-3px)' }}
+          onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 0 1px rgba(200,16,46,0.25), 0 8px 30px rgba(0,0,0,0.5)'; e.currentTarget.style.transform = 'none' }}
+        >
+          {/* tactical corner brackets */}
+          <span style={{ position: 'absolute', top: -1, left: -1, width: 16, height: 16, borderTop: '2px solid #c8102e', borderLeft: '2px solid #c8102e' }} />
+          <span style={{ position: 'absolute', top: -1, right: -1, width: 16, height: 16, borderTop: '2px solid #c8102e', borderRight: '2px solid #c8102e' }} />
+          <span style={{ position: 'absolute', bottom: -1, left: -1, width: 16, height: 16, borderBottom: '2px solid #c8102e', borderLeft: '2px solid #c8102e' }} />
+          <span style={{ position: 'absolute', bottom: -1, right: -1, width: 16, height: 16, borderBottom: '2px solid #c8102e', borderRight: '2px solid #c8102e' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+            <div style={{ width: 46, height: 46, borderRadius: '50%', border: '2px solid #c8102e', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <svg viewBox="0 0 24 24" fill="#c8102e" width="19" height="19" style={{ marginLeft: 3 }}><path d="M8 5v14l11-7z" /></svg>
+            </div>
+            <div>
+              <div style={{ fontSize: '1.05rem', fontWeight: 400, letterSpacing: '0.16em', color: '#fff', fontFamily: "'Inter',sans-serif", lineHeight: 1.25 }}>MISSION</div>
+              <div style={{ fontSize: '1.05rem', fontWeight: 400, letterSpacing: '0.16em', color: '#fff', fontFamily: "'Inter',sans-serif", lineHeight: 1.25 }}>OVERVIEW</div>
+            </div>
+          </div>
+          <div style={{ marginTop: '1rem', fontSize: '0.66rem', fontWeight: 400, letterSpacing: '0.22em', color: 'rgba(255,255,255,0.6)', fontFamily: "'Inter',sans-serif" }}>60 SEC BRIEFING ›</div>
+        </button>
 
         {/* ── (hero text removed -video shown clean) ── */}
         <div style={{ display: 'none' }}>
@@ -1134,35 +1251,45 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
 
       {/* Featured */}
       {featured && (
-        <a href={featured.link || '#'} target={featured.link ? '_blank' : undefined} rel="noopener noreferrer"
-          onClick={!featured.link ? e => e.preventDefault() : undefined}
-          style={{ textDecoration: 'none', display: 'block', marginBottom: '2px' }}
+        <div className="vx-feat" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', border: '1px solid #131323', overflow: 'hidden', background: '#060614', transition: 'border-color 0.2s', marginBottom: '2px' }}
+          onMouseEnter={e => (e.currentTarget.style.borderColor = '#1a1a2e')}
+          onMouseLeave={e => (e.currentTarget.style.borderColor = '#131323')}
         >
-          <div className="vx-feat" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', border: '1px solid #131323', overflow: 'hidden', background: '#060614', transition: 'border-color 0.2s' }}
-            onMouseEnter={e => (e.currentTarget.style.borderColor = '#1a1a2e')}
-            onMouseLeave={e => (e.currentTarget.style.borderColor = '#131323')}
+          <a href={featured.link || '#'} target={featured.link ? '_blank' : undefined} rel="noopener noreferrer"
+            onClick={!featured.link ? e => e.preventDefault() : undefined}
+            style={{ display: 'block', overflow: 'hidden', background: '#050512', aspectRatio: '1/1' }}
           >
-            <div style={{ overflow: 'hidden', background: '#050512', aspectRatio: '1/1' }}>
-              {featured.image
-                ? <img src={featured.image} alt={featured.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
-                    onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.04)')}
-                    onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
-                  />
-                : <div style={{ width: '100%', height: '100%', minHeight: 280, background: 'linear-gradient(135deg,#090918,#050512)' }} />
-              }
+            {featured.image
+              ? <img src={featured.image} alt={featured.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
+                  onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.04)')}
+                  onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
+                />
+              : <div style={{ width: '100%', height: '100%', minHeight: 280, background: 'linear-gradient(135deg,#090918,#050512)' }} />
+            }
+          </a>
+          <div style={{ padding: '2.5rem' }}>
+            <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '1.2rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 400 }}>FEATURED</span>
+              <span style={{ fontSize: '0.62rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif" }}>{featured.date}</span>
+              <span style={{ fontSize: '0.62rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif" }}>{featured.source}</span>
             </div>
-            <div style={{ padding: '2.5rem' }}>
-              <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
-                <span style={{ fontSize: '1.2rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 400 }}>FEATURED</span>
-                <span style={{ fontSize: '0.62rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif" }}>{featured.date}</span>
-                <span style={{ fontSize: '0.62rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif" }}>{featured.source}</span>
-              </div>
+            <a href={featured.link || '#'} target={featured.link ? '_blank' : undefined} rel="noopener noreferrer"
+              onClick={!featured.link ? e => e.preventDefault() : undefined} style={{ textDecoration: 'none' }}>
               <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.65rem', fontWeight: 400, color: '#fff', lineHeight: 1.25, margin: '0 0 1.25rem' }}>{featured.title}</h3>
-              <p style={{ color: '#fff', fontFamily: "'Bitter',Georgia,serif", lineHeight: 1.85, fontSize: '1rem', margin: '0 0 1.5rem', fontWeight: 400 }}>{featured.body}</p>
-              {featured.link && <span style={{ fontSize: '0.7rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif", fontWeight: 400 }}>READ MORE →</span>}
+            </a>
+            <p style={{ color: '#fff', fontFamily: "'Bitter',Georgia,serif", lineHeight: 1.85, fontSize: '1rem', margin: '0 0 1.5rem', fontWeight: 400 }}>{featured.body}</p>
+            <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+              {featured.link && <a href={featured.link} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.7rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif", fontWeight: 400, textDecoration: 'none', transition: 'color 0.2s' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#c8102e')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#fff')}
+              >READ MORE →</a>}
+              {featured.link2 && <a href={featured.link2} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.7rem', letterSpacing: '0.15em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 400, textDecoration: 'none', transition: 'color 0.2s' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#c8102e')}
+              >{featured.link2Label || 'NEWS ARTICLE'} →</a>}
             </div>
           </div>
-        </a>
+        </div>
       )}
 
       {/* Grid */}
@@ -1381,6 +1508,114 @@ export function LogosSection() {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   PARTNERS SECTION
+───────────────────────────────────────────────────────────────*/
+const PARTNERS = [
+  { src: '/vaxon/Rutgers_University_seal.svg.png',          alt: 'Rutgers University' },
+  { src: '/vaxon/Colorado_State_Rams_logo.svg.png',         alt: 'Colorado State University' },
+  { src: '/vaxon/culasp.png',                               alt: 'CU Boulder LASP' },
+  { src: '/vaxon/ball_corporation_logo1438_21100jpg.png',   alt: 'Ball Aerospace' },
+  { src: '/vaxon/santaclarauniversityseal.png',             alt: 'Santa Clara University' },
+  { src: '/vaxon/JHU_APL_logo.svg.png',                     alt: 'Johns Hopkins APL' },
+]
+
+function PartnerCell({ src, alt }: { src: string; alt: string }) {
+  const [hov, setHov] = useState(false)
+  return (
+    <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+      style={{ background: '#02020d', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', padding: '3.5rem 1.5rem', minHeight: 280 }}>
+      <img src={src} alt={alt}
+        style={{
+          width: 170, height: 170, objectFit: 'contain',
+          opacity: hov ? 1 : 0.9,
+          transform: hov ? 'translateY(-10px) scale(1.14)' : 'none',
+          filter: hov ? 'drop-shadow(0 0 18px rgba(200,16,46,0.55))' : 'none',
+          transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1), filter 0.3s, opacity 0.3s',
+        }}
+        onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+      />
+      <div style={{ fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: hov ? '#fff' : 'rgba(255,255,255,0.6)', fontFamily: "'Inter',sans-serif", textAlign: 'center', lineHeight: 1.5, transition: 'color 0.3s' }}>{alt}</div>
+    </div>
+  )
+}
+
+export function PartnersSection() {
+  return (
+    <div style={{ borderTop: '1px solid #131323', padding: '4rem 2.5rem', maxWidth: 1200, margin: '0 auto' }}>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', marginBottom: '0.5rem' }}>Partners</div>
+      <div style={{ width: 48, height: 2, background: '#c8102e', marginBottom: '1rem' }} />
+      <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.6)', lineHeight: 1.85, fontSize: '0.95rem', fontWeight: 400, margin: '0 0 3rem', maxWidth: 640 }}>
+        Vaxon Space collaborates with leading universities, national laboratories, and industry partners to advance VLEO propulsion and flight hardware.
+      </p>
+      <div className="vx-partners" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2px', background: '#0d0d1a', border: '1px solid #131323' }}>
+        {PARTNERS.map(p => <PartnerCell key={p.alt} {...p} />)}
+      </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TRACTION SECTION
+───────────────────────────────────────────────────────────────*/
+const TRACTION_NEXT = [
+  { h: 'Patents', b: 'Patent-pending air-breathing electric propulsion and air-intake IP forms the technical core of the Vaxon bus. Additional filings in progress.' },
+  { h: 'Flight + Test Data', b: 'Ground test campaigns are underway with our research partners. Performance data will be published here as it is cleared for release.' },
+  { h: 'Contract Wins', b: 'Government and commercial engagements are advancing. Awards and pilot programs will be announced here.' },
+]
+
+export function TractionSection() {
+  return (
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', marginBottom: '0.5rem' }}>Traction</div>
+      <div style={{ width: 48, height: 2, background: '#c8102e', marginBottom: '1rem' }} />
+      <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.7)', lineHeight: 1.85, fontSize: '1rem', fontWeight: 400, margin: '0 0 3.5rem', maxWidth: 680 }}>
+        Vaxon Space is building momentum across recognition, intellectual property, and test hardware. More is on the way.
+      </p>
+
+      {/* DARPA ERIS Awardable badge */}
+      <div className="vx-about-grid" style={{ display: 'grid', gridTemplateColumns: '0.7fr 1.3fr', gap: '3rem', alignItems: 'center', border: '1px solid #1a1a2e', background: '#060614', padding: '2.5rem', marginBottom: '2.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <img src="/vaxon/darpa-eris-badge.png" alt="DARPA ERIS Marketplace Awardable"
+            style={{ width: 170, height: 170, objectFit: 'contain' }}
+            onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+          />
+        </div>
+        <div>
+          <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.78rem', letterSpacing: '0.22em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '0.75rem' }}>DARPA ERIS MARKETPLACE · OCTOBER 2025</div>
+          <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.5rem,2.5vw,2.1rem)', fontWeight: 400, color: '#fff', lineHeight: 1.2, margin: '0 0 1rem' }}>Awardable on the DARPA ERIS Marketplace</h3>
+          <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.78)', lineHeight: 1.85, fontSize: '1rem', fontWeight: 400, margin: 0 }}>
+            Vaxon Space is listed as an Awardable solution on the DARPA Expedited Research Innovation System (ERIS) Marketplace, a rapid procurement pathway through which DoD activities can select and award technologies via Other Transaction Authority.
+          </p>
+        </div>
+      </div>
+
+      {/* Lab / test hardware */}
+      <div style={{ border: '1px solid #c8102e', boxShadow: '0 0 0 1px rgba(200,16,46,0.15)', background: '#050512', overflow: 'hidden', marginBottom: '4rem' }}>
+        <div style={{ background: '#02020d', aspectRatio: '16/9', overflow: 'hidden' }}>
+          <img src="/vaxon/lab-testing.jpeg" alt="Vaxon Space test hardware at CU Boulder LASP"
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+          />
+        </div>
+        <div style={{ padding: '1.25rem 1.5rem', borderTop: '1px solid #131323' }}>
+          <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.62rem', letterSpacing: '0.18em', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase' }}>Vaxon Space test hardware at CU Boulder LASP</div>
+        </div>
+      </div>
+
+      {/* What's coming */}
+      <div className="vx-4col" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '1px', background: '#131323', border: '1px solid #131323' }}>
+        {TRACTION_NEXT.map(t => (
+          <div key={t.h} style={{ background: '#02020d', padding: '2.5rem 2rem' }}>
+            <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.78rem', letterSpacing: '0.2em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '1rem' }}>{t.h}</div>
+            <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.78)', lineHeight: 1.8, fontSize: '0.95rem', fontWeight: 400, margin: 0 }}>{t.b}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
    GLOBAL STYLES
 ───────────────────────────────────────────────────────────────*/
 export const VX_GLOBAL_STYLE = `
@@ -1394,6 +1629,7 @@ export const VX_GLOBAL_STYLE = `
   @keyframes vx-skel { 0%,100%{opacity:.25} 50%{opacity:.55} }
   @keyframes vx-card-in { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
   @keyframes vx-slide-left { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:none; } }
+  @keyframes vx-float { 0%,100%{ transform: translateY(0); } 50%{ transform: translateY(-6px); } }
   @media (max-width: 768px) {
     .vx-nav-tabs { display: none !important; }
     .vx-login-lnk { display: none !important; }
@@ -1416,6 +1652,10 @@ export const VX_GLOBAL_STYLE = `
     .vx-table-wrap { border: 1px solid #131323; border-radius: 4px; }
     /* "Our Team Has Worked At" logos: 3 across so all are visible */
     .vx-logos { grid-template-columns: repeat(3, 1fr) !important; }
+    /* Mission Overview box: slightly smaller + lift above the headline area on small screens */
+    .vx-mission-box { width: 210px !important; top: 1.25rem !important; right: 1.25rem !important; padding: 1.1rem 1.2rem !important; }
+    /* Partners grid: 2 across on tablet/phone */
+    .vx-partners { grid-template-columns: repeat(2, 1fr) !important; }
   }
   @media (max-width: 480px) {
     .vx-team-grid { grid-template-columns: 1fr !important; }
