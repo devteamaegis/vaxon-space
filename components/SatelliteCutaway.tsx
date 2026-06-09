@@ -18,7 +18,7 @@ const LAYERS: Layer[] = [
     body: 'No propellant tank, no refuel, no end-of-life from running dry. Air-breathing electric propulsion harvests atmospheric molecules as propellant for unlimited mission duration.' },
 ]
 
-const HULL = '#9fb9dc', WALL = '#5d7ba6', CONTOUR = '#34527a', PANEL = '#7f9fc6', FLOW = '#3aa0e6', FLOW2 = '#57c4f2', RED = '#c8102e'
+const HULL = '#e7ecf4', WALL = '#aab4c4', CONTOUR = '#7a8596', PANEL = '#d2d9e3', FLOW = '#3f86d8', FLOW2 = '#6fb6f0', RED = '#c8102e'
 const lin = (a: number, b: number, n: number) => Array.from({ length: n }, (_, i) => a + (b - a) * (i / (n - 1)))
 
 const ANIM = `
@@ -62,7 +62,7 @@ export default function SatelliteCutaway() {
   return (
     <section style={{ background: '#02020d', borderTop: '1px solid #131323', padding: '6rem 2.5rem' }}>
       <style>{ANIM}</style>
-      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+      <div style={{ maxWidth: 1320, margin: '0 auto' }}>
         <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.78rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '0.5rem' }}>THE BUS IS THE MOAT</div>
         <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3.2vw,2.8rem)', fontWeight: 400, color: '#fff', lineHeight: 1.1, margin: '0 0 0.75rem' }}>Our ABEP satellite bus</h2>
         <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.6)', fontSize: '0.95rem', fontWeight: 400, margin: '0 0 0.4rem' }}>
@@ -72,7 +72,7 @@ export default function SatelliteCutaway() {
           Designed for VLEO from the ground up. Each layer is a known problem. Closing all four is not. Tap a layer to explore.
         </p>
 
-        <div className="vx-sat-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1.7fr 1fr', gap: '1.5rem', alignItems: 'center', marginTop: '2.5rem' }}>
+        <div className="vx-sat-grid" style={{ display: 'grid', gridTemplateColumns: '0.82fr 2.4fr 0.82fr', gap: '1.75rem', alignItems: 'center', marginTop: '2.5rem' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}><Card i={0} /><Card i={1} /></div>
 
           <svg viewBox="0 0 1000 460" style={{ width: '100%', height: 'auto', display: 'block' }} xmlns="http://www.w3.org/2000/svg">
@@ -81,7 +81,7 @@ export default function SatelliteCutaway() {
                 <line x1="0" y1="0" x2="0" y2="6" stroke={PANEL} strokeWidth="0.7" opacity="0.55" />
               </pattern>
               <linearGradient id="sc-plume-g" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#48b0ff" stopOpacity="0.9" /><stop offset="55%" stopColor="#9b5bff" stopOpacity="0.5" /><stop offset="100%" stopColor="#7700cc" stopOpacity="0" />
+                <stop offset="0%" stopColor="#5aa6ff" stopOpacity="0.5" /><stop offset="60%" stopColor="#3f86d8" stopOpacity="0.22" /><stop offset="100%" stopColor="#3f86d8" stopOpacity="0" />
               </linearGradient>
               <filter id="sc-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
               <filter id="sc-soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="3" /></filter>
