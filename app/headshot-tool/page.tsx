@@ -1,6 +1,13 @@
 'use client'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Nav, Footer, VX_GLOBAL_STYLE, CORE_TEAM, ADVISORS, HEADSHOT_CROP } from '../page'
+
+// Gate: sha256 of the access phrase. Read-only tool, so this just keeps it private.
+const GATE_HASH = 'd4ca503b6b550df9c23e95b8233571e7b16b8615ce715c84edad1c05b8f63f2d'
+async function sha256(s: string) {
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s))
+  return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join('')
+}
 
 /* Unlisted internal tool: visually frame any team headshot in the circle and
    copy the resulting crop values. Not linked in the nav. */
@@ -29,11 +36,39 @@ export default function HeadshotTool() {
   const [tx, setTx] = useState(init.tx)
   const [copied, setCopied] = useState(false)
 
+  // ── access gate ──
+  const [authed, setAuthed] = useState(false)
+  const [pw, setPw] = useState('')
+  const [err, setErr] = useState(false)
+  useEffect(() => { if (typeof window !== 'undefined' && sessionStorage.getItem('hst') === '1') setAuthed(true) }, [])
+  const submitPw = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (await sha256(pw) === GATE_HASH) { setAuthed(true); sessionStorage.setItem('hst', '1') } else { setErr(true) }
+  }
+
   // re-sync sliders when the selected member changes
   const reset = (i: number) => {
     const m = ALL[i], k = keyFor(m.name)
     const c = k ? HEADSHOT_CROP[k] : { scale: 1, pos: '50% 20%', tx: '0%' }
     setIdx(i); setScale(c.scale); setPosY(parsePosY(c.pos)); setTx(parseFloat(c.tx) || 0); setCopied(false)
+  }
+
+  if (!authed) {
+    return (
+      <>
+        <style>{VX_GLOBAL_STYLE}</style>
+        <Nav active="team" />
+        <div style={{ paddingTop: 80, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+          <form onSubmit={submitPw} style={{ width: 360, maxWidth: '100%', border: '1px solid #1a1a2e', background: '#060614', padding: '2.5rem' }}>
+            <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.62rem', letterSpacing: '0.22em', color: '#c8102e', marginBottom: '1.5rem' }}>RESTRICTED · INTERNAL TOOL</div>
+            <input type="password" value={pw} autoFocus onChange={e => { setPw(e.target.value); setErr(false) }} placeholder="Access phrase"
+              style={{ width: '100%', background: 'rgba(255,255,255,0.04)', border: `1px solid ${err ? '#c8102e' : '#1a1a2e'}`, color: '#fff', padding: '0.875rem 1rem', fontSize: '0.9rem', fontFamily: "'Inter',sans-serif", outline: 'none', boxSizing: 'border-box', marginBottom: '1rem' }} />
+            {err && <div style={{ color: '#c8102e', fontSize: '0.75rem', fontFamily: "'Inter',sans-serif", marginBottom: '1rem' }}>Incorrect phrase.</div>}
+            <button type="submit" style={{ width: '100%', background: '#c8102e', color: '#fff', border: 'none', cursor: 'pointer', padding: '0.9rem', fontSize: '0.65rem', letterSpacing: '0.2em', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif" }}>Unlock</button>
+          </form>
+        </div>
+      </>
+    )
   }
 
   const k = keyFor(member.name) || member.name.split(' ').pop()
