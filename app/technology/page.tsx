@@ -3,6 +3,7 @@ import { lazy, Suspense } from 'react'
 import { StarField, Nav, Footer, VX_GLOBAL_STYLE } from '../page'
 
 const ABEPDiagram = lazy(() => import('@/components/ABEPDiagram'))
+const SatelliteCutaway = lazy(() => import('@/components/SatelliteCutaway'))
 
 function SatelliteDesign() {
   return (
@@ -32,30 +33,6 @@ function SatelliteDesign() {
   )
 }
 
-const SPECS = [
-  { tag: 'OXYGEN-RESISTANT THRUSTERS', body: "Vaxon Space has a strategic partnership agreement with a DARPA-backed engine supplier developing an AO-resistant, air-breathing flight thruster. This thruster has best-in-class air-breathing performance numbers to enable Vaxon's VLEO missions." },
-  { tag: 'HIGH EFFICIENCY INLET', body: 'A novel air capture design along with AO resistant materials produces an inlet system with increased collection and capture efficiencies that allows Vaxon satellites to operate in a wide VLEO altitude range.' },
-  { tag: 'AERODYNAMIC ARCHITECTURE', body: 'An aerodynamic bus will host multiple payload configurations while providing the power required for long-duration missions across ISR, missile defense and connectivity platforms.' },
-  { tag: 'ATOMIC OXYGEN (AO) RESISTANT COATINGS', body: 'AO-resistant materials provide longevity for long-duration missions in VLEO. Additionally, a robust propulsion subsystem withstands AO while delivering best-in-class performance to counter the drag environment.' },
-]
-
-function SatelliteSpecs() {
-  return (
-    <section style={{ background: '#02020d', padding: '0 2.5rem 6rem' }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-        <div className="vx-4col" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: '1px', background: '#131323', border: '1px solid #131323' }}>
-          {SPECS.map(s => (
-            <div key={s.tag} style={{ background: '#02020d', padding: '2.5rem 2rem' }}>
-              <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.78rem', letterSpacing: '0.2em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '1rem' }}>{s.tag}</div>
-              <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.78)', lineHeight: 1.8, fontSize: '0.95rem', fontWeight: 400, margin: 0 }}>{s.body}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
 export default function TechnologyPage() {
   return (
     <>
@@ -64,7 +41,9 @@ export default function TechnologyPage() {
       <Nav active="technology" />
       <div style={{ paddingTop: 80, position: 'relative', zIndex: 1 }}>
         <SatelliteDesign />
-        <SatelliteSpecs />
+        <Suspense fallback={<div style={{ height: 500, background: '#02020d' }} />}>
+          <SatelliteCutaway />
+        </Suspense>
         <Suspense fallback={<div style={{ height: 400, background: '#02020d' }} />}>
           <ABEPDiagram />
         </Suspense>

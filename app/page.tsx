@@ -1066,7 +1066,7 @@ export function TeamModal({ member, onClose }: { member: TeamMember; onClose: ()
 const HEADSHOT_CROP: Record<string, { scale: number; pos: string; tx: string }> = {
   'Shepard':    { scale: 1.45, pos: '50% 28%', tx: '7%' },
   'Lipscomb':   { scale: 1.15, pos: '50% 22%', tx: '0%' },
-  'Williamson': { scale: 1.45, pos: '50% 24%', tx: '3%' },
+  'Williamson': { scale: 1.0,  pos: '50% 12%', tx: '0%' },
   'Anderson':   { scale: 1.0,  pos: '50% 30%', tx: '0%' },
   // Pedreiro & Shah reverted to the original default (no zoom) — their heads were getting cut off.
   'Pedreiro':   { scale: 1.0,  pos: 'center top', tx: '0%' },
@@ -1557,59 +1557,106 @@ export function PartnersSection() {
 /* ─────────────────────────────────────────────────────────────
    TRACTION SECTION
 ───────────────────────────────────────────────────────────────*/
-const TRACTION_NEXT = [
-  { h: 'Patents', b: 'Patent-pending air-breathing electric propulsion and air-intake IP forms the technical core of the Vaxon bus. Additional filings in progress.' },
-  { h: 'Flight + Test Data', b: 'Ground test campaigns are underway with our research partners. Performance data will be published here as it is cleared for release.' },
-  { h: 'Contract Wins', b: 'Government and commercial engagements are advancing. Awards and pilot programs will be announced here.' },
+type Milestone = { date: string; title: string; desc: string; image?: string; imageKind?: 'badge' | 'photo'; link?: string; future?: boolean }
+const TIMELINE: Milestone[] = [
+  {
+    date: 'JUN 2026', title: 'Compressible-flow system test at CU LASP',
+    desc: 'Ground testing of the compressible-flow system at the University of Colorado Boulder Laboratory for Atmospheric and Space Physics, advancing the inlet and propulsion subsystem toward flight.',
+    image: '/vaxon/lab-testing.jpeg', imageKind: 'photo',
+  },
+  {
+    date: 'MAY 2026', title: 'Selected for the Deep Checks Dozen',
+    desc: "Vaxon was chosen for the Deep Checks Dozen, Julian Capital's quarterly spotlight of the strongest deep-tech startups for seed investors.",
+    link: 'https://www.linkedin.com/posts/stevenpshepard_vaxonspace-deepchecks-vleo-activity-7455209302845427712-vriD',
+  },
+  {
+    date: 'JAN 2026', title: 'Starburst / IAI Catalyst Cohort 4',
+    desc: 'Selected for the IAI Catalyst cohort, powered by Starburst, focused on autonomous systems, advanced sensing, AI computing, and VLEO satellites.',
+    link: 'https://catalyst.iainorthamerica.com/',
+  },
+  {
+    date: 'OCT 2025', title: 'Awardable on the DARPA ERIS Marketplace',
+    desc: "Vaxon's ABEP proposal was made awardable on the DARPA Expedited Research Innovation System (ERIS) Marketplace on October 29, 2025, a rapid procurement pathway for DoD activities to select and award technologies via Other Transaction Authority.",
+    image: '/vaxon/darpa-eris-badge.png', imageKind: 'badge',
+  },
+  {
+    date: 'SEP 2025', title: 'Selected to Antler San Francisco',
+    desc: 'Joined the Antler San Francisco cohort, an early-stage program backing technical founders building category-defining companies.',
+    link: 'https://www.antler.co/',
+  },
+  {
+    date: 'NEXT', title: 'More milestones added as we grow',
+    desc: 'Contract wins, flight and test data, and new partnerships will appear here as they are confirmed.',
+    future: true,
+  },
 ]
 
 export function TractionSection() {
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
+    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '5rem 2.5rem' }}>
       <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', marginBottom: '0.5rem' }}>Traction</div>
       <div style={{ width: 48, height: 2, background: '#c8102e', marginBottom: '1rem' }} />
       <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.7)', lineHeight: 1.85, fontSize: '1rem', fontWeight: 400, margin: '0 0 3.5rem', maxWidth: 680 }}>
         Vaxon Space is building momentum across recognition, intellectual property, and test hardware. More is on the way.
       </p>
 
-      {/* DARPA ERIS Awardable badge */}
-      <div className="vx-about-grid" style={{ display: 'grid', gridTemplateColumns: '0.7fr 1.3fr', gap: '3rem', alignItems: 'center', border: '1px solid #1a1a2e', background: '#060614', padding: '2.5rem', marginBottom: '2.5rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <img src="/vaxon/darpa-eris-badge.png" alt="DARPA ERIS Marketplace Awardable"
-            style={{ width: 170, height: 170, objectFit: 'contain' }}
-            onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
-          />
-        </div>
-        <div>
-          <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.78rem', letterSpacing: '0.22em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '0.75rem' }}>DARPA ERIS MARKETPLACE · OCTOBER 2025</div>
-          <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.5rem,2.5vw,2.1rem)', fontWeight: 400, color: '#fff', lineHeight: 1.2, margin: '0 0 1rem' }}>Awardable on the DARPA ERIS Marketplace</h3>
-          <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.78)', lineHeight: 1.85, fontSize: '1rem', fontWeight: 400, margin: 0 }}>
-            Vaxon Space is listed as an Awardable solution on the DARPA Expedited Research Innovation System (ERIS) Marketplace, a rapid procurement pathway through which DoD activities can select and award technologies via Other Transaction Authority.
-          </p>
-        </div>
+      {/* ── MILESTONE TIMELINE (newest first) ── */}
+      <div style={{ marginBottom: '4.5rem' }}>
+        {TIMELINE.map((m, i) => {
+          const last = i === TIMELINE.length - 1
+          return (
+            <div key={m.title} style={{ display: 'flex', gap: '1.75rem', paddingBottom: last ? 0 : '2.75rem', position: 'relative' }}>
+              {/* rail */}
+              <div style={{ position: 'relative', width: 18, flexShrink: 0 }}>
+                {!last && <div style={{ position: 'absolute', left: 8, top: 18, bottom: -22, width: 2, background: 'linear-gradient(rgba(200,16,46,0.55), rgba(200,16,46,0.18))' }} />}
+                <div style={{ position: 'absolute', left: 2, top: 4, width: 14, height: 14, borderRadius: '50%', background: m.future ? '#1a1a2e' : '#c8102e', border: m.future ? '1px solid #c8102e' : 'none', boxShadow: m.future ? 'none' : '0 0 0 4px rgba(200,16,46,0.14)' }} />
+              </div>
+              {/* content */}
+              <div style={{ flex: 1, marginTop: -3, opacity: m.future ? 0.65 : 1 }}>
+                <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.66rem', letterSpacing: '0.22em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '0.5rem' }}>{m.date}</div>
+                <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.2rem,2vw,1.5rem)', fontWeight: 400, color: '#fff', lineHeight: 1.25, margin: '0 0 0.65rem' }}>{m.title}</h3>
+                <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.74)', lineHeight: 1.8, fontSize: '0.95rem', fontWeight: 400, margin: 0, maxWidth: 720 }}>{m.desc}</p>
+
+                {m.imageKind === 'badge' && m.image && (
+                  <img src={m.image} alt={m.title} style={{ width: 130, height: 130, objectFit: 'contain', marginTop: '1.25rem' }}
+                    onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                )}
+                {m.imageKind === 'photo' && m.image && (
+                  <div style={{ marginTop: '1.25rem', border: '1px solid #c8102e', boxShadow: '0 0 0 1px rgba(200,16,46,0.15)', background: '#050512', overflow: 'hidden', maxWidth: 640 }}>
+                    <img src={m.image} alt={m.title} style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}
+                      onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                  </div>
+                )}
+                {m.link && (
+                  <a href={m.link} target="_blank" rel="noopener noreferrer"
+                    style={{ display: 'inline-block', marginTop: '0.9rem', fontFamily: "'Bitter',Georgia,serif", fontSize: '0.7rem', letterSpacing: '0.15em', color: '#fff', textDecoration: 'none', fontWeight: 400, transition: 'color 0.2s' }}
+                    onMouseEnter={e => (e.currentTarget.style.color = '#c8102e')}
+                    onMouseLeave={e => (e.currentTarget.style.color = '#fff')}
+                  >LEARN MORE →</a>
+                )}
+              </div>
+            </div>
+          )
+        })}
       </div>
 
-      {/* Lab / test hardware */}
-      <div style={{ border: '1px solid #c8102e', boxShadow: '0 0 0 1px rgba(200,16,46,0.15)', background: '#050512', overflow: 'hidden', marginBottom: '4rem' }}>
-        <div style={{ background: '#02020d', aspectRatio: '16/9', overflow: 'hidden' }}>
-          <img src="/vaxon/lab-testing.jpeg" alt="Vaxon Space test hardware at CU Boulder LASP"
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-            onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
-          />
-        </div>
-        <div style={{ padding: '1.25rem 1.5rem', borderTop: '1px solid #131323' }}>
-          <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.62rem', letterSpacing: '0.18em', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase' }}>Vaxon Space test hardware at CU Boulder LASP</div>
-        </div>
-      </div>
-
-      {/* What's coming */}
-      <div className="vx-4col" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '1px', background: '#131323', border: '1px solid #131323' }}>
-        {TRACTION_NEXT.map(t => (
-          <div key={t.h} style={{ background: '#02020d', padding: '2.5rem 2rem' }}>
-            <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.78rem', letterSpacing: '0.2em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '1rem' }}>{t.h}</div>
-            <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.78)', lineHeight: 1.8, fontSize: '0.95rem', fontWeight: 400, margin: 0 }}>{t.b}</p>
+      {/* ── PROPOSALS & PATENTS ── */}
+      <div style={{ borderTop: '1px solid #131323', paddingTop: '3.5rem' }}>
+        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.5rem,2.5vw,2rem)', fontWeight: 400, color: '#fff', marginBottom: '2rem' }}>Proposals &amp; Patents</div>
+        <div className="vx-4col" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: '1px', background: '#131323', border: '1px solid #131323' }}>
+          <div style={{ background: '#02020d', padding: '2.5rem 2rem' }}>
+            <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.78rem', letterSpacing: '0.2em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '1rem' }}>Proposals</div>
+            <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.78)', lineHeight: 1.8, fontSize: '0.95rem', fontWeight: 400, margin: 0 }}>
+              Vaxon's ABEP proposal was made awardable on the DARPA ERIS Marketplace on October 29, 2025, accessible to DoD activities via Other Transaction Authority.
+            </p>
           </div>
-        ))}
+          <div style={{ background: '#02020d', padding: '2.5rem 2rem' }}>
+            <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.78rem', letterSpacing: '0.2em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '1rem' }}>Patents</div>
+            <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.78)', lineHeight: 1.8, fontSize: '0.95rem', fontWeight: 400, margin: 0 }}>
+              Compression-design inlet geometry and air-breathing electric propulsion IP, the technical core of the Vaxon bus. Patent pending across multiple U.S. provisional applications.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   )
