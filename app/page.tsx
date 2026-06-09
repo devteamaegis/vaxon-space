@@ -1584,11 +1584,6 @@ const TIMELINE: Milestone[] = [
     desc: 'Joined the Antler San Francisco cohort, an early-stage program backing technical founders building category-defining companies.',
     link: 'https://www.antler.co/',
   },
-  {
-    date: 'NEXT', title: 'More milestones added as we grow',
-    desc: 'Contract wins, flight and test data, and new partnerships will appear here as they are confirmed.',
-    future: true,
-  },
 ]
 
 export function TractionSection() {
