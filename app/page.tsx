@@ -1066,7 +1066,7 @@ export function TeamModal({ member, onClose }: { member: TeamMember; onClose: ()
 const HEADSHOT_CROP: Record<string, { scale: number; pos: string; tx: string }> = {
   'Shepard':    { scale: 1.45, pos: '50% 28%', tx: '7%' },
   'Lipscomb':   { scale: 1.15, pos: '50% 22%', tx: '0%' },
-  'Williamson': { scale: 1.0,  pos: '50% 12%', tx: '0%' },
+  'Williamson': { scale: 1.3,  pos: '50% 9%',  tx: '0%' },
   'Anderson':   { scale: 1.0,  pos: '50% 30%', tx: '0%' },
   // Pedreiro & Shah reverted to the original default (no zoom) — their heads were getting cut off.
   'Pedreiro':   { scale: 1.0,  pos: 'center top', tx: '0%' },
