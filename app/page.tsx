@@ -1694,8 +1694,8 @@ export const VX_GLOBAL_STYLE = `
     .vx-table-wrap { border: 1px solid #131323; border-radius: 4px; }
     /* "Our Team Has Worked At" logos: 3 across so all are visible */
     .vx-logos { grid-template-columns: repeat(3, 1fr) !important; }
-    /* Mission Overview box: slightly smaller + lift above the headline area on small screens */
-    .vx-mission-box { width: 210px !important; top: 1.25rem !important; right: 1.25rem !important; padding: 1.1rem 1.2rem !important; }
+    /* Mission Overview box: move to hero bottom-right so it never overlaps the top-left headline */
+    .vx-mission-box { width: 180px !important; top: auto !important; bottom: 2rem !important; right: 1.25rem !important; padding: 1rem 1.1rem !important; }
     /* Partners grid: 2 across on tablet/phone */
     .vx-partners { grid-template-columns: repeat(2, 1fr) !important; }
   }
