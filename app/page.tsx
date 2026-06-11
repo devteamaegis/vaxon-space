@@ -1514,8 +1514,7 @@ const PARTNERS = [
   { src: '/vaxon/Rutgers_University_seal.svg.png',          alt: 'Rutgers University' },
   { src: '/vaxon/Colorado_State_Rams_logo.svg.png',         alt: 'Colorado State University' },
   { src: '/vaxon/culasp.png',                               alt: 'CU Boulder LASP' },
-  { src: '/vaxon/ball_corporation_logo1438_21100jpg.png',   alt: 'Ball Aerospace' },
-  { src: '/vaxon/santaclarauniversityseal.png',             alt: 'Santa Clara University' },
+  { src: '/vaxon/logos/michigan-seal.png',                  alt: 'University of Michigan' },
   { src: '/vaxon/JHU_APL_logo.svg.png',                     alt: 'Johns Hopkins APL' },
 ]
 
