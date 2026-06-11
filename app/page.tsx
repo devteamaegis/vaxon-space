@@ -263,7 +263,7 @@ const NAV_LINKS = [
   { id: 'about',      label: 'ABOUT',      href: '/about' },
   { id: 'technology', label: 'TECHNOLOGY', href: '/technology' },
   { id: 'team',       label: 'TEAM',       href: '/team' },
-  { id: 'traction',   label: 'TRACTION',   href: '/traction' },
+  { id: 'traction',   label: 'MILESTONES', href: '/traction' },
   { id: 'news',       label: 'NEWS',       href: '/news' },
   { id: 'contact',    label: 'CONTACT',    href: '/contact' },
 ]
@@ -1588,7 +1588,7 @@ const TIMELINE: Milestone[] = [
 export function TractionSection() {
   return (
     <div style={{ maxWidth: 1100, margin: '0 auto', padding: '5rem 2.5rem' }}>
-      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', marginBottom: '0.5rem' }}>Traction</div>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', marginBottom: '0.5rem' }}>Milestones</div>
       <div style={{ width: 48, height: 2, background: '#c8102e', marginBottom: '1rem' }} />
       <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.7)', lineHeight: 1.85, fontSize: '1rem', fontWeight: 400, margin: '0 0 3.5rem', maxWidth: 680 }}>
         Vaxon Space is building momentum across recognition, intellectual property, and test hardware. More is on the way.
