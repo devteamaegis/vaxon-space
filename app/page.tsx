@@ -1427,6 +1427,22 @@ export function ContactSection() {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   INVESTORS SECTION  (logos added later)
+───────────────────────────────────────────────────────────────*/
+export function InvestorsSection() {
+  return (
+    <div style={{ borderTop: '1px solid #131323', padding: '4rem 2.5rem', maxWidth: 1200, margin: '0 auto' }}>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', textAlign: 'center', marginBottom: '1rem' }}>
+        Our Investors Come From
+      </div>
+      <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', textAlign: 'center' }}>
+        Logos coming soon
+      </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────────────────────────────────────────
    LOGOS SECTION
 ───────────────────────────────────────────────────────────────*/
 export function LogosSection() {
