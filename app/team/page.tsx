@@ -25,8 +25,8 @@ export default function TeamPage() {
       <Nav active="team" />
       <div style={{ paddingTop: 80, position: 'relative', zIndex: 1 }}>
         <TeamSection core={core} advisors={advisors} />
-        <InvestorsSection />
         <LogosSection />
+        <InvestorsSection />
         <Footer />
       </div>
     </>

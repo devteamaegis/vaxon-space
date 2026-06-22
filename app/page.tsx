@@ -301,10 +301,13 @@ export function Nav({ active }: { active: Tab }) {
             display: 'inline-block',
             padding: '0.5rem 1.1rem',
             fontSize: '0.6rem', letterSpacing: '0.2em', fontFamily: "'Inter',sans-serif",
-            color: active === t.id ? '#fff' : '#4a4a5e',
+            color: active === t.id ? '#fff' : 'rgba(255,255,255,0.62)',
             borderBottom: active === t.id ? '1px solid #c8102e' : '1px solid transparent',
-            transition: 'color 0.2s',
-          }}>{t.label}</a>
+            transition: 'color 0.2s, border-color 0.2s',
+          }}
+            onMouseEnter={e => { if (active !== t.id) { e.currentTarget.style.color = '#fff'; e.currentTarget.style.borderBottomColor = '#c8102e' } }}
+            onMouseLeave={e => { if (active !== t.id) { e.currentTarget.style.color = 'rgba(255,255,255,0.62)'; e.currentTarget.style.borderBottomColor = 'transparent' } }}
+          >{t.label}</a>
         ))}
       </div>
 
@@ -1430,13 +1433,43 @@ export function ContactSection() {
    INVESTORS SECTION  (logos added later)
 ───────────────────────────────────────────────────────────────*/
 export function InvestorsSection() {
+  const investors = [
+    { src: '/vaxon/logos/investors/spacex.png',   alt: 'SpaceX' },
+    { src: '/vaxon/logos/investors/jpl.png',      alt: 'NASA JPL' },
+    { src: '/vaxon/logos/investors/iai.png',      alt: 'Israel Aerospace Industries' },
+    { src: '/vaxon/logos/investors/tesla.png',    alt: 'Tesla' },
+    { src: '/vaxon/logos/investors/technion.png', alt: 'Technion' },
+    { src: '/vaxon/logos/investors/oxford.png',   alt: 'University of Oxford' },
+    { src: '/vaxon/logos/investors/ucsd.png',     alt: 'UC San Diego' },
+    { src: '/vaxon/logos/investors/upenn.png',    alt: 'University of Pennsylvania' },
+    { src: '/vaxon/logos/investors/nyu.png',      alt: 'NYU Stern' },
+  ]
+  const Logo = ({ src, alt }: { src: string; alt: string }) => {
+    const [hov, setHov] = useState(false)
+    return (
+      <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
+        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '1.8rem 1rem', gap: '0.75rem' }}>
+        <img src={src} alt={alt} onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
+          style={{
+            width: 100, height: 100, objectFit: 'contain',
+            opacity: hov ? 1 : 0.85, transform: hov ? 'scale(1.2)' : 'scale(1)',
+            filter: hov ? 'drop-shadow(0 0 12px rgba(200,16,46,0.5))' : 'none',
+            transition: 'opacity 0.3s, transform 0.4s cubic-bezier(0.22,1,0.36,1), filter 0.3s',
+          }} />
+        <div style={{ fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: hov ? '#fff' : 'rgba(255,255,255,0.5)', fontFamily: "'Inter',sans-serif", textAlign: 'center', lineHeight: 1.4, transition: 'color 0.3s' }}>{alt}</div>
+      </div>
+    )
+  }
   return (
     <div style={{ borderTop: '1px solid #131323', padding: '4rem 2.5rem', maxWidth: 1200, margin: '0 auto' }}>
-      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', textAlign: 'center', marginBottom: '1rem' }}>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', textAlign: 'center', marginBottom: '3rem' }}>
         Our Investors Come From
       </div>
-      <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.62rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)', textAlign: 'center' }}>
-        Logos coming soon
+      <div className="vx-logos" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)' }}>
+        {investors.map(o => <div key={o.alt}><Logo {...o} /></div>)}
+      </div>
+      <div style={{ marginTop: '2.5rem', maxWidth: 760, marginLeft: 'auto', marginRight: 'auto', fontFamily: "'Inter',sans-serif", fontSize: '0.62rem', lineHeight: 1.7, color: 'rgba(255,255,255,0.38)', textAlign: 'center' }}>
+        Affiliations reflect individual investors&apos; prior or current experience and do not imply institutional endorsement, partnership or investment.
       </div>
     </div>
   )
