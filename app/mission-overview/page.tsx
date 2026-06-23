@@ -3,54 +3,30 @@ import { useEffect, useRef, useState } from 'react'
 
 export default function MissionOverviewPage() {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [pct, setPct] = useState(0)         // % of the video buffered
-  const [ready, setReady] = useState(false)  // fully buffered -> lag-free
-  const [canThrough, setCanThrough] = useState(false)
-  const [playing, setPlaying] = useState(false)
   const [ended, setEnded] = useState(false)
+  const [needsTap, setNeedsTap] = useState(false)
 
-  // Buffer the whole file before allowing play, so playback never stalls mid-stream.
+  // Attempt autoplay with sound; if the browser blocks it, surface a tap-to-play button.
   useEffect(() => {
     const v = videoRef.current
     if (!v) return
-    const update = () => {
-      if (!v.duration || !isFinite(v.duration)) return
-      let end = 0
-      try { if (v.buffered.length) end = v.buffered.end(v.buffered.length - 1) } catch {}
-      const p = Math.min(100, Math.round((end / v.duration) * 100))
-      setPct(p)
-      if (p >= 98) setReady(true)
-    }
-    const onThrough = () => setCanThrough(true)
-    v.addEventListener('progress', update)
-    v.addEventListener('loadedmetadata', update)
-    v.addEventListener('canplaythrough', onThrough)
-    update()
-    return () => {
-      v.removeEventListener('progress', update)
-      v.removeEventListener('loadedmetadata', update)
-      v.removeEventListener('canplaythrough', onThrough)
-    }
+    v.play().catch(() => setNeedsTap(true))
   }, [])
 
   const play = () => {
-    const v = videoRef.current; if (!v) return
-    v.play().then(() => setPlaying(true)).catch(() => {})
-  }
-  const replay = () => {
-    const v = videoRef.current; if (!v) return
-    setEnded(false); v.currentTime = 0
-    v.play().then(() => setPlaying(true)).catch(() => {})
+    const v = videoRef.current
+    if (!v) return
+    setNeedsTap(false)
+    v.play().catch(() => {})
   }
 
-  const PlayCircle = ({ label }: { label: string }) => (
-    <button onClick={play} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.1rem' }}>
-      <span style={{ width: 96, height: 96, borderRadius: '50%', background: 'rgba(2,2,13,0.85)', border: '2px solid #c8102e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <svg viewBox="0 0 24 24" fill="#fff" width="38" height="38" style={{ marginLeft: 5 }}><path d="M8 5v14l11-7z" /></svg>
-      </span>
-      <span style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.65rem', letterSpacing: '0.25em', textTransform: 'uppercase', color: '#fff' }}>{label}</span>
-    </button>
-  )
+  const replay = () => {
+    const v = videoRef.current
+    if (!v) return
+    setEnded(false)
+    v.currentTime = 0
+    v.play().catch(() => {})
+  }
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
@@ -60,10 +36,7 @@ export default function MissionOverviewPage() {
         ref={videoRef}
         controls
         playsInline
-        preload="auto"
-        onPlay={() => setPlaying(true)}
-        onPause={() => setPlaying(false)}
-        onEnded={() => { setEnded(true); setPlaying(false) }}
+        onEnded={() => setEnded(true)}
         style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#000' }}
       >
         <source src="/vaxon/explainer.mp4" type="video/mp4" />
@@ -79,29 +52,16 @@ export default function MissionOverviewPage() {
         onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.6)')}
       >← Back to site</a>
 
-      {/* Buffering gate — keep the whole video loading until it can play start-to-finish with no lag */}
-      {!ready && !ended && (
-        <div style={{ position: 'absolute', inset: 0, zIndex: 9, background: 'rgba(0,0,0,0.78)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', padding: '2rem' }}>
-          <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.62rem', letterSpacing: '0.28em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)' }}>Preparing Mission Overview</div>
-          <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2.4rem,6vw,4rem)', fontWeight: 400, color: '#fff', lineHeight: 1 }}>{pct}%</div>
-          <div style={{ width: 'min(420px,70vw)', height: 3, background: 'rgba(255,255,255,0.15)', borderRadius: 2, overflow: 'hidden' }}>
-            <div style={{ width: `${pct}%`, height: '100%', background: '#c8102e', transition: 'width 0.3s' }} />
-          </div>
-          <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.58rem', letterSpacing: '0.15em', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase' }}>buffering for lag-free playback</div>
-          {canThrough && (
-            <button onClick={play} style={{ marginTop: '0.5rem', background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Inter',sans-serif", fontSize: '0.58rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)' }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#c8102e')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.5)')}
-            >Play now anyway ›</button>
-          )}
-        </div>
-      )}
-
-      {/* Ready & buffered -big play button */}
-      {ready && !playing && !ended && (
-        <div style={{ position: 'absolute', inset: 0, zIndex: 9, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <PlayCircle label="Ready · Play" />
-        </div>
+      {/* Tap to play (autoplay-blocked fallback) */}
+      {needsTap && !ended && (
+        <button onClick={play} style={{
+          position: 'absolute', inset: 0, zIndex: 9, background: 'rgba(0,0,0,0.55)', border: 'none', cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <span style={{ width: 88, height: 88, borderRadius: '50%', background: 'rgba(2,2,13,0.85)', border: '2px solid #c8102e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg viewBox="0 0 24 24" fill="#fff" width="34" height="34" style={{ marginLeft: 5 }}><path d="M8 5v14l11-7z" /></svg>
+          </span>
+        </button>
       )}
 
       {/* End-of-video overlay -return button */}
