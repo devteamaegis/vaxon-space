@@ -1462,9 +1462,14 @@ export function InvestorsSection() {
   }
   return (
     <div style={{ borderTop: '1px solid #131323', padding: '4rem 2.5rem', maxWidth: 1200, margin: '0 auto' }}>
-      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', textAlign: 'center', marginBottom: '3rem' }}>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', textAlign: 'center', marginBottom: '0.85rem' }}>
         Our Investors Come From
       </div>
+      <a href="https://www.linkedin.com/posts/stevenpshepard_vaxonspace-aexodus-deeptech-activity-7475812642117537793-4eAx" target="_blank" rel="noopener noreferrer"
+        style={{ display: 'block', textAlign: 'center', marginBottom: '2.75rem', fontFamily: "'Inter',sans-serif", fontSize: '0.64rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', textDecoration: 'none', transition: 'color 0.2s' }}
+        onMouseEnter={e => (e.currentTarget.style.color = '#c8102e')}
+        onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.55)')}
+      >Vaxon Space at Aexodus →</a>
       <div className="vx-logos" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)' }}>
         {investors.map(o => <div key={o.alt}><Logo {...o} /></div>)}
       </div>
