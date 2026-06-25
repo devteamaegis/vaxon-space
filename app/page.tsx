@@ -131,6 +131,13 @@ export const NEWS: NewsItem[] = [
     image: '/vaxon/ascend-2026.jpg',
   },
   {
+    date: 'JUN 24 2026', title: 'Dr. Shepard Presents Vaxon Space at Aexodus',
+    body: "Vaxon Space CEO Dr. Steven P. Shepard presented the company's air-breathing VLEO satellite program at Aexodus in San Francisco, sharing Vaxon's mission across missile defense, remote sensing and connectivity with the deep-tech and investor community.",
+    source: 'LINKEDIN',
+    link: 'https://www.linkedin.com/posts/stevenpshepard_vaxonspace-aexodus-deeptech-activity-7475812642117537793-4eAx',
+    image: '/vaxon/aexodus-talk.jpg',
+  },
+  {
     date: 'JUN 01 2026', title: 'Bellatrix Aerospace to Build Korean VLEO Demonstration Satellite',
     body: 'India-based Bellatrix Aerospace was selected by Korean optical-payload maker TelePIX to build a very low Earth orbit demonstration satellite, supplying the bus and air-breathing electric propulsion while TelePIX provides its Chouette optical payload. Targeting operations between 180 and 230 km with a launch no earlier than 2028, the deal reflects accelerating global momentum behind ABEP, the same domain Vaxon Space is advancing for US defense and commercial customers.',
     source: 'PAYLOAD',
@@ -1462,14 +1469,9 @@ export function InvestorsSection() {
   }
   return (
     <div style={{ borderTop: '1px solid #131323', padding: '4rem 2.5rem', maxWidth: 1200, margin: '0 auto' }}>
-      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', textAlign: 'center', marginBottom: '0.85rem' }}>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', textAlign: 'center', marginBottom: '3rem' }}>
         Our Investors Come From
       </div>
-      <a href="https://www.linkedin.com/posts/stevenpshepard_vaxonspace-aexodus-deeptech-activity-7475812642117537793-4eAx" target="_blank" rel="noopener noreferrer"
-        style={{ display: 'block', textAlign: 'center', marginBottom: '2.75rem', fontFamily: "'Inter',sans-serif", fontSize: '0.64rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', textDecoration: 'none', transition: 'color 0.2s' }}
-        onMouseEnter={e => (e.currentTarget.style.color = '#c8102e')}
-        onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.55)')}
-      >Vaxon Space at Aexodus →</a>
       <div className="vx-logos" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)' }}>
         {investors.map(o => <div key={o.alt}><Logo {...o} /></div>)}
       </div>
