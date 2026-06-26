@@ -53,7 +53,7 @@ export type TeamMember = {
 }
 export type NewsItem = {
   date: string; title: string; body: string
-  source: string; link?: string; image?: string
+  source: string; link?: string; image?: string; imgPos?: string
   link2?: string; link2Label?: string
 }
 
@@ -135,7 +135,7 @@ export const NEWS: NewsItem[] = [
     body: "Vaxon Space CEO Dr. Steven P. Shepard presented the company's air-breathing VLEO satellite program at Aexodus in San Francisco, sharing Vaxon's mission across missile defense, remote sensing and connectivity with the deep-tech and investor community.",
     source: 'LINKEDIN',
     link: 'https://www.linkedin.com/posts/stevenpshepard_vaxonspace-aexodus-deeptech-activity-7475812642117537793-4eAx',
-    image: '/vaxon/aexodus-talk.jpg',
+    image: '/vaxon/aexodus-talk.jpg', imgPos: '0% 50%',
   },
   {
     date: 'JUN 01 2026', title: 'Bellatrix Aerospace to Build Korean VLEO Demonstration Satellite',
@@ -1315,7 +1315,7 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
             >
               <div style={{ aspectRatio: '1/1', overflow: 'hidden', background: '#050512' }}>
                 {n.image
-                  ? <img src={n.image} alt={n.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
+                  ? <img src={n.image} alt={n.title} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: n.imgPos || 'center', transition: 'transform 0.4s' }}
                       onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.05)')}
                       onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
                     />
