@@ -441,6 +441,9 @@ function MissionOverlay({ rect, onClose }: { rect: { top: number; left: number; 
 ───────────────────────────────────────────────────────────────*/
 function HomeSection() {
   const [videoOk, setVideoOk] = useState(false)
+  // Reveal hero text/box shortly after mount so a slow-buffering hero video never
+  // leaves a blank screen on first (uncached) visit. The video still fades in on canplay.
+  const [shown, setShown] = useState(false)
   const [showStory, setShowStory] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const missionBtnRef = useRef<HTMLButtonElement>(null)
@@ -458,6 +461,12 @@ function HomeSection() {
     const v = videoRef.current
     if (!v) return
     v.play().catch(() => {})
+  }, [])
+
+  // Show hero content quickly regardless of video buffering
+  useEffect(() => {
+    const t = setTimeout(() => setShown(true), 400)
+    return () => clearTimeout(t)
   }, [])
 
   return (
@@ -501,7 +510,7 @@ function HomeSection() {
           fontSize: 'clamp(1.4rem,2.8vw,2.8rem)', color: '#fff',
           fontFamily: "'Bitter',Georgia,serif", fontWeight: 400,
           lineHeight: 1.15, maxWidth: 640,
-          opacity: videoOk ? 1 : 0,
+          opacity: (videoOk || shown) ? 1 : 0,
           transition: 'opacity 1s ease 0.6s',
         }}>
           Real-time missile defense and connectivity today — and AI tomorrow
@@ -515,7 +524,7 @@ function HomeSection() {
           background: 'rgba(2,2,13,0.72)', border: '1px solid #c8102e',
           boxShadow: '0 0 0 1px rgba(200,16,46,0.25), 0 8px 30px rgba(0,0,0,0.5)',
           animation: 'vx-float 4s ease-in-out infinite',
-          opacity: videoOk ? 1 : 0, transition: 'opacity 1s ease 0.8s, box-shadow 0.25s, transform 0.25s',
+          opacity: (videoOk || shown) ? 1 : 0, transition: 'opacity 1s ease 0.8s, box-shadow 0.25s, transform 0.25s',
           cursor: 'pointer',
         }}
           onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 0 1px rgba(200,16,46,0.6), 0 0 28px rgba(200,16,46,0.5)'; e.currentTarget.style.transform = 'translateY(-3px)' }}
@@ -1840,7 +1849,6 @@ export default function VaxonPage() {
 
         <Section id="about">
           <AboutSection />
-          <LogosSection />
         </Section>
 
         <Section id="team">

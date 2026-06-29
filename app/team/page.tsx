@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { StarField, Nav, TeamSection, InvestorsSection, LogosSection, Footer, TeamMember, CORE_TEAM, ADVISORS, VX_GLOBAL_STYLE } from '../page'
+import { StarField, Nav, TeamSection, InvestorsSection, PartnersSection, LogosSection, Footer, TeamMember, CORE_TEAM, ADVISORS, VX_GLOBAL_STYLE } from '../page'
 
 export default function TeamPage() {
   const [cmsCoreTeam, setCmsCoreTeam] = useState<TeamMember[] | null>(null)
@@ -27,6 +27,7 @@ export default function TeamPage() {
         <TeamSection core={core} advisors={advisors} />
         <LogosSection />
         <InvestorsSection />
+        <PartnersSection />
         <Footer />
       </div>
     </>

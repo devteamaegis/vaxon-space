@@ -1,5 +1,5 @@
 'use client'
-import { StarField, Nav, AboutSection, LogosSection, Footer, VX_GLOBAL_STYLE } from '../page'
+import { StarField, Nav, AboutSection, Footer, VX_GLOBAL_STYLE } from '../page'
 
 export default function AboutPage() {
   return (
@@ -9,7 +9,6 @@ export default function AboutPage() {
       <Nav active="about" />
       <div style={{ paddingTop: 80, position: 'relative', zIndex: 1 }}>
         <AboutSection />
-        <LogosSection />
         <Footer />
       </div>
     </>

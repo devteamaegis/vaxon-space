@@ -1,5 +1,5 @@
 'use client'
-import { StarField, Nav, TractionSection, PartnersSection, Footer, VX_GLOBAL_STYLE } from '../page'
+import { StarField, Nav, TractionSection, Footer, VX_GLOBAL_STYLE } from '../page'
 
 export default function TractionPage() {
   return (
@@ -9,7 +9,6 @@ export default function TractionPage() {
       <Nav active="traction" />
       <div style={{ paddingTop: 80, position: 'relative', zIndex: 1 }}>
         <TractionSection />
-        <PartnersSection />
         <Footer />
       </div>
     </>
