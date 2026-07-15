@@ -131,6 +131,13 @@ export const NEWS: NewsItem[] = [
     image: '/vaxon/ascend-2026.jpg',
   },
   {
+    date: 'JUN 29 2026', title: 'China Establishes VLEO Industry Alliance as Satellites Demonstrate Sustained Low-Orbit Operations',
+    body: 'China has formed a national VLEO Technology Innovation and Industry Development Alliance of 34 member organizations, while satellites including Shiyan-25 and Qiankun-1 demonstrate sustained operations below 300 km. The move signals a shift from experimental missions to systematic programs, underscoring the strategic race in very low Earth orbit that Vaxon Space is advancing for US defense and commercial customers.',
+    source: 'SPACENEWS',
+    link: 'https://spacenews.com/china-establishes-vleo-industry-alliance-as-satellites-demonstrate-sustained-low-orbit-operations/',
+    image: '/vaxon/china-vleo-alliance.jpg',
+  },
+  {
     date: 'JUN 24 2026', title: 'Dr. Shepard Presents Vaxon Space at Aexodus',
     body: "Vaxon Space CEO Dr. Steven P. Shepard presented the company's air-breathing VLEO satellite program at Aexodus in San Francisco, sharing Vaxon's mission across missile defense, remote sensing and connectivity with the deep-tech and investor community.",
     source: 'LINKEDIN',
