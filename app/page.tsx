@@ -131,6 +131,13 @@ export const NEWS: NewsItem[] = [
     image: '/vaxon/ascend-2026.jpg',
   },
   {
+    date: 'JUL 2026', title: 'Aerospace America Charts the Rise of Orbital Data Centers',
+    body: "AIAA's Aerospace America devotes its July to September 2026 cover to the rise of orbital data centers and what it would take to move computing into space. The same issue reports on plasma thruster testing, the electric propulsion class at the core of Vaxon's air-breathing platform. As AI drives demand for power-rich, low-latency infrastructure in orbit, Vaxon's VLEO satellites are built for that future, pairing sustained operation in very low Earth orbit with the proximity that space-based compute and connectivity will depend on.",
+    source: 'AEROSPACE AMERICA / AIAA',
+    link: 'https://aerospaceamerica.aiaa.org/features/inside-the-space-data-race/',
+    image: '/vaxon/aerospace-america-odc.jpg',
+  },
+  {
     date: 'JUN 29 2026', title: 'China Establishes VLEO Industry Alliance as Satellites Demonstrate Sustained Low-Orbit Operations',
     body: 'China has formed a national VLEO Technology Innovation and Industry Development Alliance of 34 member organizations, while satellites including Shiyan-25 and Qiankun-1 demonstrate sustained operations below 300 km. The move signals a shift from experimental missions to systematic programs, underscoring the strategic race in very low Earth orbit that Vaxon Space is advancing for US defense and commercial customers.',
     source: 'SPACENEWS',
