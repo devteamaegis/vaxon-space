@@ -45,7 +45,7 @@ function CountUp({ target, suffix = '', duration = 1800, visible }: {
 /* ─────────────────────────────────────────────────────────────
    TYPES
 ───────────────────────────────────────────────────────────────*/
-type Tab = 'home' | 'about' | 'technology' | 'team' | 'traction' | 'news' | 'contact' | 'vleo'
+type Tab = 'home' | 'about' | 'technology' | 'team' | 'careers' | 'traction' | 'news' | 'contact' | 'vleo'
 
 export type TeamMember = {
   name: string; role: string; image?: string
@@ -284,6 +284,7 @@ const NAV_LINKS = [
   { id: 'about',      label: 'ABOUT',      href: '/about' },
   { id: 'technology', label: 'TECHNOLOGY', href: '/technology' },
   { id: 'team',       label: 'TEAM',       href: '/team' },
+  { id: 'careers',    label: 'CAREERS',    href: '/careers' },
   { id: 'traction',   label: 'MILESTONES', href: '/traction' },
   { id: 'news',       label: 'NEWS',       href: '/news' },
   { id: 'contact',    label: 'CONTACT',    href: '/contact' },
@@ -1366,6 +1367,155 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
 /* ─────────────────────────────────────────────────────────────
    CONTACT SECTION
 ───────────────────────────────────────────────────────────────*/
+/* ─────────────────────────────────────────────────────────────
+   CAREERS
+───────────────────────────────────────────────────────────────*/
+type Position = {
+  title: string; location: string; mode: string; type: string
+  summary: string; roleDescription: string; qualifications: string[]
+  applyUrl: string
+}
+
+const CAREERS_EMAIL = 'stevenpshepard@vaxonspace.com'
+
+const POSITIONS: Position[] = [
+  {
+    title: 'Principal Spacecraft Design Engineer',
+    location: 'San Jose, California',
+    mode: 'On-site',
+    type: 'Full-time',
+    summary: "Vaxon Space is hiring a Principal Spacecraft Design Engineer to help design and build Vaxon Space's next-generation VLEO spacecraft. This is a senior, hands-on role for someone who has helped take spacecraft from concept through integration, testing and launch. The position will span spacecraft architecture, CAD, structures, stress and loads analysis, mission CONOPS, manufacturing, launch integration and on-orbit readiness. We're looking for an experienced engineer who can own major design decisions while working directly alongside our technical team to turn ambitious VLEO concepts into flight hardware.",
+    roleDescription: "The Principal Spacecraft Design Engineer will lead end-to-end spacecraft architecture and design for VLEO missions, from early concept development through detailed design, integration, and test. This full-time, on-site role in San Jose, CA involves driving mechanical, electrical, and system-level design decisions, developing CAD models and engineering drawings, and coordinating interfaces between subsystems. The engineer will collaborate closely with multidisciplinary teams to perform trade studies, analysis, and design reviews, ensuring designs meet mission, reliability, manufacturability, and cost requirements. Day-to-day responsibilities include mentoring other engineers, working with suppliers and manufacturing partners, supporting hardware build and integration in the lab, and contributing to continuous improvement of design standards and processes.",
+    qualifications: [
+      'Strong Design Engineering and Product Design skills for complex spacecraft systems and components.',
+      'Mechanical Engineering and Computer-Aided Design (CAD) skills for structural design, modeling, and detailed drawings.',
+      'Electrical Engineering skills for spacecraft power, avionics, and payload interfaces.',
+      'Experience with spacecraft or aerospace systems engineering, including requirements development, trade studies, and verification and validation.',
+      'Proficiency with industry-standard CAD and analysis tools (e.g., SolidWorks, NX, CATIA, ANSYS, or similar).',
+      'Background in designing for space environments, including thermal, vibration, radiation, and reliability considerations.',
+      'Ability to lead cross-functional technical teams, mentor colleagues, and communicate clearly with stakeholders at all levels.',
+      "Bachelor's degree in Aerospace Engineering, Mechanical Engineering, Electrical Engineering, or a related field; advanced degree preferred.",
+      'Experience with rapid prototyping, hardware testing, and working in a fast-paced startup or innovation-focused environment is beneficial.',
+    ],
+    applyUrl: 'https://www.linkedin.com/jobs/view/4447659510/?trackingId=z1pEpfmOTW%2BeWLfp1zIDew%3D%3D',
+  },
+]
+
+function JobCard({ p }: { p: Position }) {
+  const [open, setOpen] = useState(false)
+  const meta = [p.location, p.mode, p.type]
+  return (
+    <div style={{ border: '1px solid #1a1a2e', background: '#050512', marginBottom: '1.25rem', transition: 'border-color 0.2s' }}>
+      {/* Header row — toggles details */}
+      <button onClick={() => setOpen(o => !o)} aria-expanded={open} style={{
+        width: '100%', textAlign: 'left', background: 'none', border: 'none', cursor: 'pointer',
+        padding: '1.75rem 1.75rem 1.5rem', display: 'block', font: 'inherit',
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
+          <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.25rem,2.2vw,1.7rem)', fontWeight: 400, color: '#fff', margin: 0, lineHeight: 1.2 }}>
+            {p.title}
+          </h3>
+          <span style={{ flexShrink: 0, width: 30, height: 30, border: '1px solid #2a2a3e', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#c8102e', fontSize: '1.1rem', lineHeight: 1, transition: 'transform 0.25s, border-color 0.2s', transform: open ? 'rotate(45deg)' : 'none' }}>+</span>
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', margin: '1rem 0 0' }}>
+          {meta.map(m => (
+            <span key={m} style={{ fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', fontFamily: "'Inter',sans-serif", border: '1px solid #1a1a2e', padding: '0.35rem 0.7rem', background: 'rgba(255,255,255,0.02)' }}>{m}</span>
+          ))}
+        </div>
+        <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.72)', lineHeight: 1.85, fontSize: '0.92rem', fontWeight: 400, margin: '1.25rem 0 0' }}>
+          {p.summary}
+        </p>
+      </button>
+
+      {/* Expanded details */}
+      {open && (
+        <div style={{ padding: '0 1.75rem 1.75rem' }}>
+          <div style={{ borderTop: '1px solid #131323', paddingTop: '1.5rem' }}>
+            <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.62rem', letterSpacing: '0.22em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '0.85rem' }}>Role Description</div>
+            <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.72)', lineHeight: 1.9, fontSize: '0.92rem', fontWeight: 400, margin: '0 0 2rem' }}>
+              {p.roleDescription}
+            </p>
+            <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.62rem', letterSpacing: '0.22em', color: '#c8102e', textTransform: 'uppercase', marginBottom: '0.85rem' }}>Qualifications</div>
+            <ul style={{ margin: '0 0 2rem', padding: 0, listStyle: 'none' }}>
+              {p.qualifications.map((q, i) => (
+                <li key={i} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', marginBottom: '0.75rem', fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.72)', lineHeight: 1.7, fontSize: '0.9rem' }}>
+                  <span style={{ flexShrink: 0, width: 5, height: 5, borderRadius: '50%', background: '#c8102e', marginTop: '0.55rem' }} />
+                  <span>{q}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {/* Apply actions — always visible */}
+      <div style={{ padding: '0 1.75rem 1.75rem', display: 'flex', flexWrap: 'wrap', gap: '0.875rem', alignItems: 'center' }}>
+        <a href={p.applyUrl} target="_blank" rel="noopener noreferrer" style={{
+          background: '#c8102e', color: '#fff', textDecoration: 'none',
+          padding: '0.85rem 2rem', fontSize: '0.62rem', fontWeight: 600, letterSpacing: '0.2em',
+          textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", display: 'inline-block',
+          boxShadow: '0 0 24px rgba(200,16,46,0.3)', transition: 'background 0.2s, box-shadow 0.2s',
+        }}
+          onMouseEnter={e => { e.currentTarget.style.background = '#a50d26'; e.currentTarget.style.boxShadow = '0 0 40px rgba(200,16,46,0.45)' }}
+          onMouseLeave={e => { e.currentTarget.style.background = '#c8102e'; e.currentTarget.style.boxShadow = '0 0 24px rgba(200,16,46,0.3)' }}
+        >Apply on LinkedIn ↗</a>
+        <a href={`mailto:${CAREERS_EMAIL}?subject=${encodeURIComponent('Application — ' + p.title)}`} style={{
+          color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontFamily: "'Inter',sans-serif",
+          fontSize: '0.62rem', letterSpacing: '0.14em', textTransform: 'uppercase', transition: 'color 0.2s',
+        }}
+          onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+          onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.7)')}
+        >or email your resume to Dr. Steven Shepard</a>
+      </div>
+    </div>
+  )
+}
+
+export function CareersSection() {
+  return (
+    <div>
+      {/* Hero banner */}
+      <div style={{ background: 'linear-gradient(135deg, #0a0005 0%, #02020d 40%, #0d0208 100%)', borderBottom: '1px solid #131323', padding: '5rem 2.5rem 4rem' }}>
+        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+          <div style={{ fontSize: '1.15rem', letterSpacing: '0.3em', color: '#c8102e', textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", marginBottom: '0.75rem' }}>CAREERS</div>
+          <div style={{ width: 36, height: 1, background: '#c8102e', marginBottom: '2.5rem', opacity: 0.4 }} />
+          <h2 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(2rem,3.5vw,3.2rem)', fontWeight: 400, color: '#fff', margin: '0 0 1.25rem', lineHeight: 1.1 }}>
+            Build the Future of VLEO
+          </h2>
+          <p style={{ color: '#6b7280', lineHeight: 1.9, fontSize: '0.95rem', margin: 0, maxWidth: 560 }}>
+            Vaxon Space is engineering air-breathing satellites that operate where no conventional spacecraft can survive. Join a small, senior team turning ambitious VLEO concepts into flight hardware.
+          </p>
+        </div>
+      </div>
+
+      {/* Open positions */}
+      <div style={{ maxWidth: 1000, margin: '0 auto', padding: '4rem 2.5rem' }}>
+        <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.7rem', letterSpacing: '0.28em', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', marginBottom: '2rem' }}>Open Positions</div>
+        {POSITIONS.map(p => <JobCard key={p.title} p={p} />)}
+
+        {/* Open application */}
+        <div style={{ marginTop: '3.5rem', border: '1px solid #131323', background: 'rgba(200,16,46,0.03)', padding: '2.5rem 2rem', textAlign: 'center' }}>
+          <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.3rem,2.4vw,1.8rem)', fontWeight: 400, color: '#fff', margin: '0 0 0.75rem' }}>
+            Want to join but don't see your position?
+          </div>
+          <p style={{ color: '#6b7280', lineHeight: 1.8, fontSize: '0.9rem', margin: '0 0 1.75rem' }}>
+            Email your resume and an introduction and we'll be in touch.
+          </p>
+          <a href={`mailto:${CAREERS_EMAIL}?subject=${encodeURIComponent('Open application — Vaxon Space')}`} style={{
+            background: '#c8102e', color: '#fff', textDecoration: 'none',
+            padding: '0.9rem 2.25rem', fontSize: '0.62rem', fontWeight: 600, letterSpacing: '0.2em',
+            textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", display: 'inline-block',
+            transition: 'background 0.2s',
+          }}
+            onMouseEnter={e => (e.currentTarget.style.background = '#a50d26')}
+            onMouseLeave={e => (e.currentTarget.style.background = '#c8102e')}
+          >{CAREERS_EMAIL}</a>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export function ContactSection() {
   const [f, setF] = useState({ name: '', email: '', org: '', msg: '' })
   const [sent, setSent] = useState(false)
