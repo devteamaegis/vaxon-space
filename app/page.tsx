@@ -1623,6 +1623,9 @@ export function InvestorsSection() {
     { src: '/vaxon/logos/investors/ucsd.png',     alt: 'UC San Diego' },
     { src: '/vaxon/logos/investors/upenn.png',    alt: 'University of Pennsylvania' },
     { src: '/vaxon/logos/investors/nyu.png',      alt: 'NYU Stern' },
+    { src: '/vaxon/logos/investors/stellar.png',  alt: 'Stellar Ventures' },
+    { src: '/vaxon/logos/investors/ciri.png',     alt: 'Cook Inlet Region, Inc.' },
+    { src: '/vaxon/logos/investors/context.png',  alt: 'Context Ventures' },
   ]
   const Logo = ({ src, alt }: { src: string; alt: string }) => {
     const [hov, setHov] = useState(false)
@@ -1751,13 +1754,13 @@ function PartnerCell({ src, alt }: { src: string; alt: string }) {
   const [hov, setHov] = useState(false)
   return (
     <div onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
-      style={{ background: '#02020d', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', padding: '3.5rem 1.5rem', minHeight: 280 }}>
+      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1.25rem', padding: '2rem 1rem' }}>
       <img src={src} alt={alt}
         style={{
-          width: 170, height: 170, objectFit: 'contain',
-          opacity: hov ? 1 : 0.9,
-          transform: hov ? 'translateY(-10px) scale(1.14)' : 'none',
-          filter: hov ? 'drop-shadow(0 0 18px rgba(200,16,46,0.55))' : 'none',
+          width: '100%', maxWidth: 170, height: 170, objectFit: 'contain',
+          opacity: hov ? 1 : 0.85,
+          transform: hov ? 'scale(1.14)' : 'scale(1)',
+          filter: hov ? 'drop-shadow(0 0 16px rgba(200,16,46,0.5))' : 'none',
           transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1), filter 0.3s, opacity 0.3s',
         }}
         onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
@@ -1770,12 +1773,12 @@ function PartnerCell({ src, alt }: { src: string; alt: string }) {
 export function PartnersSection() {
   return (
     <div style={{ borderTop: '1px solid #131323', padding: '4rem 2.5rem', maxWidth: 1200, margin: '0 auto' }}>
-      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', marginBottom: '0.5rem' }}>Partners</div>
-      <div style={{ width: 48, height: 2, background: '#c8102e', marginBottom: '1rem' }} />
-      <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.6)', lineHeight: 1.85, fontSize: '0.95rem', fontWeight: 400, margin: '0 0 3rem', maxWidth: 640 }}>
+      <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', marginBottom: '0.5rem', textAlign: 'center' }}>Partners</div>
+      <div style={{ width: 48, height: 2, background: '#c8102e', margin: '0 auto 1rem' }} />
+      <p style={{ fontFamily: "'Bitter',Georgia,serif", color: 'rgba(255,255,255,0.6)', lineHeight: 1.85, fontSize: '0.95rem', fontWeight: 400, margin: '0 auto 3rem', maxWidth: 640, textAlign: 'center' }}>
         Vaxon Space collaborates with leading universities, national laboratories, and industry partners to advance VLEO propulsion and flight hardware.
       </p>
-      <div className="vx-partners" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2px', background: '#0d0d1a', border: '1px solid #131323' }}>
+      <div className="vx-partners" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)' }}>
         {PARTNERS.map(p => <PartnerCell key={p.alt} {...p} />)}
       </div>
     </div>
