@@ -131,6 +131,13 @@ export const NEWS: NewsItem[] = [
     image: '/vaxon/ascend-2026.jpg',
   },
   {
+    date: 'AUG 11 2026', title: 'Dr. Shepard Presents at Starburst / IAI Demo Day',
+    body: "Vaxon Space CEO Dr. Steven P. Shepard presented at the Starburst and IAI (Israel Aerospace Industries) Demo Day, marking the culmination of the company's six-month cohort. He shared Vaxon's progress building and testing its proprietary air-breathing inlet and designing its VLEO satellite bus for missile defense, AI connectivity and enhanced ISR capabilities.",
+    source: 'LINKEDIN',
+    link: 'https://www.linkedin.com/feed/update/urn:li:activity:7492894358648639489/',
+    image: '/vaxon/starburst-iai-demo.jpg',
+  },
+  {
     date: 'JUL 2026', title: 'Aerospace America Charts the Rise of Orbital Data Centers',
     body: "AIAA's Aerospace America devotes its July to September 2026 cover to the rise of orbital data centers and what it would take to move computing into space. The same issue reports on plasma thruster testing, the electric propulsion class at the core of Vaxon's air-breathing platform. As AI drives demand for power-rich, low-latency infrastructure in orbit, Vaxon's VLEO satellites are built for that future, pairing sustained operation in very low Earth orbit with the proximity that space-based compute and connectivity will depend on.",
     source: 'AEROSPACE AMERICA / AIAA',
