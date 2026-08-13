@@ -115,7 +115,8 @@ export const STRATEGIC_ADVISORS: TeamMember[] = [
     name: 'Sarah Parker', role: 'Outreach & Partnerships',
     image: '/vaxon/team-parker.jpg',
     linkedin: 'https://www.linkedin.com/in/sarahmitchellparker/',
-    creds: [],
+    bio: 'Sarah Parker brings 20+ years of experience in spacecraft development, satellite systems and space program leadership. Her career spans Lockheed Martin, NASA, Planet and Xona Space, with experience taking advanced space technologies from concept through execution. She advises Vaxon on spacecraft strategy, partnerships and the development of next-generation VLEO systems.',
+    creds: ['20+ years in satellite design and mission development', 'Experience: Lockheed Martin, NASA, Planet, Xona Space', 'Spacecraft development and cross-functional program leadership', 'Advisor: Strategy, partnerships and mission development'],
     isStrategic: true,
   },
   {
