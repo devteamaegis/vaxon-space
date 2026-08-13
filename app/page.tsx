@@ -1383,7 +1383,6 @@ type Position = {
   applyUrl: string
 }
 
-const CAREERS_EMAIL = 'stevenpshepard@vaxonspace.com'
 
 const POSITIONS: Position[] = [
   {
@@ -1466,13 +1465,6 @@ function JobCard({ p }: { p: Position }) {
           onMouseEnter={e => { e.currentTarget.style.background = '#a50d26'; e.currentTarget.style.boxShadow = '0 0 40px rgba(200,16,46,0.45)' }}
           onMouseLeave={e => { e.currentTarget.style.background = '#c8102e'; e.currentTarget.style.boxShadow = '0 0 24px rgba(200,16,46,0.3)' }}
         >Apply on LinkedIn ↗</a>
-        <a href={`mailto:${CAREERS_EMAIL}?subject=${encodeURIComponent('Application — ' + p.title)}`} style={{
-          color: 'rgba(255,255,255,0.7)', textDecoration: 'none', fontFamily: "'Inter',sans-serif",
-          fontSize: '0.62rem', letterSpacing: '0.14em', textTransform: 'uppercase', transition: 'color 0.2s',
-        }}
-          onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
-          onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.7)')}
-        >or email your resume to Dr. Steven Shepard</a>
       </div>
     </div>
   )
@@ -1499,25 +1491,6 @@ export function CareersSection() {
       <div style={{ maxWidth: 1000, margin: '0 auto', padding: '4rem 2.5rem' }}>
         <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.7rem', letterSpacing: '0.28em', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', marginBottom: '2rem' }}>Open Positions</div>
         {POSITIONS.map(p => <JobCard key={p.title} p={p} />)}
-
-        {/* Open application */}
-        <div style={{ marginTop: '3.5rem', border: '1px solid #131323', background: 'rgba(200,16,46,0.03)', padding: '2.5rem 2rem', textAlign: 'center' }}>
-          <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.3rem,2.4vw,1.8rem)', fontWeight: 400, color: '#fff', margin: '0 0 0.75rem' }}>
-            Want to join but don't see your position?
-          </div>
-          <p style={{ color: '#6b7280', lineHeight: 1.8, fontSize: '0.9rem', margin: '0 0 1.75rem' }}>
-            Email your resume and an introduction and we'll be in touch.
-          </p>
-          <a href={`mailto:${CAREERS_EMAIL}?subject=${encodeURIComponent('Open application — Vaxon Space')}`} style={{
-            background: '#c8102e', color: '#fff', textDecoration: 'none',
-            padding: '0.9rem 2.25rem', fontSize: '0.62rem', fontWeight: 600, letterSpacing: '0.2em',
-            textTransform: 'uppercase', fontFamily: "'Inter',sans-serif", display: 'inline-block',
-            transition: 'background 0.2s',
-          }}
-            onMouseEnter={e => (e.currentTarget.style.background = '#a50d26')}
-            onMouseLeave={e => (e.currentTarget.style.background = '#c8102e')}
-          >{CAREERS_EMAIL}</a>
-        </div>
       </div>
     </div>
   )
