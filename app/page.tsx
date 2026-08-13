@@ -112,14 +112,14 @@ export const ADVISORS: TeamMember[] = [
 
 export const STRATEGIC_ADVISORS: TeamMember[] = [
   {
-    name: 'Sarah Parker', role: 'Strategic Advisor, Outreach & Partnerships',
+    name: 'Sarah Parker', role: 'Outreach & Partnerships',
     image: '/vaxon/team-parker.jpg',
     linkedin: 'https://www.linkedin.com/in/sarahmitchellparker/',
-    creds: ['Outreach & Partnerships'],
+    creds: [],
     isStrategic: true,
   },
   {
-    name: 'Dr. Iain Boyd', role: 'Strategic Advisor, VLEO',
+    name: 'Dr. Iain Boyd', role: 'VLEO',
     image: '/vaxon/team-boyd.png',
     linkedin: 'https://www.linkedin.com/in/iain-boyd/',
     bio: 'With 30+ years in hypersonics and space plasma physics and 200+ peer-reviewed publications, Dr. Boyd directs the Center for National Security Initiatives at CU Boulder and is among the world\'s foremost VLEO propulsion experts.',
