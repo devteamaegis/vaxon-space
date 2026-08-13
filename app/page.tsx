@@ -49,7 +49,7 @@ type Tab = 'home' | 'about' | 'technology' | 'team' | 'careers' | 'traction' | '
 
 export type TeamMember = {
   name: string; role: string; image?: string
-  creds: string[]; linkedin?: string; bio?: string; isAdvisor?: boolean
+  creds: string[]; linkedin?: string; bio?: string; isAdvisor?: boolean; isStrategic?: boolean
 }
 export type NewsItem = {
   date: string; title: string; body: string
@@ -108,13 +108,23 @@ export const ADVISORS: TeamMember[] = [
     creds: ['Retired USAF Program Manager', 'Deputy PM for SATCOM and AEHF', 'Chief of Flight Sciences and Payload Analysis at NRO'],
     isAdvisor: true,
   },
+]
+
+export const STRATEGIC_ADVISORS: TeamMember[] = [
   {
-    name: 'Dr. Iain Boyd', role: 'Advisory Board',
+    name: 'Sarah Parker', role: 'Strategic Advisor, Outreach & Partnerships',
+    image: '/vaxon/team-parker.jpg',
+    linkedin: 'https://www.linkedin.com/in/sarahmitchellparker/',
+    creds: ['Outreach & Partnerships'],
+    isStrategic: true,
+  },
+  {
+    name: 'Dr. Iain Boyd', role: 'Strategic Advisor, VLEO',
     image: '/vaxon/team-boyd.png',
     linkedin: 'https://www.linkedin.com/in/iain-boyd/',
     bio: 'With 30+ years in hypersonics and space plasma physics and 200+ peer-reviewed publications, Dr. Boyd directs the Center for National Security Initiatives at CU Boulder and is among the world\'s foremost VLEO propulsion experts.',
     creds: ['30+ years in hypersonics and space plasma physics', 'Professor, Aerospace Engineering Sciences, CU Boulder', 'Director, Center for National Security Initiatives', '200+ peer-reviewed publications'],
-    isAdvisor: true,
+    isStrategic: true,
   },
 ]
 
@@ -1070,7 +1080,7 @@ export function TeamModal({ member, onClose }: { member: TeamMember; onClose: ()
           })()}
           <div>
             <div style={{ fontSize: '1.1rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Inter',sans-serif", marginBottom: '0.4rem' }}>
-              {member.isAdvisor ? 'ADVISORY BOARD' : 'CORE LEADERSHIP'}
+              {member.isStrategic ? 'STRATEGIC ADVISOR' : member.isAdvisor ? 'ADVISORY BOARD' : 'CORE LEADERSHIP'}
             </div>
             <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.5rem', fontWeight: 400, color: '#fff', margin: '0 0 0.3rem' }}>{member.name}</h3>
             <div style={{ fontSize: '0.75rem', color: '#4a4a5e', fontFamily: "'Inter',sans-serif" }}>{member.role}</div>
@@ -1113,6 +1123,7 @@ export const HEADSHOT_CROP: Record<string, { scale: number; pos: string; tx: str
   'Pedreiro':   { scale: 1.0,  pos: 'center top', tx: '0%' },
   'Shah':       { scale: 1.0,  pos: 'center top', tx: '0%' },
   'Boyd':       { scale: 1.05, pos: '50% 30%', tx: '0%' },
+  'Parker':     { scale: 1.55, pos: '50% 20%', tx: '0%' },
 }
 
 export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () => void }) {
@@ -1175,7 +1186,7 @@ export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () 
 /* ─────────────────────────────────────────────────────────────
    TEAM SECTION
 ───────────────────────────────────────────────────────────────*/
-export function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: TeamMember[] }) {
+export function TeamSection({ core, advisors, strategic = [] }: { core: TeamMember[]; advisors: TeamMember[]; strategic?: TeamMember[] }) {
   const [sel, setSel] = useState<TeamMember | null>(null)
   return (
     <>
@@ -1200,6 +1211,17 @@ export function TeamSection({ core, advisors }: { core: TeamMember[]; advisors: 
             </div>
           ))}
         </div>
+
+        {strategic.length > 0 && (<>
+          <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.4rem,2.5vw,2rem)', fontWeight: 400, color: '#fff', textAlign: 'center', marginBottom: '2rem' }}>Strategic Advisors</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '0', marginBottom: '4rem', justifyContent: 'center' }}>
+            {strategic.map((m, i) => (
+              <div key={m.name} style={{ animation: `vx-card-in 0.6s cubic-bezier(0.22,1,0.36,1) both`, animationDelay: `${i * 0.1 + 0.1}s`, display: 'flex', width: 280, flexShrink: 0 }}>
+                <TeamCard member={m} onClick={() => setSel(m)} />
+              </div>
+            ))}
+          </div>
+        </>)}
 
         <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.4rem,2.5vw,2rem)', fontWeight: 400, color: '#fff', textAlign: 'center', marginBottom: '2rem' }}>Advisory Board</div>
         <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '0', marginBottom: '1.5rem', justifyContent: 'center' }}>
@@ -1606,6 +1628,10 @@ export function InvestorsSection() {
     { src: '/vaxon/logos/investors/stellar.png',  alt: 'Stellar Ventures' },
     { src: '/vaxon/logos/investors/ciri.png',     alt: 'Cook Inlet Region, Inc.' },
     { src: '/vaxon/logos/investors/context.png',  alt: 'Context Ventures' },
+    { src: '/vaxon/logos/michigan-seal.png',      alt: 'University of Michigan' },
+    { src: '/vaxon/logos/investors/fpsolutions.png', alt: 'FP Solutions' },
+    { src: '/vaxon/logos/investors/aexodus.png',  alt: 'Aexodus' },
+    { src: '/vaxon/logos/investors/bronco.png',   alt: 'Bronco Ventures' },
   ]
   const Logo = ({ src, alt }: { src: string; alt: string }) => {
     const [hov, setHov] = useState(false)
@@ -1999,7 +2025,7 @@ export default function VaxonPage() {
         </Section>
 
         <Section id="team">
-          <TeamSection core={core} advisors={advisors} />
+          <TeamSection core={core} advisors={advisors} strategic={STRATEGIC_ADVISORS} />
         </Section>
 
         <Section id="news">
