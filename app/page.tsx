@@ -1123,7 +1123,7 @@ export const HEADSHOT_CROP: Record<string, { scale: number; pos: string; tx: str
   'Pedreiro':   { scale: 1.0,  pos: 'center top', tx: '0%' },
   'Shah':       { scale: 1.0,  pos: 'center top', tx: '0%' },
   'Boyd':       { scale: 1.05, pos: '50% 30%', tx: '0%' },
-  'Parker':     { scale: 1.55, pos: '50% 20%', tx: '0%' },
+  'Parker':     { scale: 1.39, pos: '50% 0%', tx: '-3%' },
 }
 
 export function TeamCard({ member, onClick }: { member: TeamMember; onClick: () => void }) {
