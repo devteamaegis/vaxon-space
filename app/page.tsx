@@ -1798,6 +1798,12 @@ export function PartnersSection() {
 type Milestone = { date: string; title: string; desc: string; image?: string; imageKind?: 'badge' | 'photo'; link?: string; future?: boolean }
 const TIMELINE: Milestone[] = [
   {
+    date: 'AUG 2026', title: 'Selected for the Orbital Edge Accelerator',
+    desc: 'Vaxon Space was selected for the Orbital Edge Accelerator, the ISS National Laboratory program that gives early-stage companies access to low Earth orbit and private capital to advance in-space technologies. The cohort connects Vaxon with investment partners including Stellar Ventures, CIRI and Context Ventures.',
+    image: '/vaxon/orbital-edge-cohort.jpg', imageKind: 'photo',
+    link: 'https://www.linkedin.com/feed/update/urn:li:activity:7495136388275785729/',
+  },
+  {
     date: 'JUN 2026', title: 'Compressible-flow system test at CU LASP',
     desc: 'Ground testing of the compressible-flow system at the University of Colorado Boulder Laboratory for Atmospheric and Space Physics, advancing the inlet and propulsion subsystem toward flight.',
     image: '/vaxon/lab-testing.jpeg', imageKind: 'photo',
