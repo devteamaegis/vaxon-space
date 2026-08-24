@@ -1795,7 +1795,7 @@ export function PartnersSection() {
 /* ─────────────────────────────────────────────────────────────
    TRACTION SECTION
 ───────────────────────────────────────────────────────────────*/
-type Milestone = { date: string; title: string; desc: string; image?: string; imageKind?: 'badge' | 'photo'; link?: string; future?: boolean }
+type Milestone = { date: string; title: string; desc: string; image?: string; imageKind?: 'badge' | 'photo' | 'logo'; link?: string; future?: boolean }
 const TIMELINE: Milestone[] = [
   {
     date: 'AUG 2026', title: 'Selected for the Orbital Edge Accelerator',
@@ -1827,6 +1827,11 @@ const TIMELINE: Milestone[] = [
     date: 'SEP 2025', title: 'Selected to Antler San Francisco',
     desc: 'Joined the Antler San Francisco cohort, an early-stage program backing technical founders building category-defining companies.',
     link: 'https://www.antler.co/',
+  },
+  {
+    date: 'AUG 2025', title: 'Company Founded',
+    desc: 'Vaxon Space was founded in August 2025 to develop air-breathing satellites for sustained operations in very low Earth orbit.',
+    image: '/vaxon/logo.png', imageKind: 'logo',
   },
 ]
 
@@ -1865,6 +1870,10 @@ export function TractionSection() {
                     <img src={m.image} alt={m.title} style={{ width: '100%', height: 'auto', objectFit: 'contain', display: 'block' }}
                       onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />
                   </div>
+                )}
+                {m.imageKind === 'logo' && m.image && (
+                  <img src={m.image} alt={m.title} style={{ height: 52, width: 'auto', objectFit: 'contain', display: 'block', marginTop: '1.25rem' }}
+                    onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />
                 )}
                 {m.link && (
                   <a href={m.link} target="_blank" rel="noopener noreferrer"
