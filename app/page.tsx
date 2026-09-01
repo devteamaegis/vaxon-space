@@ -546,7 +546,7 @@ function HomeSection() {
           opacity: (videoOk || shown) ? 1 : 0,
           transition: 'opacity 1s ease 0.6s',
         }}>
-          Real-time missile defense and connectivity today — and AI tomorrow
+          Real-time missile defense and connectivity today, and AI tomorrow
         </div>
 
         {/* Mission Overview — floating military-style box, top right → expands into full-screen explainer */}

@@ -19,11 +19,11 @@ const STATS = [
 ]
 
 const ALERTS = [
-  { time: '14:32 UTC', level: 'INFO',  msg: 'VS-03 completed southern pass — imagery queued for processing' },
-  { time: '11:09 UTC', level: 'WARN',  msg: 'VS-01 thermal margin at 91% — within nominal range' },
-  { time: '08:55 UTC', level: 'INFO',  msg: 'Ground station handshake confirmed — Newport uplink nominal' },
-  { time: 'Yesterday', level: 'INFO',  msg: 'Imagery delivery completed — 14 frames transmitted to client node' },
-  { time: 'Yesterday', level: 'CRIT',  msg: 'VS-02 attitude control anomaly resolved — ops team notified' },
+  { time: '14:32 UTC', level: 'INFO',  msg: 'VS-03 completed southern pass, imagery queued for processing' },
+  { time: '11:09 UTC', level: 'WARN',  msg: 'VS-01 thermal margin at 91%, within nominal range' },
+  { time: '08:55 UTC', level: 'INFO',  msg: 'Ground station handshake confirmed, Newport uplink nominal' },
+  { time: 'Yesterday', level: 'INFO',  msg: 'Imagery delivery completed, 14 frames transmitted to client node' },
+  { time: 'Yesterday', level: 'CRIT',  msg: 'VS-02 attitude control anomaly resolved, ops team notified' },
 ]
 
 const PASSES = [
@@ -160,7 +160,7 @@ export default function DashboardPage() {
             {/* Upcoming passes */}
             <div style={{ background: '#000', padding: '1.5rem' }}>
               <div style={{ fontSize: '0.6rem', letterSpacing: '0.16em', color: '#555',
-                textTransform: 'uppercase', marginBottom: '1.25rem' }}>Upcoming Passes — Today</div>
+                textTransform: 'uppercase', marginBottom: '1.25rem' }}>Upcoming Passes Today</div>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.78rem' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid #111' }}>
