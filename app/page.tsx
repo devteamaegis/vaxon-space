@@ -142,6 +142,13 @@ export const NEWS: NewsItem[] = [
     image: '/vaxon/ascend-2026.jpg',
   },
   {
+    date: 'SEP 02 2026', title: 'York Space Systems Unveils LX/V-CLASS VLEO Platform',
+    body: "York Space Systems unveiled the LX/V-CLASS, a spacecraft platform purpose-built for very low Earth orbit at 200 to 300 km, targeting missile warning, tracking and moving-target indication. Built on York's S and LX class buses with drag-reducing modifications and Hall-effect thrusters running on stored xenon or krypton, the platform underscores accelerating demand for VLEO missile-defense systems, the market Vaxon Space is advancing with air-breathing electric propulsion that removes the onboard propellant limit.",
+    source: 'LINKEDIN / YORK SPACE SYSTEMS',
+    link: 'https://www.linkedin.com/posts/york-space-systems_york-space-systems-introduces-new-platform-activity-7500901732290355200-VazR/',
+    image: '/vaxon/york-vleo-platform.jpg', imgPos: '72% 50%',
+  },
+  {
     date: 'AUG 11 2026', title: 'Dr. Shepard Presents at Starburst / IAI Demo Day',
     body: "Vaxon Space CEO Dr. Steven P. Shepard presented at the Starburst and IAI (Israel Aerospace Industries) Demo Day, marking the culmination of the company's six-month cohort. He shared Vaxon's progress building and testing its proprietary air-breathing inlet and designing its VLEO satellite bus for missile defense, AI connectivity and enhanced ISR capabilities.",
     source: 'LINKEDIN',
