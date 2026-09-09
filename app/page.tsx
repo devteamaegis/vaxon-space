@@ -146,7 +146,7 @@ export const NEWS: NewsItem[] = [
     body: "York Space Systems unveiled the LX/V-CLASS, a spacecraft platform purpose-built for very low Earth orbit at 200 to 300 km, targeting missile warning, tracking and moving-target indication. Built on York's S and LX class buses with drag-reducing modifications and Hall-effect thrusters running on stored xenon or krypton, the platform underscores accelerating demand for VLEO missile-defense systems, the market Vaxon Space is advancing with air-breathing electric propulsion that removes the onboard propellant limit.",
     source: 'LINKEDIN / YORK SPACE SYSTEMS',
     link: 'https://www.linkedin.com/posts/york-space-systems_york-space-systems-introduces-new-platform-activity-7500901732290355200-VazR/',
-    image: '/vaxon/york-vleo-platform.jpg', imgPos: '72% 50%',
+    image: '/vaxon/york-vleo-platform.jpg',
   },
   {
     date: 'AUG 11 2026', title: 'Dr. Shepard Presents at Starburst / IAI Demo Day',
