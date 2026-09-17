@@ -133,13 +133,13 @@ const WSIMG = 'https://img1.wsimg.com/isteam/ip/b6d77e34-40ce-4ade-86a8-3e868f7b
 
 export const NEWS: NewsItem[] = [
   {
-    date: 'MAY 20 2026', title: 'ASCEND 2026 Panel Explores Next-Generation Operations in VLEO',
-    body: 'Dr. Steven P. Shepard participated in the ASCEND 2026 panel "Racing to vLEO: Next-Generation Operations in Very Low Earth Orbit," joining Brian Cameron of The Aerospace Corporation, Dr. Gillian Bussey of the US Space Force, and Spence Wise of Redwire. The discussion covered recent technological advancements, military and commercial applications, and where the VLEO ecosystem is headed over the coming decade.',
-    source: 'LINKEDIN / AIAA',
-    link: 'https://www.linkedin.com/posts/stevenpshepard_aiaaascend26-vleo-spacetech-activity-7463033959719788544-W-uy',
-    link2: 'https://aerospaceamerica.aiaa.org/institute/vleo-gains-momentum-as-space-force-industry-weigh-dual-use-potential/',
-    link2Label: 'NEWS ARTICLE',
-    image: '/vaxon/ascend-2026.jpg',
+    date: 'SEP 24 2026', title: "Vaxon Space Sponsors Ra's Circle SF, Edition III",
+    body: "On Thursday, September 24th, Vaxon Space is proud to sponsor Ra's Circle SF, Edition III, an intimate San Francisco evening bringing together investors, founders, policymakers, artists and outliers for drinks and conversation about what comes next in very low Earth orbit. Space is limited and by invitation.",
+    source: "RA'S CIRCLE SF",
+    link: 'https://www.linkedin.com/feed/update/urn:li:activity:7505298475517886464',
+    link2: 'https://luma.com/wft7kipz',
+    link2Label: 'REQUEST AN INVITE',
+    image: '/vaxon/ras-circle-sf.jpg',
   },
   {
     date: 'SEP 02 2026', title: 'York Space Systems Unveils LX/V-CLASS VLEO Platform',
@@ -182,6 +182,15 @@ export const NEWS: NewsItem[] = [
     source: 'PAYLOAD',
     link: 'https://payloadspace.com/bellatrix-aerospace-tapped-to-build-korean-vleo-demo-sat/',
     image: '/vaxon/bellatrix-vleo.png',
+  },
+  {
+    date: 'MAY 20 2026', title: 'ASCEND 2026 Panel Explores Next-Generation Operations in VLEO',
+    body: 'Dr. Steven P. Shepard participated in the ASCEND 2026 panel "Racing to vLEO: Next-Generation Operations in Very Low Earth Orbit," joining Brian Cameron of The Aerospace Corporation, Dr. Gillian Bussey of the US Space Force, and Spence Wise of Redwire. The discussion covered recent technological advancements, military and commercial applications, and where the VLEO ecosystem is headed over the coming decade.',
+    source: 'LINKEDIN / AIAA',
+    link: 'https://www.linkedin.com/posts/stevenpshepard_aiaaascend26-vleo-spacetech-activity-7463033959719788544-W-uy',
+    link2: 'https://aerospaceamerica.aiaa.org/institute/vleo-gains-momentum-as-space-force-industry-weigh-dual-use-potential/',
+    link2Label: 'NEWS ARTICLE',
+    image: '/vaxon/ascend-2026.jpg',
   },
   {
     date: 'MAY 13 2026', title: 'Bay Area Space Ecosystem Map Highlights Regional Growth',
