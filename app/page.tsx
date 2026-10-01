@@ -1649,6 +1649,7 @@ export function InvestorsSection() {
     { src: '/vaxon/logos/investors/fpsolutions.png', alt: 'FP Solutions' },
     { src: '/vaxon/logos/investors/aexodus.png',  alt: 'Aexodus' },
     { src: '/vaxon/logos/investors/bronco.png',   alt: 'Bronco Ventures' },
+    { src: '/vaxon/logos/investors/hypergrowthlabs.png', alt: 'HypergrowthLabs Capital' },
   ]
   const Logo = ({ src, alt }: { src: string; alt: string }) => {
     const [hov, setHov] = useState(false)
