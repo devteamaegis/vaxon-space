@@ -133,6 +133,36 @@ const WSIMG = 'https://img1.wsimg.com/isteam/ip/b6d77e34-40ce-4ade-86a8-3e868f7b
 
 export const NEWS: NewsItem[] = [
   {
+    date: 'OCT 2026', title: 'Dr. Shepard Joins University of Michigan Aerospace Panels',
+    body: "Vaxon Space CEO Dr. Steven P. Shepard took part in two University of Michigan events in Ann Arbor. He joined a panel at the Space Physics Research Laboratory 80th Anniversary Open House, which looked at the past, present and future of SPRL and of space, alongside Sue Lepri, Patrick McNally, Elena Adams and Gina DiBraccio. He also joined the annual meeting of the External Advisory Board for the Aerospace Engineering department, which advises department leadership on where aerospace is headed across technology, workforce and partnerships, and on how the department prepares its students for it.",
+    source: 'LINKEDIN',
+    link: 'https://www.linkedin.com/feed/update/urn:li:activity:7518034919248465920',
+    link2: 'https://www.linkedin.com/feed/update/urn:li:activity:7519456883246673920',
+    link2Label: 'ADVISORY BOARD POST',
+    image: '/vaxon/michigan-sprl-80th.jpg', imgPos: '66% 16%',
+  },
+  {
+    date: 'OCT 16 2026', title: 'Dr. Shepard Presents at SCU Bronco Venture Accelerator Demo Day',
+    body: "Vaxon Space CEO Dr. Steven P. Shepard presented at Demo Day with Santa Clara University's Bronco Venture Accelerator, sharing Vaxon's dual-use mission across missile defense and AI connectivity with the investor and partner community.",
+    source: 'LINKEDIN',
+    link: 'https://www.linkedin.com/feed/update/urn:li:activity:7516227725368647681',
+    image: '/vaxon/bva-demo-day.jpg', imgPos: '50% 32%',
+  },
+  {
+    date: 'OCT 15 2026', title: 'Dr. Shepard Joins Space, Stakes and Spirits Panel on 2026 Funding',
+    body: "Vaxon Space CEO Dr. Steven P. Shepard joined the Space, Stakes and Spirits panel on what is getting funded in 2026, hosted by Space Happy Hour and Context VC. Steve spoke about the convergence of space and AI, and how Vaxon will help enable direct-to-cell connectivity. The panel was moderated by Tim Hsia of Context Ventures, with fellow panelists Pragna Gaddam of Stellar Ventures and Robert DeMillo of Sophia Space.",
+    source: 'LINKEDIN',
+    link: 'https://www.linkedin.com/feed/update/urn:li:activity:7516573846905290752',
+    image: '/vaxon/space-stakes-spirits.jpg', imgPos: '50% 20%',
+  },
+  {
+    date: 'OCT 2026', title: 'TECHNE Connect to Visionaries Features Dr. Shepard on VLEO',
+    body: "TECHNE's Connect to Visionaries series features Vaxon Space Co-Founder and CEO Dr. Steven P. Shepard on the future of very low Earth orbit. The conversation covers why VLEO has remained largely unexplored, how Vaxon is overcoming atmospheric drag and atomic oxygen, why air-breathing propulsion could change satellite operations, and the applications VLEO could unlock across defense, imaging, AI and telecommunications.",
+    source: 'LINKEDIN / TECHNE',
+    link: 'https://www.linkedin.com/posts/the-next-generation-of-space-infrastructure-share-7511077688108003328--0mj/',
+    image: '/vaxon/techne-interview.jpg', imgPos: '50% 42%',
+  },
+  {
     date: 'SEP 24 2026', title: "Vaxon Space Sponsors Ra's Circle SF, Edition III",
     body: "On Thursday, September 24th, Vaxon Space is proud to sponsor Ra's Circle SF, Edition III, an intimate San Francisco evening bringing together investors, founders, policymakers, artists and outliers for drinks and conversation about what comes next in very low Earth orbit. Space is limited and by invitation.",
     source: "RA'S CIRCLE SF",
@@ -620,7 +650,7 @@ function HomeSection() {
             opacity: videoOk ? 1 : 0, transform: videoOk ? 'none' : 'translateY(8px)',
             transition: 'opacity 1s ease 1s, transform 1s ease 1s',
           }}>
-            Vaxon Space operates air-breathing satellites at 180–250km -2× closer than traditional LEO,
+            Vaxon Space operates air-breathing satellites at 180–250km, 2× closer than traditional LEO,
             delivering unprecedented resolution, latency, and persistence.
           </p>
 
@@ -816,12 +846,12 @@ const MISSION_PROFILES = [
   {
     title: 'Remote Sensing',
     image: '/vaxon/mission-remote-sensing.jpg',
-    body: 'Operating 3x closer to the surface in very low Earth orbit (VLEO) with altitudes of 180-250 km, Vaxon satellites revolutionize space-based imaging and intelligence. VLEO operation enables image resolutions under 30 cm with revisit times of 1-2 hours, serving the US government and its allies to ensure leaders and soldiers have the pivotal information they need to make vital decisions. We also provide information to the commercial market, providing agriculture, energy, infrastructure, forestry and mapping services.',
+    body: 'Operating 2x closer to the surface in very low Earth orbit (VLEO) with altitudes of 180-250 km, Vaxon satellites revolutionize space-based imaging and intelligence. VLEO operation enables image resolutions under 30 cm with revisit times of 1-2 hours, serving the US government and its allies to ensure leaders and soldiers have the pivotal information they need to make vital decisions. We also provide information to the commercial market, providing agriculture, energy, infrastructure, forestry and mapping services.',
   },
   {
     title: 'Missile Defense',
     image: '/vaxon/mission-missile-defense.jpg',
-    body: "Golden Dome is the DoD's next big challenge and Vaxon Space is ready to partner. Our satellites enable more precise navigation for hypersonic and intercept missiles by decreasing latency. Faster response for hypersonic tracking is paramount and enabled by Vaxon's patented air-breathing electric propulsion subsystem. Precise navigation also extends to our commercial customers, such as maritime tracking and traffic route optimization.",
+    body: "Golden Dome is the DoD's next big challenge and Vaxon Space is ready to partner. Our satellites enable more precise navigation for hypersonic and intercept missiles by decreasing latency. Faster response for hypersonic tracking is paramount and enabled by Vaxon's patent-pending air-breathing electric propulsion subsystem. Precise navigation also extends to our commercial customers, such as maritime tracking and traffic route optimization.",
   },
   {
     title: 'Connectivity',
@@ -836,8 +866,8 @@ const MISSION_PROFILES = [
 ]
 
 const BREAKTHROUGH_ITEMS = [
-  { h: 'Sharper Imagery, Under 30 cm Resolution', b: 'Operating three times closer to Earth delivers up to twice the imaging precision. Our proprietary Air Intake System (Vaxon Space IP) achieves this without the need for heavier optical systems.' },
-  { h: 'Ultra-Low Latency, Under 15 ms', b: "A five-times shorter signal path means near-real-time performance that's unattainable at higher altitudes." },
+  { h: 'Sharper Imagery, Under 30 cm Resolution', b: 'Operating two times closer to Earth delivers up to twice the imaging precision. Our proprietary Air Intake System (Vaxon Space IP) achieves this without the need for heavier optical systems.' },
+  { h: 'Ultra-Low Latency, Under 15 ms', b: "A signal path half as long means near-real-time performance that's unattainable at higher altitudes." },
   { h: 'Self-Cleaning Orbit', b: 'Natural atmospheric drag continuously clears debris, keeping the orbit safe and sustainable in weeks instead of years.' },
   { h: 'The ABEP Advantage', b: 'Traditional satellites cannot operate between 150 and 250 km due to extreme atmospheric drag that would quickly deorbit them. ABEP transforms this challenge into an advantage, using the atmosphere itself as fuel, turning a former enemy into an ally.' },
 ]
@@ -1340,7 +1370,7 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
             style={{ display: 'block', overflow: 'hidden', background: '#050512', aspectRatio: '1/1' }}
           >
             {featured.image
-              ? <img src={featured.image} alt={featured.title} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
+              ? <img src={featured.image} alt={featured.title} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: featured.imgPos || 'center', transition: 'transform 0.4s' }}
                   onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.04)')}
                   onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
                 />

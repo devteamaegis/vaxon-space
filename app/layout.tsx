@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: 'Real-time missile defense and connectivity today. Vaxon Space operates air-breathing satellites at 180-250 km altitude.',
   openGraph: {
     title: 'Vaxon Space: Air-Breathing Satellite Technology',
-    description: 'Real-time missile defense and connectivity. Vaxon Space operates satellites at 180-250 km altitude, 10× closer than traditional LEO.',
+    description: 'Real-time missile defense and connectivity. Vaxon Space operates satellites at 180-250 km altitude, 2× closer than traditional LEO.',
     url: 'https://www.vaxonspace.com',
     siteName: 'Vaxon Space',
     images: [
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Vaxon Space: Air-Breathing Satellite Technology',
-    description: 'Real-time missile defense and connectivity. Satellites at 180-250 km altitude, 10× closer than traditional LEO.',
+    description: 'Real-time missile defense and connectivity. Satellites at 180-250 km altitude, 2× closer than traditional LEO.',
     images: ['/vaxon/og-image.png'],
   },
 }
