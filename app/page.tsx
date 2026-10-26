@@ -133,6 +133,15 @@ const WSIMG = 'https://img1.wsimg.com/isteam/ip/b6d77e34-40ce-4ade-86a8-3e868f7b
 
 export const NEWS: NewsItem[] = [
   {
+    date: 'OCT 2026', title: 'TECHNE Connect to Visionaries Features Dr. Shepard on VLEO',
+    body: "TECHNE's Connect to Visionaries series features Vaxon Space Co-Founder and CEO Dr. Steven P. Shepard on the future of very low Earth orbit. The conversation covers why VLEO has remained largely unexplored, how Vaxon is overcoming atmospheric drag and atomic oxygen, why air-breathing propulsion could change satellite operations, and the applications VLEO could unlock across defense, imaging, AI and telecommunications.",
+    source: 'TECHNE',
+    link: 'https://www.techne-talent.com/us/view/connect-to-visionaries-dr-steven-p-shepard-co--founder-and-ceo/',
+    link2: 'https://open.spotify.com/episode/0QI9kvQsgYJIUmtMvpwVNY',
+    link2Label: 'WATCH ON SPOTIFY',
+    image: '/vaxon/techne-interview.jpg', imgPos: '50% 42%',
+  },
+  {
     date: 'OCT 2026', title: 'Dr. Shepard Joins University of Michigan Aerospace Panels',
     body: "Vaxon Space CEO Dr. Steven P. Shepard took part in two University of Michigan events in Ann Arbor. He joined a panel at the Space Physics Research Laboratory 80th Anniversary Open House, which looked at the past, present and future of SPRL and of space, alongside Sue Lepri, Patrick McNally, Elena Adams and Gina DiBraccio. He also joined the annual meeting of the External Advisory Board for the Aerospace Engineering department, which advises department leadership on where aerospace is headed across technology, workforce and partnerships, and on how the department prepares its students for it.",
     source: 'LINKEDIN',
@@ -154,13 +163,6 @@ export const NEWS: NewsItem[] = [
     source: 'LINKEDIN',
     link: 'https://www.linkedin.com/feed/update/urn:li:activity:7516573846905290752',
     image: '/vaxon/space-stakes-spirits.jpg', imgPos: '50% 20%',
-  },
-  {
-    date: 'OCT 2026', title: 'TECHNE Connect to Visionaries Features Dr. Shepard on VLEO',
-    body: "TECHNE's Connect to Visionaries series features Vaxon Space Co-Founder and CEO Dr. Steven P. Shepard on the future of very low Earth orbit. The conversation covers why VLEO has remained largely unexplored, how Vaxon is overcoming atmospheric drag and atomic oxygen, why air-breathing propulsion could change satellite operations, and the applications VLEO could unlock across defense, imaging, AI and telecommunications.",
-    source: 'LINKEDIN / TECHNE',
-    link: 'https://www.linkedin.com/posts/the-next-generation-of-space-infrastructure-share-7511077688108003328--0mj/',
-    image: '/vaxon/techne-interview.jpg', imgPos: '50% 42%',
   },
   {
     date: 'SEP 24 2026', title: "Vaxon Space Sponsors Ra's Circle SF, Edition III",
