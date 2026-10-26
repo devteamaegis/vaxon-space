@@ -155,7 +155,7 @@ export const NEWS: NewsItem[] = [
     body: "Vaxon Space CEO Dr. Steven P. Shepard presented at Demo Day with Santa Clara University's Bronco Venture Accelerator, sharing Vaxon's dual-use mission across missile defense and AI connectivity with the investor and partner community.",
     source: 'LINKEDIN',
     link: 'https://www.linkedin.com/feed/update/urn:li:activity:7516227725368647681',
-    image: '/vaxon/bva-demo-day.jpg', imgPos: '50% 32%',
+    image: '/vaxon/bva-demo-day.jpg', imgPos: '50% 60%',
   },
   {
     date: 'OCT 15 2026', title: 'Dr. Shepard Joins Space, Stakes and Spirits Panel on 2026 Funding',
