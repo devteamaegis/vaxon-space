@@ -1288,48 +1288,6 @@ export function TeamSection({ core, advisors, strategic = [] }: { core: TeamMemb
 }
 
 /* ─────────────────────────────────────────────────────────────
-   VIDEO EMBED (click-to-play YouTube thumbnail)
-───────────────────────────────────────────────────────────────*/
-function VideoEmbed({ videoId }: { videoId: string }) {
-  const [playing, setPlaying] = useState(false)
-  if (playing) {
-    return (
-      <div style={{ width: '100%', aspectRatio: '16/9', background: '#000' }}>
-        <iframe src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen style={{ width: '100%', height: '100%', border: 'none' }}
-          title="Dr. Steven Shepard – Vaxon Space VLEO Interview" />
-      </div>
-    )
-  }
-  return (
-    <div onClick={() => setPlaying(true)} style={{ position: 'relative', cursor: 'pointer', width: '100%', aspectRatio: '16/9', background: '#02020d', overflow: 'hidden' }}>
-      <img src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`} alt="Dr. Shepard VLEO Interview"
-        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', filter: 'brightness(0.72)' }}
-        onError={e => { (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` }}
-      />
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(2,2,13,0.7) 0%, transparent 50%)' }} />
-      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'rgba(2,2,13,0.85)', border: '2px solid rgba(255,255,255,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.2s' }}
-          onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'scale(1.1)' }}
-          onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'scale(1)' }}
-        >
-          <svg viewBox="0 0 24 24" fill="white" width="28" height="28" style={{ marginLeft: 4 }}>
-            <path d="M8 5v14l11-7z"/>
-          </svg>
-        </div>
-      </div>
-      <div style={{ position: 'absolute', bottom: 16, left: 16 }}>
-        <div style={{ fontSize: '0.6rem', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.75)', textTransform: 'uppercase', marginBottom: 4, fontFamily: "'Bitter',Georgia,serif", fontWeight: 400 }}>FEATURED INTERVIEW</div>
-        <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.05rem', fontWeight: 400, color: '#fff', textShadow: '0 1px 6px rgba(0,0,0,0.9)' }}>
-          Dr. Steven Shepard - VLEO Mission + Strategy
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/* ─────────────────────────────────────────────────────────────
    NEWS SECTION
 ───────────────────────────────────────────────────────────────*/
 export function NewsSection({ news }: { news: NewsItem[] }) {
@@ -1340,36 +1298,15 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
       <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', marginBottom: '0.5rem' }}>News &amp; Press</div>
       <div style={{ width: 48, height: 2, background: '#c8102e', marginBottom: '3.5rem' }} />
 
-      {/* Dr. Shepard interview video -pinned above featured card */}
-      <div style={{ border: '1px solid #131323', marginBottom: '2px', overflow: 'hidden', display: 'grid', gridTemplateColumns: '1fr 1fr' }} className="vx-feat">
-        <div style={{ padding: '2.5rem', borderRight: '1px solid #131323', background: '#060614', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <div style={{ fontSize: '1.2rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 400, marginBottom: '0.75rem' }}>FEATURED INTERVIEW / FEB 2026</div>
-          <h3 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.5rem', fontWeight: 400, color: '#fff', lineHeight: 1.25, margin: '0 0 1rem' }}>
-            CEO Dr. Steven Shepard on VLEO Momentum
-          </h3>
-          <p style={{ color: '#fff', fontFamily: "'Bitter',Georgia,serif", fontSize: '1rem', lineHeight: 1.8, margin: '0 0 1.5rem', fontWeight: 400 }}>
-            Dr. Shepard discusses VLEO mission use cases including ISR, missile defense sensing, Golden Dome potential, and AI-enabled space capabilities - the full strategic picture for Vaxon Space.
-          </p>
-          <a href="https://www.youtube.com/watch?v=piWj3lWfUEM" target="_blank" rel="noopener noreferrer"
-            style={{ fontSize: '0.7rem', letterSpacing: '0.15em', color: '#fff', textDecoration: 'none', fontFamily: "'Bitter',Georgia,serif", fontWeight: 400, transition: 'color 0.2s' }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#c8102e')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#fff')}
-          >WATCH FULL INTERVIEW →</a>
-        </div>
-        <div style={{ background: '#02020d', overflow: 'hidden' }}>
-          <VideoEmbed videoId="piWj3lWfUEM" />
-        </div>
-      </div>
-
       {/* Featured */}
       {featured && (
-        <div className="vx-feat" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', border: '1px solid #131323', overflow: 'hidden', background: '#060614', transition: 'border-color 0.2s', marginBottom: '2px' }}
+        <div className="vx-feat" style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '2.5rem', alignItems: 'start', padding: '2.5rem', border: '1px solid #131323', overflow: 'hidden', background: '#060614', transition: 'border-color 0.2s', marginBottom: '2px' }}
           onMouseEnter={e => (e.currentTarget.style.borderColor = '#1a1a2e')}
           onMouseLeave={e => (e.currentTarget.style.borderColor = '#131323')}
         >
           <a href={featured.link || '#'} target={featured.link ? '_blank' : undefined} rel="noopener noreferrer"
             onClick={!featured.link ? e => e.preventDefault() : undefined}
-            style={{ display: 'block', overflow: 'hidden', background: '#050512', aspectRatio: '1/1' }}
+            style={{ display: 'block', overflow: 'hidden', background: '#050512', aspectRatio: '1/1', width: '100%', maxWidth: 360 }}
           >
             {featured.image
               ? <img src={featured.image} alt={featured.title} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: featured.imgPos || 'center', transition: 'transform 0.4s' }}
@@ -1379,7 +1316,7 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
               : <div style={{ width: '100%', height: '100%', minHeight: 280, background: 'linear-gradient(135deg,#090918,#050512)' }} />
             }
           </a>
-          <div style={{ padding: '2.5rem' }}>
+          <div>
             <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
               <span style={{ fontSize: '1.2rem', letterSpacing: '0.22em', color: '#c8102e', fontFamily: "'Bitter',Georgia,serif", fontWeight: 400 }}>FEATURED</span>
               <span style={{ fontSize: '0.62rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif" }}>{featured.date}</span>
@@ -1983,7 +1920,7 @@ export const VX_GLOBAL_STYLE = `
     .vx-tech-grid { grid-template-columns: 1fr !important; }
     .vx-team-grid { grid-template-columns: repeat(2,1fr) !important; }
     .vx-contact-grid { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
-    .vx-feat { grid-template-columns: 1fr !important; }
+    .vx-feat { grid-template-columns: 1fr !important; padding: 1.5rem !important; gap: 1.5rem !important; }
     .vx-news-grid { grid-template-columns: 1fr !important; }
     /* Stats strip: 2x2 instead of a cramped single row */
     .vx-stats { grid-template-columns: 1fr 1fr !important; }
