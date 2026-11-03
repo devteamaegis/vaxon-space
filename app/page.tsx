@@ -55,6 +55,7 @@ export type NewsItem = {
   date: string; title: string; body: string
   source: string; link?: string; image?: string; imgPos?: string
   link2?: string; link2Label?: string
+  videoId?: string
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -250,7 +251,8 @@ export const NEWS: NewsItem[] = [
     body: 'Vaxon Space CEO Dr. Steven P. Shepard has a conversation with Aidan Daoussis of Balerion Space Ventures, discussing the momentum behind very low Earth orbit (VLEO) satellites and the mission use cases being built at Vaxon Space. The discussion includes why VLEO is becoming such an important domain for the next generation of space infrastructure, including opportunities for enhanced ISR, missile defense sensing and new AI-enabled space capabilities.',
     source: 'BALERION SPACE VENTURES',
     link: 'https://www.youtube.com/watch?v=piWj3lWfUEM',
-    image: '/vaxon/vaxonspacesatelitessurvive.jpg',
+    videoId: 'piWj3lWfUEM',
+    image: 'https://img.youtube.com/vi/piWj3lWfUEM/maxresdefault.jpg', imgPos: '72% 50%',
   },
   {
     date: 'FEB 05 2026', title: 'Vaxon Joins Starburst / IAI Cohort 4',
@@ -1282,6 +1284,10 @@ export function TeamSection({ core, advisors, strategic = [] }: { core: TeamMemb
         </div>
 
         <div style={{ fontSize: '0.58rem', letterSpacing: '0.15em', color: '#222', fontFamily: "'Inter',sans-serif", textAlign: 'center' }}>CLICK ANY CARD TO VIEW FULL BIO</div>
+
+        <div style={{ marginTop: '4rem', border: '1px solid #131323', overflow: 'hidden' }}>
+          <img src="/vaxon/team-illustration.jpg" alt="Illustration of the Vaxon Space team" style={{ display: 'block', width: '100%', height: 'auto' }} />
+        </div>
       </div>
     </>
   )
@@ -1293,8 +1299,10 @@ export function TeamSection({ core, advisors, strategic = [] }: { core: TeamMemb
 export function NewsSection({ news }: { news: NewsItem[] }) {
   const featured = news[0]
   const rest = news.slice(1)
+  const [video, setVideo] = useState<string | null>(null)
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '5rem 2.5rem' }}>
+      {video && <VideoModal url={`https://www.youtube.com/embed/${video}?autoplay=1&rel=0`} onClose={() => setVideo(null)} />}
       <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: 'clamp(1.8rem,3vw,2.8rem)', fontWeight: 400, color: '#fff', marginBottom: '0.5rem' }}>News &amp; Press</div>
       <div style={{ width: 48, height: 2, background: '#c8102e', marginBottom: '3.5rem' }} />
 
@@ -1345,14 +1353,21 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
       <div className="vx-news-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: '2px', background: '#0d0d1a' }}>
         {rest.map((n, i) => (
           <a key={i} href={n.link || '#'} target={n.link ? '_blank' : undefined} rel="noopener noreferrer"
-            onClick={!n.link ? e => e.preventDefault() : undefined}
+            onClick={n.videoId ? e => { e.preventDefault(); setVideo(n.videoId!) } : !n.link ? e => e.preventDefault() : undefined}
             style={{ textDecoration: 'none', display: 'block' }}
           >
             <div style={{ background: '#02020d', height: '100%', transition: 'background 0.2s' }}
               onMouseEnter={e => (e.currentTarget.style.background = '#090918')}
               onMouseLeave={e => (e.currentTarget.style.background = '#02020d')}
             >
-              <div style={{ aspectRatio: '1/1', overflow: 'hidden', background: '#050512' }}>
+              <div style={{ aspectRatio: '1/1', overflow: 'hidden', background: '#050512', position: 'relative' }}>
+                {n.videoId && (
+                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1, pointerEvents: 'none' }}>
+                    <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'rgba(2,2,13,0.85)', border: '2px solid rgba(255,255,255,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <svg viewBox="0 0 24 24" fill="white" width="24" height="24" style={{ marginLeft: 3 }}><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                  </div>
+                )}
                 {n.image
                   ? <img src={n.image} alt={n.title} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: n.imgPos || 'center', transition: 'transform 0.4s' }}
                       onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.05)')}
@@ -1368,7 +1383,7 @@ export function NewsSection({ news }: { news: NewsItem[] }) {
                 </div>
                 <h4 style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '1.2rem', fontWeight: 400, color: '#fff', lineHeight: 1.35, margin: '0 0 0.85rem' }}>{n.title}</h4>
                 <p style={{ color: '#fff', fontFamily: "'Bitter',Georgia,serif", lineHeight: 1.75, fontSize: '0.92rem', margin: '0 0 1rem', fontWeight: 400 }}>{n.body}</p>
-                {n.link && <div style={{ fontSize: '0.65rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif", fontWeight: 400 }}>READ MORE →</div>}
+                {n.link && <div style={{ fontSize: '0.65rem', letterSpacing: '0.15em', color: '#fff', fontFamily: "'Bitter',Georgia,serif", fontWeight: 400 }}>{n.videoId ? 'WATCH VIDEO →' : 'READ MORE →'}</div>}
               </div>
             </div>
           </a>
