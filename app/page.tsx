@@ -175,13 +175,6 @@ export const NEWS: NewsItem[] = [
     image: '/vaxon/ras-circle-sf.jpg',
   },
   {
-    date: 'SEP 02 2026', title: 'York Space Systems Unveils LX/V-CLASS VLEO Platform',
-    body: "York Space Systems unveiled the LX/V-CLASS, a spacecraft platform purpose-built for very low Earth orbit at 200 to 300 km, targeting missile warning, tracking and moving-target indication. Built on York's S and LX class buses with drag-reducing modifications and Hall-effect thrusters running on stored xenon or krypton, the platform underscores accelerating demand for VLEO missile-defense systems, the market Vaxon Space is advancing with air-breathing electric propulsion that removes the onboard propellant limit.",
-    source: 'LINKEDIN / YORK SPACE SYSTEMS',
-    link: 'https://www.linkedin.com/posts/york-space-systems_york-space-systems-introduces-new-platform-activity-7500901732290355200-VazR/',
-    image: '/vaxon/york-vleo-platform.jpg',
-  },
-  {
     date: 'AUG 11 2026', title: 'Dr. Shepard Presents at Starburst / IAI Demo Day',
     body: "Vaxon Space CEO Dr. Steven P. Shepard presented at the Starburst and IAI (Israel Aerospace Industries) Demo Day, marking the culmination of the company's six-month cohort. He shared Vaxon's progress building and testing its proprietary air-breathing inlet and designing its VLEO satellite bus for missile defense, AI connectivity and enhanced ISR capabilities.",
     source: 'LINKEDIN',
@@ -210,13 +203,6 @@ export const NEWS: NewsItem[] = [
     image: '/vaxon/aexodus-talk.jpg', imgPos: '0% 50%',
   },
   {
-    date: 'JUN 01 2026', title: 'Bellatrix Aerospace to Build Korean VLEO Demonstration Satellite',
-    body: 'India-based Bellatrix Aerospace was selected by Korean optical-payload maker TelePIX to build a very low Earth orbit demonstration satellite, supplying the bus and air-breathing electric propulsion while TelePIX provides its Chouette optical payload. Targeting operations between 180 and 230 km with a launch no earlier than 2028, the deal reflects accelerating global momentum behind ABEP, the same domain Vaxon Space is advancing for US defense and commercial customers.',
-    source: 'PAYLOAD',
-    link: 'https://payloadspace.com/bellatrix-aerospace-tapped-to-build-korean-vleo-demo-sat/',
-    image: '/vaxon/bellatrix-vleo.png',
-  },
-  {
     date: 'MAY 20 2026', title: 'ASCEND 2026 Panel Explores Next-Generation Operations in VLEO',
     body: 'Dr. Steven P. Shepard participated in the ASCEND 2026 panel "Racing to vLEO: Next-Generation Operations in Very Low Earth Orbit," joining Brian Cameron of The Aerospace Corporation, Dr. Gillian Bussey of the US Space Force, and Spence Wise of Redwire. The discussion covered recent technological advancements, military and commercial applications, and where the VLEO ecosystem is headed over the coming decade.',
     source: 'LINKEDIN / AIAA',
@@ -231,13 +217,6 @@ export const NEWS: NewsItem[] = [
     source: 'LINKEDIN / ADAM BARTON',
     link: 'https://www.linkedin.com/feed/update/urn:li:activity:7458376693133553664/',
     image: '/vaxon/bay-area-space-map.jpg',
-  },
-  {
-    date: 'APR 23 2026', title: 'UNIVITY Raises €27M for VLEO 5G Connectivity',
-    body: 'Paris-based UNIVITY secured Series A funding to advance VLEO 5G demonstration and commercial deployment by 2028, signaling strong investor confidence in the VLEO connectivity market that Vaxon is positioned to lead in the US defense and commercial sectors.',
-    source: 'EU STARTUPS',
-    link: 'https://www.eu-startups.com/2026/04/spacetech-startup-univity-raises-e27-million-to-position-europe-as-a-key-player-in-global-hybrid-connectivity/',
-    image: `${WSIMG}/UNIVITY.png/:/cr=t:0%25,l:0%25,w:100%25,h:100%25/rs=w:800,cg:true`,
   },
   {
     date: 'MAR 16 2026', title: 'EDA Commits $17.9M to VLEO Military Research',
@@ -267,27 +246,6 @@ export const NEWS: NewsItem[] = [
     source: 'AIAA',
     link: 'https://aiaa.org/2026/01/02/aiaa-scitech-forum-2026-bringing-aerospace-innovation-to-orlando/',
     image: `${WSIMG}/AIAA%20ASCEND%202026.jpg/:/cr=t:0%25,l:12.07%25,w:75%25,h:100%25/rs=w:800,h:400,cg:true`,
-  },
-  {
-    date: 'NOV 19 2025', title: 'Redwire Awarded $44M DARPA ABEP Contract',
-    body: 'Redwire receives a $44M Phase 2 DARPA contract under the Otter program for air-breathing satellite development, validating ABEP as a defense priority. This contract confirms the maturation of air-breathing electric propulsion technology that forms the technical foundation of Vaxon\'s propulsion system.',
-    source: 'SPACENEWS',
-    link: 'https://spacenews.com/redwire-lands-44-million-darpa-award-to-build-air-breathing-satellite/',
-    image: `${WSIMG}/Redwire.webp/:/cr=t:0%25,l:18.97%25,w:62.05%25,h:100%25/rs=w:800,h:400,cg:true`,
-  },
-  {
-    date: 'SEP 2025', title: 'Spanish Startup Wins $9M for VLEO Satellite Tech',
-    body: 'Kreios Space raises funding to develop VLEO satellite technology, joining a growing global ecosystem of companies validating the commercial and defense case for sub-250km orbital operations.',
-    source: 'THE DEFENSE POST',
-    link: 'https://thedefensepost.com/2025/09/23/spanish-startup-low-earth-orbit/',
-    image: `${WSIMG}/satellite_kreios.jpg/:/cr=t:0%25,l:8.47%25,w:64.97%25,h:100%25/rs=w:800,h:400,cg:true`,
-  },
-  {
-    date: 'AUG 2025', title: 'DeepSat Secures USAF $1.25M SBIR for VLEO Constellation',
-    body: 'DeepSat wins a US Air Force AFWERX Direct to Phase II SBIR contract to develop a VLEO constellation architecture, further confirming DoD interest in persistent low-altitude space-based intelligence assets.',
-    source: 'SPACENEWS',
-    link: 'https://spacenews.com/deepsat-wins-afwerx-funding-for-observations-from-very-low-earth-orbit/',
-    image: `${WSIMG}/Deepsat.jpg/:/cr=t:0%25,l:15.71%25,w:68.58%25,h:100%25/rs=w:800,h:400,cg:true`,
   },
 ]
 
