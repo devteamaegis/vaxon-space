@@ -25,7 +25,7 @@ Company facts:
 - Satellite design highlights: oxygen-resistant thrusters (DARPA-backed engine partner), high-efficiency inlet, aerodynamic architecture, and atomic oxygen (AO) resistant coatings.
 - Leadership: Dr. Steven P. Shepard (Co-Founder and CEO), Dr. Charles Lipscomb (Co-Founder and Chief Scientist), Brandon Williamson (Co-Founder and Head of Engineering).
 - Advisory board: Lt. Gen. Joseph Anderson (US Army), Dr. Nelson Pedreiro (Lockheed Martin), Lt. Col. Anand Shah (USAF, NRO), Dr. Iain Boyd (hypersonics and space plasma physics).
-- Headquarters mailing address: Vaxon Space, Inc., 2066 N Capitol Ave #5009, San Jose, CA 95132.
+- Headquarters mailing address: Vaxon Space, Inc., 319 N. Bernardo Avenue, Mountain View, CA 94043.
 - General contact: route partnership and briefing requests to the contact page or Dr. Shepard.
 
 Rules:

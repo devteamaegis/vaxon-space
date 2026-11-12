@@ -1368,11 +1368,11 @@ type Position = {
 const POSITIONS: Position[] = [
   {
     title: 'Principal Spacecraft Design Engineer',
-    location: 'San Jose, California',
+    location: 'Mountain View, California',
     mode: 'On-site',
     type: 'Full-time',
     summary: "Vaxon Space is hiring a Principal Spacecraft Design Engineer to help design and build Vaxon Space's next-generation VLEO spacecraft. This is a senior, hands-on role for someone who has helped take spacecraft from concept through integration, testing and launch. The position will span spacecraft architecture, CAD, structures, stress and loads analysis, mission CONOPS, manufacturing, launch integration and on-orbit readiness. We're looking for an experienced engineer who can own major design decisions while working directly alongside our technical team to turn ambitious VLEO concepts into flight hardware.",
-    roleDescription: "The Principal Spacecraft Design Engineer will lead end-to-end spacecraft architecture and design for VLEO missions, from early concept development through detailed design, integration, and test. This full-time, on-site role in San Jose, CA involves driving mechanical, electrical, and system-level design decisions, developing CAD models and engineering drawings, and coordinating interfaces between subsystems. The engineer will collaborate closely with multidisciplinary teams to perform trade studies, analysis, and design reviews, ensuring designs meet mission, reliability, manufacturability, and cost requirements. Day-to-day responsibilities include mentoring other engineers, working with suppliers and manufacturing partners, supporting hardware build and integration in the lab, and contributing to continuous improvement of design standards and processes.",
+    roleDescription: "The Principal Spacecraft Design Engineer will lead end-to-end spacecraft architecture and design for VLEO missions, from early concept development through detailed design, integration, and test. This full-time, on-site role in Mountain View, CA involves driving mechanical, electrical, and system-level design decisions, developing CAD models and engineering drawings, and coordinating interfaces between subsystems. The engineer will collaborate closely with multidisciplinary teams to perform trade studies, analysis, and design reviews, ensuring designs meet mission, reliability, manufacturability, and cost requirements. Day-to-day responsibilities include mentoring other engineers, working with suppliers and manufacturing partners, supporting hardware build and integration in the lab, and contributing to continuous improvement of design standards and processes.",
     qualifications: [
       'Strong Design Engineering and Product Design skills for complex spacecraft systems and components.',
       'Mechanical Engineering and Computer-Aided Design (CAD) skills for structural design, modeling, and detailed drawings.',
@@ -1501,7 +1501,7 @@ export function ContactSection() {
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
                 {[
-                  { l: 'LOCATION', v: 'San Jose, California', href: null },
+                  { l: 'LOCATION', v: 'Mountain View, California', href: null },
                 ].map((item, i) => (
                   <div key={i} style={{ borderTop: '1px solid #131323', padding: '1rem 0', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                     <div style={{ fontSize: '0.52rem', letterSpacing: '0.22em', color: '#444', fontFamily: "'Inter',sans-serif" }}>{item.l}</div>
@@ -2031,8 +2031,8 @@ export function Footer() {
         <div style={{ textAlign: 'right' }}>
           <div style={{ fontFamily: "'Bitter',Georgia,serif", fontSize: '0.95rem', color: '#fff', marginBottom: '0.35rem' }}>Vaxon Space, Inc.</div>
           <div style={{ fontFamily: "'Inter',sans-serif", fontSize: '0.82rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.7 }}>
-            2066 N Capitol Ave #5009<br />
-            San Jose, CA 95132
+            319 N. Bernardo Avenue<br />
+            Mountain View, CA 94043
           </div>
         </div>
       </div>
